@@ -1,0 +1,115 @@
+#!/system/bin/sh
+
+export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin:
+export LD_LIBRARY_PATH=/system/etc/CrossBreeder:$LD_LIBRARY_PATH
+
+alias [='busybox ['
+alias [[='busybox [['
+
+set +e
+
+RANDOMDEVICE=urandom
+if [ -c /dev/erandom ]; then
+  if [ ! -f /dev/urandom.MOD ]; then
+    touch /dev/urandom.MOD
+    busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
+  fi
+  busybox chmod 444 /dev/frandom
+  busybox chmod 444 /dev/erandom
+  RANDOMDEVICE=frandom
+elif [ -f /system/lib/modules/frandom.ko ]; then
+  busybox insmod -f /system/lib/modules/frandom.ko
+  if [ ! -c /dev/erandom ]; then
+    sleep 5
+  fi
+elif [ -f /lib/modules/frandom.ko ]; then
+  busybox insmod -f /lib/modules/frandom.ko
+  if [ ! -c /dev/erandom ]; then
+    sleep 5
+  fi
+elif [ -f /system/modules/frandom.ko ]; then
+  busybox insmod -f /system/modules/frandom.ko
+  if [ ! -c /dev/erandom ]; then
+    sleep 5
+  fi
+elif [ -f /modules/frandom.ko ]; then
+  busybox insmod -f /modules/frandom.ko 2>/dev/null
+  if [ ! -c /dev/erandom ]; then
+    sleep 5
+  fi
+elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
+  punchmod /system/etc/CrossBreeder/frandom.ko ""
+  if [ ! -c /dev/erandom ]; then
+    sleep 5
+  fi
+fi
+URANDOMDEVICE="/dev/urandom"
+if [ -c /dev/erandom ]; then 
+  if [ ! -f /dev/urandom.MOD ]; then 
+    touch /dev/urandom.MOD
+    busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
+    sleep 2
+  fi
+  busybox chmod 444 /dev/frandom
+  busybox chmod 444 /dev/erandom
+  RANDOMDEVICE=frandom
+  if [ ! -c /dev/urandom.ORIG ]; then 
+    busybox mknod -m 666 /dev/urandom.ORIG c 1 9
+    sleep 2
+  fi
+  URANDOMDEVICE="/dev/urandom.ORIG"
+else
+  if [ ! -c /dev/urandom ]; then
+    busybox mknod -m 666 /dev/urandom c 1 9
+    sleep 2
+  fi
+fi
+
+if [ ! -f /dev/random.MOD ]; then  
+  touch /dev/random.MOD
+  busybox rm /dev/random && busybox ln /dev/$RANDOMDEVICE /dev/random
+fi
+
+( busybox nice -n +20 CB_RunHaveged $URANDOMDEVICE 0 0<&- &>/dev/null 2>&1 ) &
+
+busybox sysctl -w kernel.random.read_wakeup_threshold=2017;
+busybox sysctl -w kernel.random.write_wakeup_threshold=0;
+
+for i in `busybox find /sys -name add_random -print`; do busybox echo 0 > $i; done 
+
+setprop persist.sys.scrollingcache 3
+setprop windowsmgr.max_events_per_sec 300
+setprop ro.max.fling_velocity 12000
+setprop ro.min.fling_velocity 8000
+setprop persist.sys.purgeable_assets 1
+
+sys_pid=`busybox pgrep system_server`
+
+busybox renice -10 $sys_pid
+
+for i in $(busybox pgrep haveged); do 
+  busybox renice +20 $i
+done
+
+if [ -e /sys/kernel/debug/sched_features ]; then
+  busybox echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features
+  busybox echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
+  busybox echo NO_NEW_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
+fi
+
+busybox sysctl -w vm.max_map_count=65530
+busybox sysctl -w vm.drop_caches=3
+busybox sysctl -w vm.oom_kill_allocating_task=0;
+busybox sysctl -w vm.panic_on_oom=0;
+busybox sysctl -w vm.overcommit_memory=1;
+busybox sysctl -w vm.page-cluster=3;
+busybox sysctl -w vm.laptop_mode=1;
+busybox sysctl -w vm.vfs_cache_pressure=50;
+busybox sysctl -w vm.min_free_order_shift=4
+busybox sysctl -w vm.page-cluster=1;
+busybox sysctl -w vm.dirty_writeback_centisecs=1500
+busybox sysctl -w vm.dirty_expire_centisecs=1000
+busybox sysctl -w vm.dirty_ratio=99
+busybox sysctl -w vm.vfs_cache_pressure=100000000
+busybox sysctl -w vm.vfs_cache_pressure=1215752192
+busybox sysctl -w vm.min_free_kbytes=12288

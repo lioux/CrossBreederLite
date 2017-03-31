@@ -1,0 +1,29 @@
+#!/system/bin/sh
+
+set +e
+
+export PATH=/system/etc/CrossBreeder:/system/bin:/system/xbin:/sbin:/vendor/bin:/system/sbin
+
+alias [='busybox ['
+alias [[='busybox [['
+
+CB_Check_Net_DNS
+nice -n +20 rinetd -c /system/etc/CrossBreeder/rinetd.conf
+
+iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53
+iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53
+
+setprop net.dns1 8.8.8.8
+setprop net.dns2 8.8.4.4
+setprop net.rmnet0.dns1 8.8.8.8
+setprop net.rmnet0.dns2 8.8.4.4
+setprop net.gprs.dns1 8.8.8.8
+setprop net.gprs.dns2 8.8.4.4
+setprop net.ppp0.dns1 8.8.8.8
+setprop net.ppp0.dns2 8.8.4.4
+setprop net.wlan0.dns1 8.8.8.8
+setprop net.wlan0.dns2 8.8.4.4
+setprop net.eth0.dns1 8.8.8.8
+setprop net.eth0.dns2 8.8.4.4
+
+ANDROID_DNS_MODE= dnsmasq -d --all-servers -C /system/etc/CrossBreeder/dnsmasq.conf -n --user=root -x /dev/dnsmasq.pid -a 127.0.0.3 -z -p 10053 -c 0 -N -h -S 8.8.8.8 -S 8.8.4.4 

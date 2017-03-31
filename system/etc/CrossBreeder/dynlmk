@@ -1,0 +1,56 @@
+#!/system/bin/sh
+
+box="busybox"
+
+while [ -f /system/etc/CrossBreeder/dynlmk ]; do
+
+#calculate values
+LTHRESHOLD="15"
+RAM=$((`$box awk '/MemTotal/{print $2}' /proc/meminfo`))
+sval1=$(($($box awk '/SwapFree/{print $2}' /proc/meminfo) ))
+FREEMEM=$((`$box awk '/MemFree/{print $2}' /proc/meminfo` + $sval1 ))
+
+for mem in ${!FREEMEM[@]}
+do
+setmem=$(( $setmem+${FREEMEM[$mem]} ))
+done
+setmem=$(($setmem/${#FREEMEM[@]}))
+$box echo "Average memory usage: $setmem"
+ADDMEM=$((setmem * $LTHRESHOLD / 10))
+
+VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))
+VAL2=$(( ( ( $RAM* 3 / 1000 ) + ( $ADDMEM / 7 ) ) / 4 ))
+VAL3=$(( ( ( $RAM* 6 / 1000 ) + ( $ADDMEM/ 5 ) ) / 4 ))
+VAL4=$(( ( ( $RAM* 10 / 1000 ) + ( $ADDMEM / 4 ) ) / 4 ))
+VAL5=$(( ( ( $RAM* 13 / 1000 ) + ( $ADDMEM / 3 ) ) / 4 ))
+VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
+
+$box echo "Detected you have $(($RAM / 1024)) megabytes of system RAM."
+
+$box echo "Now set your Low Memory Killer(LMK) parameters."
+
+$box echo "=> Current setup:"
+$box echo "=> $(($VAL1 * 4 / 1024 )) MB for Foreground Applications"
+$box echo "=> $(($VAL2 * 4 / 1024 )) MB for Visible Applications"
+$box echo "=> $(($VAL3 * 4 / 1024 )) MB for Secondary Server"
+$box echo "=> $(($VAL4 * 4 / 1024 )) MB for Hidden Applications"
+$box echo "=> $(($VAL5 * 4 / 1024 )) MB for Content Provider"
+$box echo "=> $(($VAL6 * 4 / 1024 )) MB for Empty Applications"
+
+#set lmk
+setlmk "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6"
+
+#log everything
+LMK=$($box cat "/sys/module/lowmemorykiller/parameters/minfree")
+
+if [ "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
+$box echo "LMK parameters set."
+else 
+$box echo "Failed setting LMK parameters."
+fi
+
+$box echo "Now monitor your system to set intelligently LMK parameters for you."
+
+sleep 60;
+
+done

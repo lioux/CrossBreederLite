@@ -1,0 +1,7 @@
+#!/system/bin/sh
+
+MAX=$($B cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq);
+
+if [ "$MAX" -ge "1700000" ];then
+ dynbsd start -h 0 -ns 5 -d 1800 -lt 0
+fi;

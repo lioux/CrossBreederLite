@@ -1,0 +1,28 @@
+#!/system/bin/sh
+
+box="busybox"
+
+#calculate values
+$box echo "Setting optimal values of VM heap sizes."
+RAM=$((` $box awk '/MemTotal/{print $2}' /proc/meminfo` / 1024 ))
+
+if [ "$RAM" -lt "512" ]
+then
+ THRESHOLD="450"
+ setprop dalvik.vm.heaptargetutilization 0.9
+else
+ THRESHOLD="375"
+ setprop dalvik.vm.heaptargetutilization 0.75
+fi
+
+HEAPMAXSIZE="$(( ($RAM * 268554 / 1000000) ))"
+VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
+
+#set vm parameters
+$box echo "Detected you have $RAM of system RAM."
+$box echo "==> Max heap: ${HEAPMAXSIZE}m"
+$box echo "==> Min heap: ${VMHEAP}m (please note this is a Android 4.0+ specific feature.)"
+
+setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
+setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
+setprop persist.sys.vm.heapsize "${VMHEAP}m"

@@ -1,0 +1,40 @@
+#!/system/bin/sh
+
+bootcount="$($box cat /data/data/bootcount)"
+
+flag=false
+
+if [ "$bootcount" -lt "4" ]
+then
+count=$bootcount
+echo "$(( $count + 1 ))" > /data/data/bootcount
+elif [ "$bootcount" == "4" ]
+then
+echo "0" > /data/data/bootcount
+flag=true
+else
+touch /data/data/bootcount
+echo "0" > /data/data/bootcount
+fi
+
+echo ">SQlite Optimizer"
+echo "The system will optimize SQlite databases every 4 boots."
+echo "The system has booted for $bootcount times since the last optimization."
+
+if [ "$flag" == "false" ]
+then
+echo "The system does not need to optimize databases."
+exit 0
+elif [ "$flag" == "true" ]
+then
+echo "The system will optimize databases."
+
+dbcount=0
+for db in $($box find /data/data -name *.db)
+do
+dbcount=$((dbcount+1))
+echo ">Optimizing database $dbcount..."
+sqlite3 $db 'VACUUM'
+sqlite3 $db 'REINDEX'
+done
+fi

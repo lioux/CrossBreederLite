@@ -1,0 +1,12 @@
+#!/system/bin/sh
+
+set +e
+
+busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp -d \-p 0") 
+busybox kill -9 $(busybox pgrep -f dnsmasq.CBBAK) 
+
+dnsmasq_dhcp -d -p 0 --dhcp-option=252,\"\\n\" --no-ping --dhcp-authoritative
+
+echo "Trying dnsmasq.CBBAK"
+
+dnsmasq.CBBAK -d -p 10054
