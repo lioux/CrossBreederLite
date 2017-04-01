@@ -260,6 +260,7 @@ fi
 if [ -d $MODPATH ]; then
   ui_print "- Removing files"
   rm -rf $MODPATH
+  rm -rf $MOUNTPATH/CrossBreederLiteRAM
   ui_print "- Unmounting partitions"
   umount $MOUNTPATH
   losetup -d $LOOPDEVICE

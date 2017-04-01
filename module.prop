@@ -1,7 +1,7 @@
 id=CrossBreederLite
 name=CrossBreeder Lite
-version=v1
+version=v0.01 Alpha
 versionCode=1
 author=Rorsch_X1
-description=Lag-/Entropy+/DNS+/Battery+/Censors-/.bit support
+description=Lag-/Entropy+/DNS+/Battery+/Thether+/Censors-
 template=3
