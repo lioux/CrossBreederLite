@@ -7,6 +7,11 @@ export PATH=/system/etc/CrossBreeder:/system/bin:/system/xbin:/sbin:/vendor/bin:
 alias [='busybox ['
 alias [[='busybox [['
 
+CB_Check_Net_DNS >/dev/null 2>&1 &
+pid=$!
+busybox renice +20 $pid >/dev/null 2>&1
+busybox nice -n +20 rinetd -c 8.8.8.8 53 127.0.0.3 10053 >/dev/null 2>&1
+
 iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53
 iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53
 
@@ -23,25 +28,10 @@ setprop net.wlan0.dns2 8.8.4.4
 setprop net.eth0.dns1 8.8.8.8
 setprop net.eth0.dns2 8.8.4.4
 
-CB_Check_Net_DNS >/dev/null 2>&1 &
+ANDROID_DNS_MODE= dnsmasq_dhcp -d --all-servers -C /system/etc/CrossBreeder/dnsmasq.conf -n --user=root -x /dev/dnsmasq.pid -a 127.0.0.3 -z -p 10053 -c 0 -N -h -S 8.8.8.8 -S 8.8.4.4 >/dev/null 2>&1 &
 pid=$!
-BUSYBOX renice +20 $pid >/dev/null 2>&1
-if [ ! -f /system/etc/CrossBreeder/STOP_ADBLOCK ]; then 
-  BUSYBOX nice -n +20 pixelserv 127.0.0.1 -f /system/etc/CrossBreeder/null.bin -g /system/etc/CrossBreeder/null.gif >/dev/null 2>&1 &
+busybox renice +20 $pid >/dev/null 2>&1
+
+if [ ! -e /dev/socket/dnsproxyd.bak ]; then
+  busybox nice -n -1 dnsproxy2 -w 127.0.0.1 >/dev/null 2>&1
 fi
-BUSYBOX nice -n +20 rinetd -c /system/etc/CrossBreeder/rinetd.conf >/dev/null 2>&1 &
-LOCALDNS=" -r /dev/resolv-local.conf "
-if [ -f /system/etc/CrossBreeder/BYPASS_ISP ]; then LOCALDNS=; fi 
-REMOTE_DNS=" -S 8.8.8.8 -S 8.8.4.4 -S 209.244.0.4 -S 209.244.0.3 "
-if [ -f /system/etc/CrossBreeder/REMOTE_DNS ]; then 
- REMOTE_DNS=" "
- for i in `cat /system/etc/CrossBreeder/REMOTE_DNS 2>/dev/null`; do
-  j=`BUSYBOX echo $i | BUSYBOX cut -d\. -f4`
-  if [ "$j" != "" ]; then 
-   if [ "$j" -ge 0 ]; then REMOTE_DNS=" $REMOTE_DNS -S $i "; fi
-  fi
- done
-fi
-ANDROID_DNS_MODE= dnsmasq_dhcp -d --all-servers -C /system/etc/CrossBreeder/dnsmasq.conf -n --user=root -x /dev/dnsmasq.pid $LOCALDNS -a 127.0.0.3 -z -p 10053 -c 0 -N -h $REMOTE_DNS >/dev/null 2>&1 &
-pid=$!
-BUSYBOX renice +20 $pid >/dev/null 2>&1

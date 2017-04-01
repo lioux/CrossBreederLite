@@ -2,8 +2,6 @@
 
 box="busybox"
 
-while [ -f /system/etc/CrossBreeder/dynlmk ]; do
-
 #calculate values
 LTHRESHOLD="15"
 RAM=$((`$box awk '/MemTotal/{print $2}' /proc/meminfo`))
@@ -38,7 +36,9 @@ $box echo "=> $(($VAL5 * 4 / 1024 )) MB for Content Provider"
 $box echo "=> $(($VAL6 * 4 / 1024 )) MB for Empty Applications"
 
 #set lmk
-setlmk "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6"
+LMK=/sys/module/lowmemorykiller/parameters/minfree
+
+$box echo "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6" > $LMK
 
 #log everything
 LMK=$($box cat "/sys/module/lowmemorykiller/parameters/minfree")
@@ -50,7 +50,3 @@ $box echo "Failed setting LMK parameters."
 fi
 
 $box echo "Now monitor your system to set intelligently LMK parameters for you."
-
-sleep 60;
-
-done

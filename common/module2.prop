@@ -1,0 +1,7 @@
+id=CrossBreederLiteRAM
+name=CrossBreeder Lite ( RAM Monitor Service )
+version=v1
+versionCode=1
+author=Rorsch_X1
+description=Dynamic Zram / LMK Service
+template=3

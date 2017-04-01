@@ -2,8 +2,6 @@
 
 box="busybox"
 
-while [ -f /system/etc/CrossBreeder/dynzram ]; do
-
 #find swap devices
 if [ -e "/dev/block/zram0" ]; then
 ZRAMD="zram"
@@ -94,7 +92,3 @@ $box sysctl -w vm.swappiness=$swappiness
 
 #end
 $box echo "Now monitor your system to intelligently set zRAM values for you."
-
-sleep 60;
-
-done

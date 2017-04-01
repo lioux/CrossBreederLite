@@ -340,6 +340,9 @@ if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]
  cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
 fi
 
+mkdir -p $MOUNTPATH/CrossBreederLiteRAM
+cp -af $INSTALLER/common/module2.prop $MOUNTPATH/CrossBreederLiteRAM/module.prop
+cp -af $INSTALLER/common/service2.sh $MOUNTPATH/CrossBreederLiteRAM/service.sh
 ###############################################
 # Handle replace folders
 for TARGET in $REPLACE; do

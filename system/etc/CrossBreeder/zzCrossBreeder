@@ -14,33 +14,33 @@ if [ -c /dev/erandom ]; then
     touch /dev/urandom.MOD
     busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
   fi
-  busybox chmod 444 /dev/frandom
-  busybox chmod 444 /dev/erandom
+  busybox chmod 666 /dev/frandom
+  busybox chmod 666 /dev/erandom
   RANDOMDEVICE=frandom
 elif [ -f /system/lib/modules/frandom.ko ]; then
-  busybox insmod -f /system/lib/modules/frandom.ko
+  busybox insmod -f /system/lib/modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
-    sleep 5
+    sleep 2
   fi
 elif [ -f /lib/modules/frandom.ko ]; then
-  busybox insmod -f /lib/modules/frandom.ko
+  busybox insmod -f /lib/modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
-    sleep 5
+    sleep 2
   fi
 elif [ -f /system/modules/frandom.ko ]; then
-  busybox insmod -f /system/modules/frandom.ko
+  busybox insmod -f /system/modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
-    sleep 5
+    sleep 2
   fi
 elif [ -f /modules/frandom.ko ]; then
   busybox insmod -f /modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
-    sleep 5
+    sleep 2
   fi
 elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
-  punchmod /system/etc/CrossBreeder/frandom.ko ""
+  punchmod /system/etc/CrossBreeder/frandom.ko "" 2>/dev/null
   if [ ! -c /dev/erandom ]; then
-    sleep 5
+    sleep 2
   fi
 fi
 URANDOMDEVICE="/dev/urandom"
@@ -50,8 +50,8 @@ if [ -c /dev/erandom ]; then
     busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
     sleep 2
   fi
-  busybox chmod 444 /dev/frandom
-  busybox chmod 444 /dev/erandom
+  busybox chmod 666 /dev/frandom
+  busybox chmod 666 /dev/erandom
   RANDOMDEVICE=frandom
   if [ ! -c /dev/urandom.ORIG ]; then 
     busybox mknod -m 666 /dev/urandom.ORIG c 1 9
@@ -75,7 +75,7 @@ fi
 busybox sysctl -w kernel.random.read_wakeup_threshold=2017;
 busybox sysctl -w kernel.random.write_wakeup_threshold=0;
 
-for i in `busybox find /sys -name add_random -print`; do busybox echo 0 > $i; done 
+for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done 
 
 setprop persist.sys.scrollingcache 3
 setprop windowsmgr.max_events_per_sec 300
@@ -83,19 +83,31 @@ setprop ro.max.fling_velocity 12000
 setprop ro.min.fling_velocity 8000
 setprop persist.sys.purgeable_assets 1
 
-sys_pid=`busybox pgrep system_server`
+sys_pid=`busybox pgrep system_server 2>/dev/null`
 
-busybox renice -10 $sys_pid
+busybox renice -10 $sys_pid 2>/dev/null
 
-for i in $(busybox pgrep haveged); do 
-  busybox renice +20 $i
+for i in $(busybox pgrep haveged 2>/dev/null); do 
+  busybox renice +20 $i 2>/dev/null
 done
 
+busybox mount -t debugfs -o rw none /sys/kernel/debug 2>/dev/null
+
 if [ -e /sys/kernel/debug/sched_features ]; then
-  busybox echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features
-  busybox echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
-  busybox echo NO_NEW_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
+  busybox echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features 2>/dev/null
+  busybox echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
+  busybox echo  NO_NEW_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
 fi
+
+setprop ro.FOREGROUND_APP_ADJ 0
+setprop ro.VISIBLE_APP_ADJ 2 
+setprop ro.PERCEPTIBLE_APP_ADJ 3
+setprop ro.HEAVY_WEIGHT_APP_ADJ 6
+setprop ro.SECONDARY_SERVER_ADJ 4
+setprop ro.BACKUP_APP_ADJ 7
+setprop ro.HOME_APP_ADJ 1
+setprop ro.HIDDEN_APP_MIN_ADJ 10
+setprop ro.EMPTY_APP_ADJ 15
 
 busybox sysctl -w vm.max_map_count=65530
 busybox sysctl -w vm.drop_caches=3
