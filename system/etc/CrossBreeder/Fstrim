@@ -1,0 +1,12 @@
+#!/system/bin/sh
+
+if [ -e /etc/fstab ]; then
+ echo "FStab onboard.."
+else
+ exit 0
+fi
+fsck -A -C -V -T
+fstrim -v /system
+fstrim -v /cache
+fstrim -v /data
+fstrim -v /magisk
