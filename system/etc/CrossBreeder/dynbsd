@@ -3,5 +3,7 @@
 CORES=$(grep -c 'processor' /proc/cpuinfo);
 
 if [ "$CORES" -ge "4" ];then
- dynbsd start -h 0 -ns 5 -d 1800 -lt 0
-fi;
+  ( dynbsd start -h 0 -ns 5 -d 1800 -lt 0 )&
+fi
+
+exit 0
