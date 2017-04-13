@@ -1,6 +1,6 @@
-## Mod info​
+## Mod info
 
-This is  liter, newer version of CrosBrerder 
+This is  liter, newer version of CrossBreeder 
 
 ## Features
 
@@ -10,7 +10,7 @@ Add dynamic Zram/LMK tweak, calibration every 60 sec.
 
 More streamline script
 
-Add DynBS (Optional), dynamic power savings - a tool that allows you to save more than 30% battery charge your Android-device.(For CPU over 1.7GHz) (Maybe cause Lag)
+[Add-on] DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device.(For over 4 core device) (Maybe cause Lag)
 
 ## Notes
 
