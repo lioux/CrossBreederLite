@@ -1,7 +1,7 @@
 id=CrossBreederLiteRAM
 name=CrossBreeder Lite [ RAM Monitor Service ]
-version=v0.3 Beta
-versionCode=4
+version=v0.4 Beta
+versionCode=5
 author=Rorsch_X1
 description=Dynamic Zram / LMK Service
 template=3

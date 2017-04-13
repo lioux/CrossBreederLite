@@ -6,12 +6,9 @@ MODDIR=${0%/*}
 # This script will be executed in late_start service mode
 # More info in the main Magisk thread
 
-sleep 45;
-
 /system/etc/CrossBreeder/zzCrossBreeder
 /system/etc/CrossBreeder/zzCHECK_NET_DNS
 /system/etc/CrossBreeder/FDE_Governor_Tweaks
 /system/etc/CrossBreeder/GameVM
-/system/etc/CrossBreeder/Fstrim
 /system/etc/CrossBreeder/SQLITE
-#/system/etc/CrossBreeder/dynbsd
+/system/etc/CrossBreeder/dynbsd
