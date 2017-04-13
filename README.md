@@ -10,7 +10,7 @@ Add dynamic Zram/LMK tweak, calibration every 60 sec.
 
 More streamline script
 
-DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device.(For over 4 core device) (Maybe cause Lag)
+[Disabled] DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device.(For over 4 core device) (Maybe cause Lag)
 
 ## Notes
 
