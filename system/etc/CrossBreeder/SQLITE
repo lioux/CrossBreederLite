@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-bootcount="$($box cat /data/data/bootcount)"
+bootcount="$(busybox cat /data/data/bootcount)"
 
 flag=false
 
