@@ -1,20 +1,20 @@
 #!/system/bin/sh
 
-bootcount="$(busybox cat /data/data/bootcount)"
+bootcount="$(busybox cat /data/bootcount)"
 
 flag=false
 
 if [ "$bootcount" -lt "4" ]
 then
 count=$bootcount
-echo "$(( $count + 1 ))" > /data/data/bootcount
+echo "$(( $count + 1 ))" > /data/bootcount
 elif [ "$bootcount" == "4" ]
 then
-echo "0" > /data/data/bootcount
+echo "0" > /data/bootcount
 flag=true
 else
-touch /data/data/bootcount
-echo "0" > /data/data/bootcount
+touch /data/bootcount
+echo "0" > /data/bootcount
 fi
 
 echo ">SQlite Optimizer"

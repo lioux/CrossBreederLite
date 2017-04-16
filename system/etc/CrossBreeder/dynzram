@@ -54,7 +54,7 @@ ADDMEM=$((($MEMSTATS) * 15 / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
 
 #change size
-busybox echo "Watson detected you have $(($RAM)) megabytes of system RAM."
+busybox echo "Detected you have $(($RAM)) megabytes of system RAM."
 
 busybox echo "Enabling Dynamic zRAM..."
 busybox echo "=> zRAM Size: $ZRAM bytes ($(($ZRAM / 1024 / 1024)) megabytes)"

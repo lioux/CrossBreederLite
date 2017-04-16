@@ -22,7 +22,7 @@ VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
 
 busybox echo "Detected you have $(($RAM / 1024)) megabytes of system RAM."
 
-busybox echo "Now set your Low Memory Killer(LMK) parameters."
+busybox echo "Now set your Low Memory Killer parameters."
 
 busybox echo "=> Current setup:"
 busybox echo "=> $(($VAL1 * 4 / 1024 )) MB for Foreground Applications"
