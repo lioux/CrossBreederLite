@@ -9,6 +9,6 @@ MODDIR=${0%/*}
 /system/etc/CrossBreeder/zzCrossBreeder
 /system/etc/CrossBreeder/zzCHECK_NET_DNS
 /system/etc/CrossBreeder/FDE_Governor_Tweaks
-/system/etc/CrossBreeder/GameVM
+/system/etc/CrossBreeder/VMHeap
 /system/etc/CrossBreeder/SQLITE
 /system/etc/CrossBreeder/dynbsd
