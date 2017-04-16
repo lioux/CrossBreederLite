@@ -1,27 +1,25 @@
 #!/system/bin/sh
 
-box="busybox"
-
 #find swap devices
 if [ -e "/dev/block/zram0" ]; then
 ZRAMD="zram"
-$box echo "zRAM device available as $ZRAMD"
+busybox echo "zRAM device available as $ZRAMD"
 elif  [ -e "/dev/block/vnswap0" ]; then
 ZRAMD="vnswap"
-$box echo "zRAM device available as $ZRAMD"
+busybox echo "zRAM device available as $ZRAMD"
 else
-$box echo "zRAM device unavailable"
+busybox echo "zRAM device unavailable"
 exit 1
 fi
 
 #deactivate existing swap
 num="0"
 
-ZRAMN=$($box find /dev/block -name $ZRAMD* | $box sort | tail -n 1 )
+ZRAMN=$(busybox find /dev/block -name $ZRAMD* | busybox sort | tail -n 1 )
 ZRAMN=$((${ZRAMN#*$ZRAMD}+1))
-for z in $($box find /dev/block -name $ZRAMD* | $box sort )
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-$box echo "=> deactivating swap in $z"
+busybox echo "=> deactivating swap in $z"
 if [ -e /system/bin/swapoff ]
 then
 /system/bin/swapoff $z
@@ -30,22 +28,21 @@ $box swapoff $z
 fi
 if [ -e "/sys/block/$ZRAMD$num/reset" ]
 then
-$box echo "==> device has a reset switch: flipping it now"
-$box echo 1 > /sys/block/$ZRAMD$num/reset
+busybox echo "==> device has a reset switch: flipping it now"
+busybox echo 1 > /sys/block/$ZRAMD$num/reset
 fi
 num=$(($num+1))
 done
 
 #calculate sizes
-RAM=$((`$box awk '/MemTotal/{print $2}' /proc/meminfo`))
-ZTHRESHOLD="15"
-ZRAM1=$(( $RAM * $ZTHRESHOLD / 100 ))
-$box echo "val1 = $RAM * $ZTHRESHOLD / 100 = $ZRAM1 "
-val2=$(($($box awk '/MemFree/{print $2}' /proc/meminfo)))
+RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
+ZRAM1=$(( $RAM * 15 / 100 ))
+busybox echo "val1 = $RAM * 15 / 100 = $ZRAM1 "
+val2=$(($(busybox awk '/MemFree/{print $2}' /proc/meminfo)))
 
-$box echo "val2 = $val2"
+busybox echo "val2 = $val2"
 val3=$(( ( $RAM - $val2 ) ))
-$box echo "val3 = $val3"
+busybox echo "val3 = $val3"
 
 MEMSTATS=( $val3 )
 for stat in ${!MEMSTATS[@]}
@@ -53,42 +50,42 @@ do
 mem=$(( $mem+${MEMSTATS[$stat]} ))
 done
 mem=$(($mem/${#MEMSTATS[@]}))
-ADDMEM=$((($MEMSTATS) * $ZTHRESHOLD / 10))
+ADDMEM=$((($MEMSTATS) * 15 / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
 
 #change size
-$box echo "Watson detected you have $(($RAM)) megabytes of system RAM."
+busybox echo "Watson detected you have $(($RAM)) megabytes of system RAM."
 
-$box echo "Enabling Dynamic zRAM..."
-$box echo "=> zRAM Size: $ZRAM bytes ($(($ZRAM / 1024 / 1024)) megabytes)"
+busybox echo "Enabling Dynamic zRAM..."
+busybox echo "=> zRAM Size: $ZRAM bytes ($(($ZRAM / 1024 / 1024)) megabytes)"
 num=0
-for z in $($box find /dev/block -name $ZRAMD* | $box sort )
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-$box echo $(( $ZRAM / $ZRAMN )) > /sys/block/$ZRAMD$num/disksize
+busybox echo $(( $ZRAM / $ZRAMN )) > /sys/block/$ZRAMD$num/disksize
 num=$(($num+1))
 done
 
 #mkswap
 num=0
-for z in $($box find /dev/block -name $ZRAMD* | $box sort )
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-$box echo "==> Preparing swapspace in $z, $num of $ZRAMN"
-$box mkswap $z
+busybox echo "==> Preparing swapspace in $z, $num of $ZRAMN"
+busybox mkswap $z
 num=$(($num+1))
 done
 
 #swapon
 num=0
-for z in $($box find /dev/block -name $ZRAMD* | $box sort )
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-$box echo "==> Swapping in swapspace in $z, $num of $ZRAMN"
-$box swapon $z -p 256
+busybox echo "==> Swapping in swapspace in $z, $num of $ZRAMN"
+busybox swapon $z -p 256
 num=$(($num+1))
 done
 
 #vm parameters
 swappiness=$(( ($ZRAM / 1024 / 1024) * 100 / ($RAM / 1024) + 50 ))
-$box sysctl -w vm.swappiness=$swappiness
+busybox sysctl -w vm.swappiness=$swappiness
 
 #end
-$box echo "Now monitor your system to intelligently set zRAM values for you."
+busybox echo "Now monitor your system to intelligently set zRAM values for you."
