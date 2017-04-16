@@ -38,7 +38,7 @@ elif [ -f /modules/frandom.ko ]; then
     sleep 2
   fi
 elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
-  punchmod /system/etc/CrossBreeder/frandom.ko "" 2>/dev/null
+  punchmod /system/etc/CrossBreeder/frandom.ko "" "" 2>/dev/null
   if [ ! -c /dev/erandom ]; then
     sleep 2
   fi
@@ -72,7 +72,7 @@ fi
 
 ( busybox nice -n +20 CB_RunHaveged $URANDOMDEVICE 0 0<&- &>/dev/null 2>&1 ) &
 
-busybox sysctl -w kernel.random.read_wakeup_threshold=2017;
+busybox sysctl -w kernel.random.read_wakeup_threshold=8;
 busybox sysctl -w kernel.random.write_wakeup_threshold=0;
 
 for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done 
@@ -125,3 +125,29 @@ busybox sysctl -w vm.dirty_ratio=99
 busybox sysctl -w vm.vfs_cache_pressure=100000000
 busybox sysctl -w vm.vfs_cache_pressure=1215752192
 busybox sysctl -w vm.min_free_kbytes=12288
+
+#calculate values
+busybox echo "Setting optimal values of VM heap sizes."
+RAM=$((` busybox awk '/MemTotal/{print $2}' /proc/meminfo` / 1024 ))
+
+if [ "$RAM" -lt "512" ]
+then
+ THRESHOLD="450"
+ setprop dalvik.vm.heaptargetutilization 0.9
+else
+ THRESHOLD="375"
+ setprop dalvik.vm.heaptargetutilization 0.75
+fi
+
+HEAPMAXSIZE="$(( ($RAM * 268554 / 1000000) ))"
+VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
+
+#set vm parameters
+busybox echo "Detected you have $RAM of system RAM."
+busybox echo "==> Max heap: ${HEAPMAXSIZE}m"
+busybox echo "==> Min heap: ${VMHEAP}m"
+
+setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
+setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
+setprop persist.sys.vm.heapsize "${VMHEAP}m"
+
