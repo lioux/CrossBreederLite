@@ -18,7 +18,9 @@ If this mod fuck up your devices, just flash the installation package again to u
 
 ## Credits
 
-idcrisis
+Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For most of files
+
+FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421 ) - For his gone
 
 ## Changelog
 
