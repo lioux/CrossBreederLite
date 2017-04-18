@@ -30,6 +30,6 @@ FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/bet
 
 0.4 Alpha - Fixed UI crash bug
 
-0.3 Alpha - Fixed zzCHECK_NET_DNS not work bug
+0.3 Alpha - Fixed zzCHECK_NET_DNS not working bug
 
 -------------------Removed-------------------
