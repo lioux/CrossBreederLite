@@ -15,3 +15,9 @@ DynBS, dynamic power savings - A tool that allows you to save more than 30% batt
 ## Notes
 
 If this mod fuck up your devices, just flash the installation package again to uninstall.
+
+## Changelog
+
+
+
+-------------------Removed-------------------
