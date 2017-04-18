@@ -16,6 +16,10 @@ DynBS, dynamic power savings - A tool that allows you to save more than 30% batt
 
 If this mod fuck up your devices, just flash the installation package again to uninstall.
 
+## Credits
+
+idcrisis
+
 ## Changelog
 
 0.6 Beta - Fixed Haveged not working bug
