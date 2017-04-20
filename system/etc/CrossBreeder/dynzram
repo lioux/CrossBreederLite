@@ -24,7 +24,7 @@ if [ -e /system/bin/swapoff ]
 then
 /system/bin/swapoff $z
 else
-$box swapoff $z
+busybox swapoff $z
 fi
 if [ -e "/sys/block/$ZRAMD$num/reset" ]
 then
@@ -37,12 +37,8 @@ done
 #calculate sizes
 RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
 ZRAM1=$(( $RAM * 15 / 100 ))
-busybox echo "val1 = $RAM * 15 / 100 = $ZRAM1 "
 val2=$(($(busybox awk '/MemFree/{print $2}' /proc/meminfo)))
-
-busybox echo "val2 = $val2"
 val3=$(( ( $RAM - $val2 ) ))
-busybox echo "val3 = $val3"
 
 MEMSTATS=( $val3 )
 for stat in ${!MEMSTATS[@]}

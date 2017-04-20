@@ -22,6 +22,16 @@ VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
 
 busybox echo "Detected you have $(($RAM / 1024)) megabytes of system RAM."
 
+busybox echo "Now set your LMK parameters."
+
+busybox echo "=> Current setup:"
+busybox echo "=> $(($VAL1 * 4 / 1024 )) MB for Foreground Applications"
+busybox echo "=> $(($VAL2 * 4 / 1024 )) MB for Visible Applications"
+busybox echo "=> $(($VAL3 * 4 / 1024 )) MB for Secondary Server"
+busybox echo "=> $(($VAL4 * 4 / 1024 )) MB for Hidden Applications"
+busybox echo "=> $(($VAL5 * 4 / 1024 )) MB for Content Provider"
+busybox echo "=> $(($VAL6 * 4 / 1024 )) MB for Empty Applications"
+
 #set lmk
 LMK=/sys/module/lowmemorykiller/parameters/minfree
 
@@ -36,4 +46,4 @@ else
 busybox echo "Failed setting LMK parameters."
 fi
 
-$box echo "Now monitor your system to set intelligently LMK parameters for you."
+busybox echo "Now monitor your system to set intelligently LMK parameters for you."
