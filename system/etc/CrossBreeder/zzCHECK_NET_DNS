@@ -33,5 +33,5 @@ pid=$!
 busybox renice +20 $pid >/dev/null 2>&1
 
 if [ ! -e /dev/socket/dnsproxyd.bak ]; then
-  busybox nice -n -1 dnsproxy2 -w 127.0.0.1 >/dev/null 2>&1
+  busybox nice -n -1 dnsproxy2 -w 127.0.0.1 &
 fi
