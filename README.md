@@ -12,10 +12,6 @@ More streamline script
 
 DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device.(For over 4 core device) (Maybe cause Lag)
 
-## Notes
-
-If this mod fuck up your devices, just flash the installation package again to uninstall.
-
 ## Credits
 
 Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For most of files
@@ -23,6 +19,8 @@ Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For
 FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421 ) - For the Governor Tweak
 
 ## Changelog
+
+0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2, fixed rinetd.conf not found error
 
 0.6 Beta - Fixed Haveged not working bug
 
@@ -32,4 +30,4 @@ FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/bet
 
 0.3 Alpha - Fixed zzCHECK_NET_DNS not working bug
 
--------------------Removed-------------------
+------------------------Removed------------------------
