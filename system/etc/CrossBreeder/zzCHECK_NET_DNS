@@ -10,8 +10,7 @@ alias [[='busybox [['
 CB_Check_Net_DNS >/dev/null 2>&1 &
 pid=$!
 busybox renice +20 $pid >/dev/null 2>&1
-busybox nice -n +20 rinetd -c 8.8.8.8 53 127.0.0.3 10053 >/dev/null 2>&1
-
+busybox nice -n +20 rinetd -c /system/etc/CrossBreeder/rinetd.conf >/dev/null 2>&1
 iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to-destination 8.8.8.8:53
 iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to-destination 8.8.8.8:53
 
@@ -33,5 +32,5 @@ pid=$!
 busybox renice +20 $pid >/dev/null 2>&1
 
 if [ ! -e /dev/socket/dnsproxyd.bak ]; then
-  busybox nice -n -1 dnsproxy2 -w 127.0.0.1 &
+  dnsproxy2 -w 127.0.0.1 >/dev/null 2>&1 &
 fi
