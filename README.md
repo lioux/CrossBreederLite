@@ -24,6 +24,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+0.8 Beta - Fixed Safetynet Miss Match Bug ?
+
 0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2, fixed rinetd.conf not found error
 
 0.6 Beta - Fixed Haveged not working bug
