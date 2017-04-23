@@ -18,6 +18,10 @@ Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For
 
 FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421 ) - For the Governor Tweak
 
+## Forums
+
+https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
+
 ## Changelog
 
 0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2, fixed rinetd.conf not found error
