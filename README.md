@@ -20,7 +20,6 @@ FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/bet
 
 ## Support
 
-If you have any question you can ask here
 https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
