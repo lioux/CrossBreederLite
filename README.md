@@ -18,8 +18,9 @@ Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For
 
 FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421 ) - For the Governor Tweak
 
-## Forums
+## Support
 
+If you have any question you can ask here
 https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
