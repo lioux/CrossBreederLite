@@ -11,3 +11,12 @@ MODDIR=${0%/*}
 /system/etc/CrossBreeder/FDE_Governor_Tweaks
 /system/etc/CrossBreeder/SQLITE
 /system/etc/CrossBreeder/dynbsd
+
+(while [ -f /system/etc/CrossBreeder/dynlmk ] && [ -f /system/etc/CrossBreeder/dynzram ]; do
+
+/system/etc/CrossBreeder/dynlmk
+/system/etc/CrossBreeder/dynzram
+
+sleep 60
+
+done) &
