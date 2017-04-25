@@ -214,6 +214,20 @@ if [ "$ABILONG" = "x86_64" ]; then ARCH=x64; IS64BIT=true; fi;
 # You can get the Android API version from $API, the CPU architecture from $ARCH
 # Useful if you are creating Android version / platform dependent mods
 
+if [ "$ABILONG" = "x86_64" ]; then
+ ui_print "For ARM ARM-v7a ARM64-v8a only"
+ exit 0
+elif [ "$ABILONG" = "mips64" ]; then
+ ui_print "For ARM ARM-v7a ARM64-v8a only"
+ exit 0
+elif [ "$ABILONG" = "mips" ]; then
+ ui_print "For ARM ARM-v7a ARM64-v8a only"
+ exit 0
+elif [ "$ABILONG" = "x86" ]; then
+ ui_print "For ARM ARM-v7a ARM64-v8a only"
+ exit 0
+fi;
+
 if is_mounted /data; then
   IMG=/data/$IMGNAME
   if [ ! -f "/data/magisk.img" ]; then
@@ -313,18 +327,10 @@ done
 
 if [ "$ABILONG" = "arm64-v8a" ]; then
  SQLITE=arm64-v8a;
-elif [ "$ABILONG" = "x86_64" ]; then
- SQLITE=x86_64;
-elif [ "$ABILONG" = "mips64" ]; then
- SQLITE=mips64;
-elif [ "$ABILONG" = "armeabi" ]; then
- SQLITE=armeabi;
 elif [ "$ABILONG" = "armeabi-v7a" ]; then
  SQLITE=armeabi-v7a;
-elif [ "$ABILONG" = "mips" ]; then
- SQLITE=mips;
-elif [ "$ABILONG" = "x86" ]; then
- SQLITE=x86;
+elif [ "$ABILONG" = "armeabi" ]; then
+ SQLITE=armeabi;
 fi;
 
 ui_print "- SQLITE3 can be $SQLITE"
