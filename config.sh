@@ -50,7 +50,7 @@ LATESTARTSERVICE=true
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "     CrossBreeder Lite    "
+  ui_print "     CrossBreeder Lite Edition    "
   ui_print "*******************************"
 }
 

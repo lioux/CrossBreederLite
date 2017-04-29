@@ -1,50 +1,51 @@
 #!/system/bin/sh
 
 export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin:
-export LD_LIBRARY_PATH=/system/etc/CrossBreeder:$LD_LIBRARY_PATH
 
 alias [='busybox ['
 alias [[='busybox [['
 
-set +e
+ALL="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ALL)"
+UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
+HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
+NODEBUG="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NODEBUG)"
+XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
+VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
+VMHEAP="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMHEAP)"
+
+if [ "$ALL" = "1" ]; then
+
+if [ "$XRANDOM" = "1" ]; then
 
 RANDOMDEVICE=urandom
 if [ -c /dev/erandom ]; then
   if [ ! -f /dev/urandom.MOD ]; then
     touch /dev/urandom.MOD
     busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
+    sleep 2
   fi
   busybox chmod 666 /dev/frandom
   busybox chmod 666 /dev/erandom
   RANDOMDEVICE=frandom
 elif [ -f /system/lib/modules/frandom.ko ]; then
-  busybox insmod -f /system/lib/modules/frandom.ko 2>/dev/null
-  if [ ! -c /dev/erandom ]; then
-    sleep 2
-  fi
-elif [ -f /lib/modules/frandom.ko ]; then
-  busybox insmod -f /lib/modules/frandom.ko 2>/dev/null
+  busybox insmod /system/lib/modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
     sleep 2
   fi
 elif [ -f /system/modules/frandom.ko ]; then
-  busybox insmod -f /system/modules/frandom.ko 2>/dev/null
-  if [ ! -c /dev/erandom ]; then
-    sleep 2
-  fi
-elif [ -f /modules/frandom.ko ]; then
-  busybox insmod -f /modules/frandom.ko 2>/dev/null
+  busybox insmod /system/modules/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
     sleep 2
   fi
 elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
-  punchmod /system/etc/CrossBreeder/frandom.ko "" "" 2>/dev/null
+  punchmod /system/etc/CrossBreeder/frandom.ko "" 2>/dev/null
   if [ ! -c /dev/erandom ]; then
     sleep 2
   fi
 fi
+
 URANDOMDEVICE="/dev/urandom"
-if [ -c /dev/erandom ]; then 
+if [ -c /dev/erandom ]; then
   if [ ! -f /dev/urandom.MOD ]; then 
     touch /dev/urandom.MOD
     busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
@@ -58,30 +59,27 @@ if [ -c /dev/erandom ]; then
     sleep 2
   fi
   URANDOMDEVICE="/dev/urandom.ORIG"
-else
-  if [ ! -c /dev/urandom ]; then
-    busybox mknod -m 666 /dev/urandom c 1 9
-    sleep 2
-  fi
+elif [ ! -c /dev/urandom ]; then
+  busybox mknod -m 666 /dev/urandom c 1 9
+  sleep 2
 fi
 
 if [ ! -f /dev/random.MOD ]; then  
   touch /dev/random.MOD
   busybox rm /dev/random && busybox ln /dev/$RANDOMDEVICE /dev/random
+  sleep 2
 fi
+
+for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done
+
+fi
+
+if [ "$HAVEGED" = "1" ]; then
 
 ( busybox nice -n +20 CB_RunHaveged $URANDOMDEVICE 0 0<&- &>/dev/null 2>&1 ) &
 
 busybox sysctl -w kernel.random.read_wakeup_threshold=1365;
 busybox sysctl -w kernel.random.write_wakeup_threshold=0;
-
-for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done 
-
-setprop persist.sys.scrollingcache 3
-setprop windowsmgr.max_events_per_sec 300
-setprop ro.max.fling_velocity 12000
-setprop ro.min.fling_velocity 8000
-setprop persist.sys.purgeable_assets 1
 
 sys_pid=`busybox pgrep system_server 2>/dev/null`
 
@@ -90,6 +88,20 @@ busybox renice -10 $sys_pid 2>/dev/null
 for i in $(busybox pgrep haveged 2>/dev/null); do 
   busybox renice +20 $i 2>/dev/null
 done
+
+fi
+
+if [ "$UIBOOST" = "1" ]; then
+
+setprop persist.sys.scrollingcache 3
+setprop windowsmgr.max_events_per_sec 300
+setprop ro.max.fling_velocity 12000
+setprop ro.min.fling_velocity 8000
+setprop persist.sys.purgeable_assets 1
+
+fi
+
+if [ "$NODEBUG" = "1" ]; then
 
 busybox mount -t debugfs -o rw none /sys/kernel/debug 2>/dev/null
 
@@ -109,6 +121,10 @@ setprop ro.HOME_APP_ADJ 1
 setprop ro.HIDDEN_APP_MIN_ADJ 10
 setprop ro.EMPTY_APP_ADJ 15
 
+fi
+
+if [ "$VMBOOST" = "1" ]; then
+
 busybox sysctl -w vm.max_map_count=65530
 busybox sysctl -w vm.drop_caches=3
 busybox sysctl -w vm.oom_kill_allocating_task=0;
@@ -126,6 +142,10 @@ busybox sysctl -w vm.vfs_cache_pressure=100000000
 busybox sysctl -w vm.vfs_cache_pressure=1215752192
 busybox sysctl -w vm.min_free_kbytes=12288
 
+fi
+
+if [ "$VMHEAP" = "1" ]; then
+
 #calculate values
 RAM=$((` busybox awk '/MemTotal/{print $2}' /proc/meminfo` / 1024 ))
 
@@ -142,8 +162,9 @@ HEAPMAXSIZE="$(( ($RAM * 268554 / 1000000) ))"
 VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
 
 #set vm parameters
-
 setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
 setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
 setprop persist.sys.vm.heapsize "${VMHEAP}m"
 
+fi
+fi

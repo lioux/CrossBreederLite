@@ -12,6 +12,8 @@ More streamline script
 
 DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device.(For over 4 core device) (Maybe cause Lag)
 
+[ NEW ] Customize Switcher, details in /data/CrossBreeder/README.md
+
 ## Credits
 
 Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For most of files
@@ -23,6 +25,8 @@ FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/bet
 https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
+
+0.9 Beta - Fixed frandom tweak not working bug & Add customize switcher
 
 0.8 Beta - Fixed Safetynet Miss Match Bug ?
 

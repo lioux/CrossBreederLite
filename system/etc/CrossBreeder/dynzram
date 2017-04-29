@@ -1,5 +1,11 @@
 #!/system/bin/sh
 
+ALL="$(busybox cat /data/CrossBreeder/dynzram/ALL)"
+CONF="$(busybox cat /data/CrossBreeder/dynzram/CONF)"
+TURN=$(( $CONF+5 ))
+
+if [ "$ALL" = "1" ]; then
+
 #find swap devices
 if [ -e "/dev/block/zram0" ]; then
 ZRAMD="zram"
@@ -36,7 +42,7 @@ done
 
 #calculate sizes
 RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
-ZRAM1=$(( $RAM * 15 / 100 ))
+ZRAM1=$(( $RAM * $TURN / 100 ))
 val2=$(($(busybox awk '/MemFree/{print $2}' /proc/meminfo)))
 val3=$(( ( $RAM - $val2 ) ))
 
@@ -46,7 +52,7 @@ do
 mem=$(( $mem+${MEMSTATS[$stat]} ))
 done
 mem=$(($mem/${#MEMSTATS[@]}))
-ADDMEM=$((($MEMSTATS) * 15 / 10))
+ADDMEM=$((($MEMSTATS) * $TURN / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
 
 #change size
@@ -85,3 +91,5 @@ busybox sysctl -w vm.swappiness=$swappiness
 
 #end
 busybox echo "Now monitor your system to intelligently set zRAM values for you."
+
+fi

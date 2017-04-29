@@ -1,4 +1,9 @@
 #!/system/bin/sh
+
+ALL="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks)"
+
+if [ "$ALL" = "1" ]; then
+
 ### FeraDroid Engine v0.27 | By FeraVolt. 2017 ###
 B=busybox;
 MAX=$($B cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq);
@@ -417,3 +422,5 @@ if [ -e /system/bin/mpdecision ]; then
  start mpdecision;
 fi;
 sync;
+
+fi

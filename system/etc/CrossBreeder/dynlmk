@@ -1,5 +1,11 @@
 #!/system/bin/sh
 
+ALL="$(busybox cat /data/CrossBreeder/dynlmk/ALL)"
+CONF="$(busybox cat /data/CrossBreeder/dynlmk/CONF)"
+TURN=$(( $CONF+5 ))
+
+if [ "$ALL" = "1" ]; then
+
 #calculate values
 RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
 sval1=$(($(busybox awk '/SwapFree/{print $2}' /proc/meminfo) ))
@@ -11,11 +17,11 @@ setmem=$(( $setmem+${FREEMEM[$mem]} ))
 done
 setmem=$(($setmem/${#FREEMEM[@]}))
 busybox echo "Average memory usage: $setmem"
-ADDMEM=$((setmem * 15 / 10))
+ADDMEM=$((setmem * $TURN / 10))
 
 VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))
 VAL2=$(( ( ( $RAM* 3 / 1000 ) + ( $ADDMEM / 7 ) ) / 4 ))
-VAL3=$(( ( ( $RAM* 6 / 1000 ) + ( $ADDMEM/ 5 ) ) / 4 ))
+VAL3=$(( ( ( $RAM* 6 / 1000 ) + ( $ADDMEM / 5 ) ) / 4 ))
 VAL4=$(( ( ( $RAM* 10 / 1000 ) + ( $ADDMEM / 4 ) ) / 4 ))
 VAL5=$(( ( ( $RAM* 13 / 1000 ) + ( $ADDMEM / 3 ) ) / 4 ))
 VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
@@ -47,3 +53,5 @@ busybox echo "Failed setting LMK parameters."
 fi
 
 busybox echo "Now monitor your system to set intelligently LMK parameters for you."
+
+fi

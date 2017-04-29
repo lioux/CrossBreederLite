@@ -1,14 +1,18 @@
 #!/system/bin/sh
 
+ALL="$(busybox cat /data/CrossBreeder/SQLITE/ALL)"
 bootcount="$(busybox cat /data/bootcount)"
+CONF="$(busybox cat /data/CrossBreeder/SQLITE/CONF)"
+
+if [ "$ALL" = "1" ]; then
 
 flag=false
 
-if [ "$bootcount" -lt "4" ]
+if [ "$bootcount" -lt "$CONF" ]
 then
 count=$bootcount
 echo "$(( $count + 1 ))" > /data/bootcount
-elif [ "$bootcount" == "4" ]
+elif [ "$bootcount" -ge "$CONF" ]
 then
 echo "0" > /data/bootcount
 flag=true
@@ -18,7 +22,7 @@ echo "0" > /data/bootcount
 fi
 
 echo ">SQlite Optimizer"
-echo "The system will optimize SQlite databases every 4 boots."
+echo "The system will optimize SQlite databases every $CONF boots."
 echo "The system has booted for $bootcount times since the last optimization."
 
 if [ "$flag" == "false" ]
@@ -30,11 +34,13 @@ then
 echo "The system will optimize databases."
 
 dbcount=0
-for db in $($box find /data -name *.db)
+for db in $(busybox find /data -name *.db)
 do
 dbcount=$((dbcount+1))
 echo ">Optimizing database $dbcount..."
 sqlite3 $db 'VACUUM'
 sqlite3 $db 'REINDEX'
 done
+fi
+
 fi

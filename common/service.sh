@@ -12,11 +12,16 @@ MODDIR=${0%/*}
 /system/etc/CrossBreeder/SQLITE
 /system/etc/CrossBreeder/dynbsd
 
+HR="$(busybox cat /data/CrossBreeder/LOOP_TIME_DYNRAM/HR)"
+MIN="$(busybox cat /data/CrossBreeder/LOOP_TIME_DYNRAM/MIN)"
+SEC="$(busybox cat /data/CrossBreeder/LOOP_TIME_DYNRAM/SEC)"
+TIME=$((($HR * 3600)+($MIN * 60)+$SEC))
+
 (while [ -f /system/etc/CrossBreeder/dynlmk ] && [ -f /system/etc/CrossBreeder/dynzram ]; do
 
 /system/etc/CrossBreeder/dynlmk
 /system/etc/CrossBreeder/dynzram
 
-sleep 60
+sleep $TIME
 
 done) &

@@ -352,6 +352,17 @@ fi
 if [ -d $MOUNTPATH/CrossBreederLiteRAM ]; then
   rm -rf $MOUNTPATH/CrossBreederLiteRAM
 fi
+
+if [ -d /system/lib/modules ]; then
+  mkdir -p $MODPATH/system/lib/modules
+  mv $MODPATH/system/etc/CrossBreeder/frandom.ko $MODPATH/system/lib/modules/frandom.ko
+elif [ -d /system/modules ]; then
+  mkdir -p $MODPATH/system/modules
+  mv $MODPATH/system/etc/CrossBreeder/frandom.ko $MODPATH/system/modules/frandom.ko
+fi
+
+rm -rf /data/CrossBreeder
+cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
 ###############################################
 # Handle replace folders
 for TARGET in $REPLACE; do
@@ -386,9 +397,18 @@ if $LATESTARTSERVICE; then
   cp -af $INSTALLER/common/service.sh $MODPATH/service.sh
 fi
 
+###############################################
 ui_print "- Setting permissions"
 set_permissions
 
+if [ -d /system/lib/modules ]; then
+  chmod 0644 $MODPATH/system/lib/modules/frandom.ko
+elif [ -d /system/modules ]; then
+  chmod 0644 $MODPATH/system/modules/frandom.ko
+else
+  chmod 0644 $MODPATH/system/etc/CrossBreeder/frandom.ko
+fi
+###############################################
 ui_print "- Unmounting partitions"
 
 umount $MOUNTPATH
