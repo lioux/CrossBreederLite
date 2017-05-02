@@ -7,6 +7,7 @@ In here you can disable any mod you want, just change "1" to "0"
 dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4
 
 List: 
+
 -hotplug | -h number - If equal to one, DynBS itself is controlled by switching on and off of the processor cores. If greater than one, a similar behavior limits to the number of nuclei (the remaining will be forcibly turned off). If the value is zero, control cores returned to the operating system kernel. 
 
 > Measured: 0 (off) 1 (on), and then the CPU cores; default 1, maximum - 16 
