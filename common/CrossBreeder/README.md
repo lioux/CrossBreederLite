@@ -2,7 +2,7 @@
 
 In here you can disable any mod you want, just change "1" to "0"
 
-1. Here is how to config DynBS :
+1.Here is how to config DynBS :
 
 dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4
 
@@ -24,8 +24,8 @@ List:
 
   Units: seconds, default: 0, maximum 600
 
-2. ZRAM/LMK ---> Config the zRAM/LMK size. 0 is the minimum, 10 is the maximum, do not leave it blank. [CONF1 --> ZRAM] [CONF2 --> LMK] [Default: 10]
+2.ZRAM/LMK ---> Config the zRAM/LMK size. 0 is the minimum, 10 is the maximum, do not leave it blank. [CONF1 --> ZRAM] [CONF2 --> LMK] [Default: 10]
 
-3. TIME ---> Config ZRAM/LMK waiting time before the next cycle start [Default: 0 Hr 1 Min 0 Sec]
+3.TIME ---> Config ZRAM/LMK waiting time before the next cycle start [Default: 0 Hr 1 Min 0 Sec]
 
-4. SQLITE ---> Config after how many boots system will optimize SQlite databases. [Default: 4]
+4.SQLITE ---> Config after how many boots system will optimize SQlite databases. [Default: 4]
