@@ -22,7 +22,7 @@ Measured: milliseconds, default: 1800, from 10 to 6000
 
 > -launch-timeout | -lt timeout - demon waiting time before starting 
 
-Units: seconds, default: 0, 0 to 600 
+Units: seconds, default: 0, maximum 600
 
 2. ZRAM/LMK ---> Config the zRAM/LMK size. 0 is the minimum, 10 is the maximum, do not leave it blank. [CONF1 --> ZRAM] [CONF2 --> LMK] [Default: 10]
 
