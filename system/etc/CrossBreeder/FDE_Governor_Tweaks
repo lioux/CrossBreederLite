@@ -1,8 +1,8 @@
 #!/system/bin/sh
 
-ALL="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks)"
+ENABLE="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks/ENABLE)"
 
-if [ "$ALL" = "1" ]; then
+if [ "$ENABLE" = "1" ]; then
 
 ### FeraDroid Engine v0.27 | By FeraVolt. 2017 ###
 B=busybox;

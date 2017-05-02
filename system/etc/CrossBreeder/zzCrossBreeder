@@ -5,15 +5,16 @@ export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/syste
 alias [='busybox ['
 alias [[='busybox [['
 
-ALL="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ALL)"
-UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
-HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
-NODEBUG="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NODEBUG)"
 XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
+HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
+UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
+ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
+NODEBUG="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NODEBUG)"
+IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
 VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
 VMHEAP="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMHEAP)"
 
-if [ "$ALL" = "1" ]; then
+set +e
 
 if [ "$XRANDOM" = "1" ]; then
 
@@ -21,7 +22,8 @@ RANDOMDEVICE=urandom
 if [ -c /dev/erandom ]; then
   if [ ! -f /dev/urandom.MOD ]; then
     touch /dev/urandom.MOD
-    busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
+    busybox mv /dev/urandom /dev/urandom.ORIG
+    busybox ln /dev/erandom /dev/urandom
     sleep 2
   fi
   busybox chmod 666 /dev/frandom
@@ -38,7 +40,7 @@ elif [ -f /system/modules/frandom.ko ]; then
     sleep 2
   fi
 elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
-  punchmod /system/etc/CrossBreeder/frandom.ko "" 2>/dev/null
+  busybox insmod /system/etc/CrossBreeder/frandom.ko 2>/dev/null
   if [ ! -c /dev/erandom ]; then
     sleep 2
   fi
@@ -48,7 +50,8 @@ URANDOMDEVICE="/dev/urandom"
 if [ -c /dev/erandom ]; then
   if [ ! -f /dev/urandom.MOD ]; then 
     touch /dev/urandom.MOD
-    busybox mv /dev/urandom /dev/urandom.ORIG && busybox ln /dev/erandom /dev/urandom
+    busybox mv /dev/urandom /dev/urandom.ORIG
+    busybox ln /dev/erandom /dev/urandom
     sleep 2
   fi
   busybox chmod 666 /dev/frandom
@@ -66,7 +69,8 @@ fi
 
 if [ ! -f /dev/random.MOD ]; then  
   touch /dev/random.MOD
-  busybox rm /dev/random && busybox ln /dev/$RANDOMDEVICE /dev/random
+  busybox rm /dev/random
+  busybox ln /dev/$RANDOMDEVICE /dev/random
   sleep 2
 fi
 
@@ -97,7 +101,18 @@ setprop persist.sys.scrollingcache 3
 setprop windowsmgr.max_events_per_sec 300
 setprop ro.max.fling_velocity 12000
 setprop ro.min.fling_velocity 8000
+setprop persist.sys.use_dithering 1
 setprop persist.sys.purgeable_assets 1
+setprop touch.pressure.scale 2
+
+fi
+
+if [ "$ZYGOTE" = "1" ]; then
+
+setprop ro.zygote.preload.enable 1
+setprop ro.zygote.disable_gl_preload false
+setprop persist.preload.common 1
+setprop persist.zygote.preload_threads 3
 
 fi
 
@@ -144,6 +159,26 @@ busybox sysctl -w vm.min_free_kbytes=12288
 
 fi
 
+if [ "IOBOOST" = "1" ]; then
+
+for S in /sys/block/*
+do
+  if [ -f \$S/queue/rq_affinity ]; then
+    busybox echo "1" > \$S/queue/rq_affinity
+  fi
+	if [ -f \$S/queue/rotational ]; then
+		busybox echo "0" > \$S/queue/rotational
+	fi
+	if [ -f \$S/queue/iostats ]; then
+		busybox echo "0" > \$S/queue/iostats
+	fi
+	if [ -f \$S/queue/nomerges ]; then
+		busybox echo "1" > \$S/queue/nomerges
+	fi
+done
+
+fi
+
 if [ "$VMHEAP" = "1" ]; then
 
 #calculate values
@@ -166,5 +201,4 @@ setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
 setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
 setprop persist.sys.vm.heapsize "${VMHEAP}m"
 
-fi
 fi

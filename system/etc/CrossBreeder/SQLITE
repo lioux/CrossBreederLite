@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
-ALL="$(busybox cat /data/CrossBreeder/SQLITE/ALL)"
+ENABLE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
 bootcount="$(busybox cat /data/bootcount)"
 CONF="$(busybox cat /data/CrossBreeder/SQLITE/CONF)"
 
-if [ "$ALL" = "1" ]; then
+if [ "$ENABLE" = "1" ]; then
 
 flag=false
 

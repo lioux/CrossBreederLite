@@ -1,20 +1,18 @@
 #!/system/bin/sh
+
 set +e
 
-date > /data/dnsmasq.log
-echo $* >> /data/dnsmasq.log
+busybox kill -9 $(busybox pgrep "dnsmasq_dhcp -d \-p 0") 
+busybox kill -9 $(busybox pgrep dnsmasq.CBBAK) 
 
-busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp -d \-p 0") 
-busybox kill -9 $(busybox pgrep -f dnsmasq.CBBAK) 
+echo "Run dnsmasq_dhcp" 2>/dev/null
 
-dnsmasq_dhcp -d -p 0 --dhcp-option=252,\"\\n\" --no-ping --dhcp-authoritative $* >> /data/dnsmasq.log 2>>/data/dnsmasq.log &
+dnsmasq_dhcp -d -p 0 --dhcp-option=252 --no-ping --dhcp-authoritative $* 2>/dev/null
 pid=$!
-echo "PID: " $pid >> /data/dnsmasq.log
 wait $pid
 
-echo "Trying dnsmasq.CBBAK" >> /data/dnsmasq.log
+echo "Run dnsmasq_dhcp failed, try dnsmasq.CBBAK" 2>/dev/null
 
-dnsmasq.CBBAK -d -p 10054 $* >/dev/null 2>&1 &
+dnsmasq.CBBAK -d -p 10053 $* 2>/dev/null
 pid=$!
-echo "PID: " $pid >> /data/dnsmasq.log
 wait $pid
