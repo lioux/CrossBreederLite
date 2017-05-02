@@ -4,7 +4,7 @@ In here you can disable any mod you want, just change "1" to "0"
 
 1. Here is how to config DynBS :
 
-  dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4
+    dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4
 
 List: 
 
