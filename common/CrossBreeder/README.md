@@ -9,6 +9,7 @@ dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4
 List: 
 
 > -hotplug | -h number - If equal to one, DynBS itself is controlled by switching on and off of the processor cores. If greater than one, a similar behavior limits to the number of nuclei (the remaining will be forcibly turned off). If the value is zero, control cores returned to the operating system kernel. 
+
 Measured: 0 (off) 1 (on), and then the CPU cores; default 1, maximum - 16 
 
 > -num-samples | -ns number - Number of measurements for Calculating the average load (affects the rate of frequency change and the accuracy (or accuracy) of its choice) 
