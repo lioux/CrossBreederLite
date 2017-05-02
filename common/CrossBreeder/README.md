@@ -24,8 +24,8 @@ List:
 
   Units: seconds, default: 0, maximum 600
 
-2.ZRAM/LMK ---> Config the zRAM/LMK size.
-  Measured: numbers, default: 10, from 0 to 10, do not leave it blank. [CONF1 --> ZRAM] [CONF2 --> LMK] [Default: 10]
+2.ZRAM/LMK ---> Config the zRAM/LMK size.[CONF1 --> ZRAM] [CONF2 --> LMK]
+  Measured: numbers, default: 10, from 0 to 10, do not leave it blank.
 
 3.TIME ---> Config ZRAM/LMK waiting time before the next cycle start [Default: 0 Hr 1 Min 0 Sec]
 
