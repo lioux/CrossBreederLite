@@ -15,7 +15,6 @@ ZRAMN=$(busybox find /dev/block -name $ZRAMD* | busybox sort | tail -n 1 )
 ZRAMN=$((${ZRAMN#*$ZRAMD}+1))
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-busybox echo "=> deactivating swap in $z"
 if [ -e /system/bin/swapoff ]
 then
 /system/bin/swapoff $z
@@ -24,7 +23,6 @@ busybox swapoff $z
 fi
 if [ -e "/sys/block/$ZRAMD$num/reset" ]
 then
-busybox echo "==> device has a reset switch: flipping it now"
 busybox echo 1 > /sys/block/$ZRAMD$num/reset
 fi
 num=$(($num+1))
@@ -45,7 +43,6 @@ ADDMEM=$((($MEMSTATS) * $THRESHOLD1 / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
 
 busybox echo "Enabling Dynamic zRAM..."
-busybox echo "=> zRAM Size: $ZRAM bytes ($(($ZRAM / 1024 / 1024)) megabytes)"
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
@@ -56,7 +53,6 @@ done
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-busybox echo "==> Preparing swapspace in $z, $num of $ZRAMN"
 busybox mkswap $z
 num=$(($num+1))
 done
@@ -64,7 +60,6 @@ done
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-busybox echo "==> Swapping in swapspace in $z, $num of $ZRAMN"
 busybox swapon $z -p 256
 num=$(($num+1))
 done
@@ -76,11 +71,9 @@ busybox sysctl -w vm.swappiness=$swappiness
 
 if [ -e "/dev/block/zram0" ] && [ "$ZRAM" = "1" ]; then
 ZRAMD="zram"
-busybox echo "zRAM device available as $ZRAMD"
 DYNAMIC_ZRAM
 elif [ -e "/dev/block/vnswap0" ] && [ "$ZRAM" = "1" ]; then
 ZRAMD="vnswap"
-busybox echo "zRAM device available as $ZRAMD"
 DYNAMIC_ZRAM
 else
 busybox echo "zRAM device unavailable"
@@ -99,7 +92,6 @@ do
 setmem=$(( $setmem+${FREEMEM[$mem]} ))
 done
 setmem=$(($setmem/${#FREEMEM[@]}))
-busybox echo "Average memory usage: $setmem"
 ADDMEM=$((setmem * $THRESHOLD2 / 10))
 
 VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))
@@ -109,23 +101,14 @@ VAL4=$(( ( ( $RAM* 10 / 1000 ) + ( $ADDMEM / 4 ) ) / 4 ))
 VAL5=$(( ( ( $RAM* 13 / 1000 ) + ( $ADDMEM / 3 ) ) / 4 ))
 VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
 
-busybox echo "=> Current setup:"
-busybox echo "=> $(($VAL1 * 4 / 1024 )) MB for Foreground Applications"
-busybox echo "=> $(($VAL2 * 4 / 1024 )) MB for Visible Applications"
-busybox echo "=> $(($VAL3 * 4 / 1024 )) MB for Secondary Server"
-busybox echo "=> $(($VAL4 * 4 / 1024 )) MB for Hidden Applications"
-busybox echo "=> $(($VAL5 * 4 / 1024 )) MB for Content Provider"
-busybox echo "=> $(($VAL6 * 4 / 1024 )) MB for Empty Applications"
-
 LMK=/sys/module/lowmemorykiller/parameters/minfree
 
+busybox echo "Enabling Dynamic LMK..."
 busybox echo "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6" > $LMK
 
 LMK=$(busybox cat "/sys/module/lowmemorykiller/parameters/minfree")
 
-if [ "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
-busybox echo "LMK parameters set."
-else 
+if [ ! "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
 busybox echo "Failed setting LMK parameters."
 fi
 
