@@ -49,7 +49,7 @@ List:
 
 6 --> Comodo Secure DNS
 
- 7 --> DNS Advantage
+7 --> DNS Advantage
 
 8 --> Safe DNS
 
