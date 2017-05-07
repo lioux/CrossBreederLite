@@ -31,7 +31,7 @@ List:
 
 4.SQLITE ---> Config after how many boots system will optimize SQlite databases. [Default: 4]
 
-5. SERVER ---> Choose the DNS server which you want to use 
+5.SERVER ---> Choose the DNS server which you want to use 
 
 List:
 
