@@ -1,6 +1,6 @@
 ## Mod info
 
-This is  liter, newer version of CrossBreeder 
+This is the liter, newer version of CrossBreeder 
 
 ## Features
 
@@ -28,6 +28,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option., link busybox to /system/etc/CrossBreeder, bug fixed.
+
 1.0 Stable - Add Zygote Tweaks, Enable Doze, Merged DynZram/LMK to DynRAM, Removed dnsproxy2 and rinted [Not Working], Simplify zzCHECK_NET_DNS
 
 0.9 Beta - Fixed frandom tweak not working bug, Add customize switcher
@@ -35,13 +37,5 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 0.8 Beta - Fixed Safetynet Miss Match Bug ?
 
 0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2
-
-0.6 Beta - Fixed Haveged not working bug
-
-0.5 Alpha - Script updated
-
-0.4 Alpha - Fixed UI crash bug
-
-0.3 Alpha - Fixed zzCHECK_NET_DNS not working bug
 
 ------------------------Removed------------------------

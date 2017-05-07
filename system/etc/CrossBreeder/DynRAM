@@ -4,12 +4,11 @@ ZRAM="$(busybox cat /data/CrossBreeder/DynRAM/ZRAM)"
 LMK="$(busybox cat /data/CrossBreeder/DynRAM/LMK)"
 CONF1="$(busybox cat /data/CrossBreeder/DynRAM/CONF1)"
 CONF2="$(busybox cat /data/CrossBreeder/DynRAM/CONF2)"
-TURN1=$(( $CONF1+5 ))
-TURN2=$(( $CONF2+5 ))
+THRESHOLD1=$(( $CONF1+5 ))
+THRESHOLD2=$(( $CONF2+5 ))
 
 DYNAMIC_ZRAM() {
 
-#deactivate existing swap
 num="0"
 
 ZRAMN=$(busybox find /dev/block -name $ZRAMD* | busybox sort | tail -n 1 )
@@ -31,9 +30,8 @@ fi
 num=$(($num+1))
 done
 
-#calculate sizes
 RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
-ZRAM1=$(( $RAM * $TURN1 / 100 ))
+ZRAM1=$(( $RAM * $THRESHOLD1 / 100 ))
 val2=$(($(busybox awk '/MemFree/{print $2}' /proc/meminfo)))
 val3=$(( ( $RAM - $val2 ) ))
 
@@ -43,11 +41,8 @@ do
 mem=$(( $mem+${MEMSTATS[$stat]} ))
 done
 mem=$(($mem/${#MEMSTATS[@]}))
-ADDMEM=$((($MEMSTATS) * $TURN1 / 10))
+ADDMEM=$((($MEMSTATS) * $THRESHOLD1 / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
-
-#change size
-busybox echo "Detected you have $(($RAM)) megabytes of system RAM."
 
 busybox echo "Enabling Dynamic zRAM..."
 busybox echo "=> zRAM Size: $ZRAM bytes ($(($ZRAM / 1024 / 1024)) megabytes)"
@@ -58,7 +53,6 @@ busybox echo $(( $ZRAM / $ZRAMN )) > /sys/block/$ZRAMD$num/disksize
 num=$(($num+1))
 done
 
-#mkswap
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
@@ -67,7 +61,6 @@ busybox mkswap $z
 num=$(($num+1))
 done
 
-#swapon
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
@@ -76,16 +69,11 @@ busybox swapon $z -p 256
 num=$(($num+1))
 done
 
-#vm parameters
 swappiness=$(( ($ZRAM / 1024 / 1024) * 100 / ($RAM / 1024) + 50 ))
 busybox sysctl -w vm.swappiness=$swappiness
 
-#end
-busybox echo "Now monitor your system to intelligently set zRAM values for you."
-
 }
 
-#find swap devices
 if [ -e "/dev/block/zram0" ] && [ "$ZRAM" = "1" ]; then
 ZRAMD="zram"
 busybox echo "zRAM device available as $ZRAMD"
@@ -102,7 +90,6 @@ fi
 
 if [ "$LMK" = "1" ]; then
 
-#calculate values
 RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
 sval1=$(($(busybox awk '/SwapFree/{print $2}' /proc/meminfo) ))
 FREEMEM=$((`busybox awk '/MemFree/{print $2}' /proc/meminfo` + $sval1 ))
@@ -113,7 +100,7 @@ setmem=$(( $setmem+${FREEMEM[$mem]} ))
 done
 setmem=$(($setmem/${#FREEMEM[@]}))
 busybox echo "Average memory usage: $setmem"
-ADDMEM=$((setmem * $TURN2 / 10))
+ADDMEM=$((setmem * $THRESHOLD2 / 10))
 
 VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))
 VAL2=$(( ( ( $RAM* 3 / 1000 ) + ( $ADDMEM / 7 ) ) / 4 ))
@@ -121,10 +108,6 @@ VAL3=$(( ( ( $RAM* 6 / 1000 ) + ( $ADDMEM / 5 ) ) / 4 ))
 VAL4=$(( ( ( $RAM* 10 / 1000 ) + ( $ADDMEM / 4 ) ) / 4 ))
 VAL5=$(( ( ( $RAM* 13 / 1000 ) + ( $ADDMEM / 3 ) ) / 4 ))
 VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
-
-busybox echo "Detected you have $(($RAM / 1024)) megabytes of system RAM."
-
-busybox echo "Now set your LMK parameters."
 
 busybox echo "=> Current setup:"
 busybox echo "=> $(($VAL1 * 4 / 1024 )) MB for Foreground Applications"
@@ -134,12 +117,10 @@ busybox echo "=> $(($VAL4 * 4 / 1024 )) MB for Hidden Applications"
 busybox echo "=> $(($VAL5 * 4 / 1024 )) MB for Content Provider"
 busybox echo "=> $(($VAL6 * 4 / 1024 )) MB for Empty Applications"
 
-#set lmk
 LMK=/sys/module/lowmemorykiller/parameters/minfree
 
 busybox echo "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6" > $LMK
 
-#log everything
 LMK=$(busybox cat "/sys/module/lowmemorykiller/parameters/minfree")
 
 if [ "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
@@ -147,7 +128,5 @@ busybox echo "LMK parameters set."
 else 
 busybox echo "Failed setting LMK parameters."
 fi
-
-busybox echo "Now monitor your system to set intelligently LMK parameters for you."
 
 fi

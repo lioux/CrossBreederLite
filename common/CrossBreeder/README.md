@@ -30,3 +30,27 @@ List:
 3.TIME ---> Config ZRAM/LMK waiting time before the next cycle start [Default: 0 Hr 1 Min 0 Sec]
 
 4.SQLITE ---> Config after how many boots system will optimize SQlite databases. [Default: 4]
+
+5. SERVER ---> Choose the DNS server which you want to use 
+
+List:
+
+0 --> No Server
+
+1 --> Google Public DNS [Default]
+
+2 --> OPEN DNS
+
+3 --> DNS.WATCH
+
+4 --> Norton Connect Safe
+
+5 --> Level 3
+
+6 --> Comodo Secure DNS
+
+ 7 --> DNS Advantage
+
+8 --> Safe DNS
+
+9 --> OPEN NIC
