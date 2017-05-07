@@ -28,7 +28,7 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
-1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option., link busybox to /system/etc/CrossBreeder, bug fixed.
+1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option, link busybox to /system/etc/CrossBreeder, bug fixed.
 
 1.0 Stable - Add Zygote Tweaks, Enable Doze, Merged DynZram/LMK to DynRAM, Removed dnsproxy2 and rinted [Not Working], Simplify zzCHECK_NET_DNS
 
