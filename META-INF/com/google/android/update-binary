@@ -270,7 +270,7 @@ if ! is_mounted $MOUNTPATH; then
   exit 1
 fi
 
-###############################################
+#####################################################
 
 # Delete Mod
 if [ -d $MODPATH ]; then
@@ -364,7 +364,7 @@ fi
 rm -rf /data/CrossBreeder
 cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
 
-###############################################
+#####################################################
 
 # Handle replace folders
 for TARGET in $REPLACE; do
@@ -399,8 +399,20 @@ if $LATESTARTSERVICE; then
   cp -af $INSTALLER/common/service.sh $MODPATH/service.sh
 fi
 
+#####################################################
+
 ui_print "- Setting permissions"
 set_permissions
+
+if [ -d /system/lib/modules ]; then
+  set_perm  $MODPATH/system/lib/modules/frandom.ko       0       0       0644
+elif [ -d /system/modules ]; then
+  set_perm  $MODPATH/system/modules/frandom.ko       0       0       0644
+else
+  set_perm  $MODPATH/system/etc/CrossBreeder/frandom.ko       0       0       0644
+fi
+
+#####################################################
 
 ui_print "- Unmounting partitions"
 
