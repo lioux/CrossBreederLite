@@ -37,7 +37,7 @@ AUTOMOUNT=true
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=true
+POSTFSDATA=false
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=true
@@ -86,14 +86,6 @@ set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
   set_perm_recursive  $MODPATH/system  0  0  0755  0755
-  
-  if [ -d /system/lib/modules ]; then
-    set_perm  $MODPATH/system/lib/modules/frandom.ko       0       0       0644
-  elif [ -d /system/modules ]; then
-    set_perm  $MODPATH/system/modules/frandom.ko       0       0       0644
-  else
-    set_perm  $MODPATH/system/etc/CrossBreeder/frandom.ko       0       0       0644
-  fi
 
   # Only some special files require specific permissions
   # The default permissions should be good enough for most cases
