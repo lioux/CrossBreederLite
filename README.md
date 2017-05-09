@@ -28,7 +28,7 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
-1.1.1 Fixed - Fixed unzip error ?
+1.1 Patch 1 - Fixed unzip error ?
 
 1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option, link busybox to /system/etc/CrossBreeder, bug fixed.
 
