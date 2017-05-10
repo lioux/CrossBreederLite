@@ -349,18 +349,6 @@ if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]
  cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
 fi
 
-if [ -d $MOUNTPATH/CrossBreederLiteRAM ]; then
-  rm -rf $MOUNTPATH/CrossBreederLiteRAM
-fi
-
-if [ -d /system/lib/modules ]; then
-  mkdir -p $MODPATH/system/lib/modules
-  mv $MODPATH/system/etc/CrossBreeder/frandom.ko $MODPATH/system/lib/modules/frandom.ko
-elif [ -d /system/modules ]; then
-  mkdir -p $MODPATH/system/modules
-  mv $MODPATH/system/etc/CrossBreeder/frandom.ko $MODPATH/system/modules/frandom.ko
-fi
-
 rm -rf /data/CrossBreeder
 cp -rf $MODPATH/system/data /data/CrossBreeder
 rm -rf $MODPATH/system/data
