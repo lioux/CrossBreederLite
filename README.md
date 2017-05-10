@@ -34,7 +34,7 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
-1.2 Test - Add Advanced Kernel Tweak, TCP Optimize, Removed link busybox to /system/etc/CrossBreeder, Merged VMHEAP to VMBOOST, Updated all binary files, fixed magisk app unzip error ? 
+1.2 Test - Add Advanced Kernel Tweak, TCP Optimize, Removed link busybox to /system/etc/CrossBreeder, Merged VMHEAP to VMBOOST, Updated all binary files
 
 1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option., link busybox to /system/etc/CrossBreeder, bug fixed
 
