@@ -2,6 +2,7 @@
 
 This is the liter, newer version of CrossBreeder 
 
+## Don't download at here, download at XDA forum, because of unzip error
 ## Features
 
 Tweaks from CrossBreeder --> Haveged, Frandom, DNSMasq
