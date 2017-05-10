@@ -27,7 +27,7 @@
 
 # This will be the folder name under /magisk
 # This should also be the same as the id in your module.prop to prevent confusion
-MODID=CrossBreederLite
+MODID=template
 
 # Set to true if you need to enable Magic Mount
 # Most mods would like it to be enabled
@@ -40,7 +40,7 @@ PROPFILE=false
 POSTFSDATA=false
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=true
+LATESTARTSERVICE=false
 
 ##########################################################################################
 # Installation Message
@@ -50,7 +50,7 @@ LATESTARTSERVICE=true
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "  CrossBreeder Lite Edition "
+  ui_print "     Magisk Module Template    "
   ui_print "*******************************"
 }
 
@@ -85,7 +85,6 @@ REPLACE="
 set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
-  set_perm_recursive  $MODPATH/system  0  0  0755  0755
 
   # Only some special files require specific permissions
   # The default permissions should be good enough for most cases

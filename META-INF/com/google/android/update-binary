@@ -214,20 +214,6 @@ if [ "$ABILONG" = "x86_64" ]; then ARCH=x64; IS64BIT=true; fi;
 # You can get the Android API version from $API, the CPU architecture from $ARCH
 # Useful if you are creating Android version / platform dependent mods
 
-if [ "$ABILONG" = "x86_64" ]; then
- ui_print "For ARM ARM-v7a ARM64-v8a only"
- exit 0
-elif [ "$ABILONG" = "mips64" ]; then
- ui_print "For ARM ARM-v7a ARM64-v8a only"
- exit 0
-elif [ "$ABILONG" = "mips" ]; then
- ui_print "For ARM ARM-v7a ARM64-v8a only"
- exit 0
-elif [ "$ABILONG" = "x86" ]; then
- ui_print "For ARM ARM-v7a ARM64-v8a only"
- exit 0
-fi;
-
 if is_mounted /data; then
   IMG=/data/$IMGNAME
   if [ ! -f "/data/magisk.img" ]; then
@@ -270,30 +256,6 @@ if ! is_mounted $MOUNTPATH; then
   exit 1
 fi
 
-#####################################################
-
-# Delete Mod
-if [ -d $MODPATH ]; then
-  ui_print "- Removing files"
-  rm -rf $MODPATH
-  rm -rf /data/CrossBreeder
-  ui_print "- Unmounting partitions"
-  umount $MOUNTPATH
-  losetup -d $LOOPDEVICE
-  rmdir $MOUNTPATH
-  image_size_check $IMG
-  NEWDATASIZE=$((curUsedM / 32 * 32 + 32))
-  if [ "$curSizeM" -gt "$NEWDATASIZE" ]; then
-    ui_print "- Shrinking $IMG to ${NEWDATASIZE}M..."
-    resize2fs $IMG ${NEWDATASIZE}M
-  fi
-  if ! $BOOTMODE; then
-    umount /system
-    umount /vendor 2>/dev/null
-  fi
-  exit 0
-fi
-
 # Create mod paths
 rm -rf $MODPATH 2>/dev/null
 mkdir -p $MODPATH
@@ -301,59 +263,6 @@ mkdir -p $MODPATH
 # Copy files
 ui_print "- Copying files"
 unzip -o "$ZIP" "system/*" -d $MODPATH
-
-my_md5="48d569faa12728ba9464e397b692bc12" 
-his_md5=`md5sum /system/bin/dnsmasq 2>/dev/null | awk '{ print $1 }' 2>/dev/null`
-
-if [ "$his_md5" = "$my_md5" ]; then
-  busybox cp -af $INSTALLER/common/dnsmasq.CBBAK $MODPATH/system/bin/dnsmasq.CBBAK
-fi
-
-if [ ! -f /system/bin/dnsmasq.CBBAK ]; then
- if [ "`busybox dd if=/system/bin/dnsmasq skip=1 bs=1 count=3`" = "ELF" ]; then
-  cp -af /system/bin/dnsmasq $MODPATH/system/bin/dnsmasq.CBBAK
- else
-  cp -af $INSTALLER/common/dnsmasq.CBBAK $MODPATH/system/bin/dnsmasq.CBBAK
- fi
-fi
-
-RNGD=/system/bin/rngd
-XRNGD=/system/xbin/rngd
-QRNGD=/system/bin/qrngd
-XQRNGD=/system/xbin/qrngd
-for SEED in $RNGD $XRNGD $QRNGD $XQRNGD; do
-  if [ -f $SEED ]; then
-    mktouch $MODPATH$SEED
-  fi
-done
-
-if [ "$ABILONG" = "arm64-v8a" ]; then
- SQLITE=arm64-v8a;
-elif [ "$ABILONG" = "armeabi-v7a" ]; then
- SQLITE=armeabi-v7a;
-elif [ "$ABILONG" = "armeabi" ]; then
- SQLITE=armeabi;
-fi;
-
-ui_print "- SQLITE3 can be $SQLITE"
-
-if [ -f /system/bin/sqlite3 ]; then
- cp -af $INSTALLER/common/$SQLITE $MODPATH/system/bin/sqlite3
-fi
-
-if [ -f /system/xbin/sqlite3 ]; then
- cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
-fi
-
-if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]; then
- cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
-fi
-
-rm -rf /data/CrossBreeder
-cp -rf $MODPATH/system/data /data/CrossBreeder
-rm -rf $MODPATH/system/data
-
-#####################################################
 
 # Handle replace folders
 for TARGET in $REPLACE; do
@@ -388,12 +297,8 @@ if $LATESTARTSERVICE; then
   cp -af $INSTALLER/common/service.sh $MODPATH/service.sh
 fi
 
-#####################################################
-
 ui_print "- Setting permissions"
 set_permissions
-
-#####################################################
 
 ui_print "- Unmounting partitions"
 
