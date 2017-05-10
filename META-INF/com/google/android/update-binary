@@ -405,11 +405,11 @@ ui_print "- Setting permissions"
 set_permissions
 
 if [ -d /system/lib/modules ]; then
-  set_perm  $MODPATH/system/lib/modules/frandom.ko       0       0       0644
+  chmod $MODPATH/system/lib/modules/frandom.ko 0644
 elif [ -d /system/modules ]; then
-  set_perm  $MODPATH/system/modules/frandom.ko       0       0       0644
+  chmod $MODPATH/system/modules/frandom.ko 0644
 else
-  set_perm  $MODPATH/system/etc/CrossBreeder/frandom.ko       0       0       0644
+  chmod $MODPATH/system/etc/CrossBreeder/frandom.ko 0644
 fi
 
 #####################################################
