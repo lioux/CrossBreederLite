@@ -1,0 +1,18 @@
+#!/system/bin/sh
+
+ENABLE="$(busybox cat /data/CrossBreeder/DynBS/ENABLE)"
+CORES=$(grep -c 'processor' /proc/cpuinfo);
+CONF1="$(busybox cat /data/CrossBreeder/DynBS/CONF1)"
+CONF2="$(busybox cat /data/CrossBreeder/DynBS/CONF2)"
+CONF3="$(busybox cat /data/CrossBreeder/DynBS/CONF3)"
+CONF4="$(busybox cat /data/CrossBreeder/DynBS/CONF4)"
+
+if [ "$ENABLE" = "1" ];then
+
+if [ "$CORES" -ge "4" ];then
+  ( dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4 )&
+fi
+
+setprop persist.sys.doze_powersave 1
+
+fi

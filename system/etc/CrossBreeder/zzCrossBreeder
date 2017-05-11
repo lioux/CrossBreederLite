@@ -1,0 +1,382 @@
+#!/system/bin/sh
+
+export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin:
+
+alias [='busybox ['
+alias [[='busybox [['
+
+XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
+HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
+UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
+ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
+NODEBUG="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NODEBUG)"
+IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
+VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
+ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
+
+set +e
+
+touch /dev/CrossBreeder.RUN
+
+if [ "$XRANDOM" = "1" ]; then
+
+RANDOMDEVICE=urandom
+if [ -c /dev/erandom ]; then
+  if [ ! -f /dev/urandom.MOD ]; then
+    touch /dev/urandom.MOD
+    busybox mv /dev/urandom /dev/urandom.ORIG
+    busybox ln /dev/erandom /dev/urandom
+    sleep 2
+  fi
+  busybox chmod 666 /dev/frandom
+  busybox chmod 666 /dev/erandom
+  RANDOMDEVICE=frandom
+elif [ -f /system/lib/modules/frandom.ko ]; then
+  busybox insmod /system/lib/modules/frandom.ko 2>/dev/null
+  if [ ! -c /dev/erandom ]; then
+    sleep 2
+  fi
+elif [ -f /system/modules/frandom.ko ]; then
+  busybox insmod /system/modules/frandom.ko 2>/dev/null
+  if [ ! -c /dev/erandom ]; then
+    sleep 2
+  fi
+elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
+  busybox insmod /system/etc/CrossBreeder/frandom.ko 2>/dev/null
+  if [ ! -c /dev/erandom ]; then
+    sleep 2
+  fi
+fi
+
+URANDOMDEVICE="/dev/urandom"
+if [ -c /dev/erandom ]; then
+  if [ ! -f /dev/urandom.MOD ]; then 
+    touch /dev/urandom.MOD
+    busybox mv /dev/urandom /dev/urandom.ORIG
+    busybox ln /dev/erandom /dev/urandom
+    sleep 2
+  fi
+  busybox chmod 666 /dev/frandom
+  busybox chmod 666 /dev/erandom
+  RANDOMDEVICE=frandom
+  if [ ! -c /dev/urandom.ORIG ]; then 
+    busybox mknod -m 666 /dev/urandom.ORIG c 1 9
+    sleep 2
+  fi
+  URANDOMDEVICE="/dev/urandom.ORIG"
+elif [ ! -c /dev/urandom ]; then
+  busybox mknod -m 666 /dev/urandom c 1 9
+  sleep 2
+fi
+
+if [ ! -f /dev/random.MOD ]; then  
+  touch /dev/random.MOD
+  busybox rm /dev/random
+  busybox ln /dev/$RANDOMDEVICE /dev/random
+  sleep 2
+fi
+
+for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done
+
+fi
+
+if [ "$HAVEGED" = "1" ] && [ "$XRANDOM" = "1" ]; then
+
+( busybox nice -n +20 CB_RunHaveged $URANDOMDEVICE 0 0<&- &>/dev/null 2>&1 ) &
+
+busybox sysctl -w kernel.random.read_wakeup_threshold=8;
+busybox sysctl -w kernel.random.write_wakeup_threshold=0;
+
+sys_pid=`busybox pgrep system_server 2>/dev/null`
+
+busybox renice -10 $sys_pid 2>/dev/null
+
+for i in $(busybox pgrep haveged 2>/dev/null); do 
+  busybox renice +20 $i 2>/dev/null
+done
+
+fi
+
+if [ "$UIBOOST" = "1" ]; then
+
+setprop persist.sys.scrollingcache 3
+setprop windowsmgr.max_events_per_sec 300
+setprop ro.max.fling_velocity 12000
+setprop ro.min.fling_velocity 8000
+setprop persist.sys.use_dithering 1
+setprop persist.sys.purgeable_assets 1
+setprop touch.pressure.scale 2
+
+fi
+
+if [ "$ZYGOTE" = "1" ]; then
+
+setprop ro.zygote.preload.enable 1
+setprop ro.zygote.disable_gl_preload false
+setprop persist.preload.common 1
+setprop persist.zygote.preload_threads 3
+
+fi
+
+if [ "$NODEBUG" = "1" ]; then
+
+busybox mount -t debugfs -o rw none /sys/kernel/debug 2>/dev/null
+
+if [ -e /sys/kernel/debug/sched_features ]; then
+  busybox echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features 2>/dev/null
+  busybox echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
+  busybox echo  NO_NEW_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
+fi
+
+busybox umount /sys/kernel/debug 2>/dev/null
+
+fi
+
+if [ "$IOBOOST" = "1" ]; then
+
+for S in /sys/block/*
+do
+	if [ -f $S/queue/rotational ];then
+		busybox echo 0 > $S/queue/rotational 2>/dev/null
+	fi
+	if [ -f $S/queue/nr_requests ];then
+		busybox echo 1024 > $S/queue/nr_requests 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/back_seek_penalty ];then 
+		busybox echo 1 > $S/queue/iosched/back_seek_penalty 2>/dev/null
+	fi;
+   if [ -f $S/queue/iosched/low_latency ];then
+		busybox echo 1 > $S/queue/iosched/low_latency 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/slice_idle ];then 
+		busybox echo 1 > $S/queue/iosched/slice_idle 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/fifo_batch ];then
+		busybox echo 4 > $S/queue/iosched/fifo_batch 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/writes_starved ];then
+		busybox echo 4 > $S/queue/iosched/writes_starved 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/quantum ];then
+		busybox echo 8 > $S/queue/iosched/quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/rev_penalty ];then
+		busybox echo 1 > $S/queue/iosched/rev_penalty 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/hp_read_quantum ];then
+	   busybox echo 20 > $S/queue/iosched/hp_read_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/rp_read_quantum ];then
+	   busybox echo 20 > $S/queue/iosched/rp_read_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/hp_swrite_quantum ];then
+	   busybox echo 5 > $S/queue/iosched/hp_swrite_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/rp_write_quantum ];then
+	   busybox echo 4 > $S/queue/iosched/rp_write_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/rp_swrite_quantum ];then
+	   busybox echo 4 > $S/queue/iosched/rp_swrite_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/lp_read_quantum ];then
+	   busybox echo 2 > $S/queue/iosched/lp_read_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/lp_swrite_quantum ];then
+	   busybox echo 2 > $S/queue/iosched/lp_swrite_quantum 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/read_idle ];then
+	   busybox echo 5 > $S/queue/iosched/read_idle 2>/dev/null
+	fi;
+	if [ -f $S/queue/iosched/read_idle_freq ];then
+      busybox echo 15 > $S/queue/iosched/read_idle_freq 2>/dev/null
+	fi;
+	if [ -f $S/queue/iostats ];then
+		busybox echo 0 > $S/queue/iostats 2>/dev/null
+	fi;
+	if [ -f $S/queue/rq_affinity ];then
+	   busybox echo 1 > $S/queue/rq_affinity 2>/dev/null
+	fi;
+	if [ -f $S/queue/read_ahead_kb ];then
+		busybox echo 4096 > $S/queue/read_ahead_kb 2>/dev/null
+	fi
+	if [ -f $S/bdi/read_ahead_kb ];then
+      busybox echo 4096 > $S/bdi/read_ahead_kb 2>/dev/null
+   fi
+	if [ -f $S/queue/nomerges ];then
+      busybox echo 1 > $S/queue/nomerges 2>/dev/null 
+   fi
+done
+
+fi
+
+if [ "$VMBOOST" = "1" ]; then
+
+busybox sysctl -w vm.max_map_count=65530
+busybox sysctl -w vm.drop_caches=3
+busybox sysctl -w vm.oom_kill_allocating_task=0
+busybox sysctl -w vm.panic_on_oom=0
+busybox sysctl -w vm.overcommit_memory=1
+busybox sysctl -w vm.page-cluster=3
+busybox sysctl -w vm.laptop_mode=1
+busybox sysctl -w vm.vfs_cache_pressure=50
+busybox sysctl -w vm.min_free_order_shift=4
+busybox sysctl -w vm.page-cluster=1
+busybox sysctl -w vm.dirty_writeback_centisecs=1500
+busybox sysctl -w vm.dirty_expire_centisecs=1000
+busybox sysctl -w vm.dirty_ratio=99
+busybox sysctl -w vm.vfs_cache_pressure=100000000
+busybox sysctl -w vm.vfs_cache_pressure=1215752192
+busybox sysctl -w vm.min_free_kbytes=12288
+
+setprop ro.FOREGROUND_APP_ADJ 0
+setprop ro.VISIBLE_APP_ADJ 2 
+setprop ro.PERCEPTIBLE_APP_ADJ 3
+setprop ro.HEAVY_WEIGHT_APP_ADJ 6
+setprop ro.SECONDARY_SERVER_ADJ 4
+setprop ro.BACKUP_APP_ADJ 7
+setprop ro.HOME_APP_ADJ 1
+setprop ro.HIDDEN_APP_MIN_ADJ 10
+setprop ro.EMPTY_APP_ADJ 15
+
+RAM=$((` busybox awk '/MemTotal/{print $2}' /proc/meminfo` / 1024 ))
+
+if [ "$RAM" -lt "2048" ]
+then
+ THRESHOLD="450"
+ setprop dalvik.vm.heaptargetutilization 0.9
+else
+ THRESHOLD="375"
+ setprop dalvik.vm.heaptargetutilization 0.75
+fi
+
+HEAPMAXSIZE="$(( ($RAM * 268554 / 1000000) ))"
+VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
+
+setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
+setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
+setprop persist.sys.vm.heapsize "${VMHEAP}m"
+
+fi
+
+if [ "$ADVCT" = "1" ]; then
+
+for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
+  busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null
+done
+
+for pid in `busybox ps -o pid,user,nice,args | busybox awk '{ if ( $2 ~ /^root$/ && $3 == "0" && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
+  busybox renice 3 $pid 2>/dev/null
+  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
+done
+
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^root$/ && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
+  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
+done
+
+for pid in $(busybox pgrep pdflush 2>/dev/null); do
+  busybox renice 7 $pid 2>/dev/null
+  busybox ionice -c 3 -n 7 -p $pid 2>/dev/null
+done
+
+for pid in $(busybox pgrep flush- 2>/dev/null); do
+  busybox renice 7 $pid 2>/dev/null
+  busybox ionice -c 3 -n 7 -p $pid 2>/dev/null
+done
+
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_/) print $1 }'`; do
+  busybox renice -1 $pid 2>/dev/null
+  busybox ionice -c 1 -n 0 -p $pid 2>/dev/null
+done
+
+if [ ! -d /dev/cpuctl ]; then
+  busybox mkdir -p /dev/cpuctl 2>/dev/null
+  busybox chown 1000.1000 /dev/cpuctl 2>/dev/null
+  busybox chmod 660 /dev/cpuctl 2>/dev/null
+fi
+
+busybox mount -t cgroup -o cpu none /dev/cpuctl 2>/dev/null
+
+if [ ! -d /dev/cpuctl/fg_boost ]; then
+  busybox mkdir -p /dev/cpuctl/fg_boost 2>/dev/null
+  busybox chown 1000.1000 /dev/cpuctl/fg_boost 2>/dev/null
+  busybox chmod 775 /dev/cpuctl/fg_boost 2>/dev/null
+fi
+
+if [ ! -d /dev/cpuctl/bg_non_interactive ]; then
+  busybox mkdir -p /dev/cpuctl/bg_non_interactive 2>/dev/null
+  busybox chown 1000.1000 /dev/cpuctl/bg_non_interactive 2>/dev/null
+  busybox chmod 775 /dev/cpuctl/bg_non_interactive 2>/dev/null
+fi
+
+if [ ! -d /dev/cpuctl/user ]; then
+  busybox mkdir -p /dev/cpuctl/user 2>/dev/null
+  busybox chown 1000.1000 /dev/cpuctl/user 2>/dev/null
+  busybox chmod 775 /dev/cpuctl/user 2>/dev/null
+fi
+
+busybox cp /dev/null /dev/cpuctl/tasks 2>/dev/null
+busybox cp /dev/null /dev/cpuctl/user/cgroup.procs 2>/dev/null
+busybox cp /dev/null /dev/cpuctl/fg_boost/tasks 2>/dev/null
+busybox cp /dev/null /dev/cpuctl/fg_boost/cgroup.procs 2>/dev/null
+busybox cp /dev/null /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
+busybox cp /dev/null /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
+
+
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
+  busybox echo $pid >> /dev/cpuctl/user/cgroup.procs 2>/dev/null
+  for i in `ls /proc/$pid/task 2>/dev/null`; do
+    busybox echo $pid >> /dev/cpuctl/user/tasks 2>/dev/null
+  done
+done
+
+pid=$(busybox pgrep zygote 2>/dev/null)
+busybox renice -1 $pid 2>/dev/null
+busybox ionice -c 1 -n 0 -p $pid 2>/dev/null
+busybox echo $pid >> /dev/cpuctl/user/cgroup.procs 2>/dev/null
+
+for i in `ls /proc/$pid/task 2>/dev/null`; do
+  busybox echo $i >> /dev/cpuctl/user/tasks 2>/dev/null
+done
+
+busybox echo 1 > /dev/cpuctl/user/cgroup.clone_children 2>/dev/null
+
+for pid in `dumpsys activity services | busybox grep -i app=ProcessRecord | busybox awk '{ print $2 }' | busybox grep -v '/100[0-9]}' | busybox cut -d: -f1`; do
+  busybox renice 7 $pid 2>/dev/null
+  busybox ionice -c 2 -n 7 -p $pid 2>/dev/null
+done
+
+for pid in `dumpsys activity services | busybox grep -i app=ProcessRecord | busybox awk '{ print $2 }' | busybox cut -d: -f1`; do
+  busybox echo $pid >> /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
+  for i in `ls /proc/$pid/task 2>/dev/null`; do
+    busybox echo $i >> /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
+  done
+done
+
+pid=$(busybox pgrep kswapd0 2>/dev/null)
+busybox renice 0 $pid 2>/dev/null
+busybox ionice -c 2 -n 0 -p $pid 2>/dev/null
+
+for pid in `busybox pgrep loop 2>/dev/null`; do
+  busybox renice 0 $pid 2>/dev/null
+  busybox ionice -c 2 -n 0 -p $pid 2>/dev/null
+done
+
+busybox echo 96 > /dev/cpuctl/bg_non_interactive/cpu.shares 2>/dev/null
+
+pid=$(busybox pgrep surfaceflinger 2>/dev/null)
+busybox echo $pid > /dev/cpuctl/fg_boost/cgroup.procs 2>/dev/null
+for i in `ls /proc/$pid/task 2>/dev/null`; do
+  busybox echo $i >> /dev/cpuctl/fg_boost/tasks 2>/dev/null
+done
+
+pid=$(busybox pgrep binder 2>/dev/null)
+busybox echo $pid >> /dev/cpuctl/fg_boost/cgroup.procs 2>/dev/null
+for i in `ls /proc/$pid/task 2>/dev/null`; do
+  busybox echo $i >> /dev/cpuctl/fg_boost/tasks 2>/dev/null
+done
+
+busybox echo 1152 > /dev/cpuctl/fg_boost/cpu.shares 2>/dev/null
+busybox echo 1024 > /dev/cpuctl/cpu.shares 2>/dev/null
+busybox echo 1152 > /dev/cpuctl/user/cpu.shares 2>/dev/null
+
+fi

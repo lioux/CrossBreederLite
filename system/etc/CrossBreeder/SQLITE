@@ -1,0 +1,38 @@
+#!/system/bin/sh
+
+ENABLE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
+BOOTCOUNT="$(busybox cat /data/CrossBreeder/SQLITE/DONTTOUCHME)"
+COUNT="$(busybox cat /data/CrossBreeder/SQLITE/COUNT)"
+
+if [ "$ENABLE" = "1" ]; then
+
+flag=false
+
+if [ "$BOOTCOUNT" -lt "$COUNT" ]
+then
+echo "$(( $BOOTCOUNT + 1 ))" > /data/CrossBreeder/SQLITE/DONTTOUCHME
+elif [ "$BOOTCOUNT" -ge "$COUNT" ]
+then
+echo "0" > /data/CrossBreeder/SQLITE/DONTTOUCHME
+flag=true
+fi
+
+if [ "$flag" == "false" ]
+then
+echo "The system does not need to optimize databases."
+exit 0
+elif [ "$flag" == "true" ]
+then
+echo "The system will optimize databases."
+
+dbcount=0
+for db in $(busybox find /data -name *.db)
+do
+dbcount=$((dbcount+1))
+echo ">Optimizing database $dbcount..."
+sqlite3 $db 'VACUUM'
+sqlite3 $db 'REINDEX'
+done
+fi
+
+fi

@@ -1,16 +1,10 @@
-## Don't Download At Here, Download At XDA Forum.
-
-## Unzip Error Not Fixed.
-
----------------------------------------------------------------------------------------------------
-
 ## Mod info
 
 This is the liter, newer version of CrossBreeder 
 
 ## Features
 
-Tweaks from CrossBreeder --> Haveged, Frandom, DNSMasq
+Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq [ARM], Frandom [ARM]
 
 SQLite Optimize on boot [Default: Every 4 boots]
 
@@ -34,7 +28,9 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
-1.2 Test - Add Advanced Kernel Tweak, TCP Optimize, Removed link busybox to /system/etc/CrossBreeder, Merged VMHEAP to VMBOOST, Updated all binary files
+1.2 Pre-Stable - Fixed Magisk app unzip error, Reset TCP buffer size, Add x86 installer, Now support x86 devices
+
+1.2 Test 13 - Add Advanced Kernel Tweak, TCP Optimize, Removed link busybox to /system/etc/CrossBreeder, Merged VMHEAP to VMBOOST, Updated all binary files.
 
 1.1 Stable - Fixed dnsmasq_dhcp error, removed Google DNS, updated Haveged, add DNS server option., link busybox to /system/etc/CrossBreeder, bug fixed
 
@@ -46,4 +42,4 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2
 
-------------------------Removed------------------------
+----------------------------------------------------------Removed-------------------------------------------------------------

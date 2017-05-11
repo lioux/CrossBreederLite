@@ -1,0 +1,115 @@
+#!/system/bin/sh
+
+ZRAM="$(busybox cat /data/CrossBreeder/DynRAM/ZRAM)"
+LMK="$(busybox cat /data/CrossBreeder/DynRAM/LMK)"
+CONF1="$(busybox cat /data/CrossBreeder/DynRAM/CONF1)"
+CONF2="$(busybox cat /data/CrossBreeder/DynRAM/CONF2)"
+THRESHOLD1=$(( $CONF1+5 ))
+THRESHOLD2=$(( $CONF2+5 ))
+
+DYNAMIC_ZRAM() {
+
+num="0"
+
+ZRAMN=$(busybox find /dev/block -name $ZRAMD* | busybox sort | tail -n 1 )
+ZRAMN=$((${ZRAMN#*$ZRAMD}+1))
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
+do
+if [ -e /system/bin/swapoff ]
+then
+/system/bin/swapoff $z
+else
+busybox swapoff $z
+fi
+if [ -e "/sys/block/$ZRAMD$num/reset" ]
+then
+busybox echo 1 > /sys/block/$ZRAMD$num/reset
+fi
+num=$(($num+1))
+done
+
+RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
+ZRAM1=$(( $RAM * $THRESHOLD1 / 100 ))
+val2=$(($(busybox awk '/MemFree/{print $2}' /proc/meminfo)))
+val3=$(( ( $RAM - $val2 ) ))
+
+MEMSTATS=( $val3 )
+for stat in ${!MEMSTATS[@]}
+do
+mem=$(( $mem+${MEMSTATS[$stat]} ))
+done
+mem=$(($mem/${#MEMSTATS[@]}))
+ADDMEM=$((($MEMSTATS) * $THRESHOLD1 / 10))
+ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
+
+busybox echo "Enabling Dynamic zRAM..."
+num=0
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
+do
+busybox echo $(( $ZRAM / $ZRAMN )) > /sys/block/$ZRAMD$num/disksize
+num=$(($num+1))
+done
+
+num=0
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
+do
+busybox mkswap $z
+num=$(($num+1))
+done
+
+num=0
+for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
+do
+busybox swapon $z -p 256
+num=$(($num+1))
+done
+
+swappiness=$(( ($ZRAM / 1024 / 1024) * 100 / ($RAM / 1024) + 50 ))
+busybox sysctl -w vm.swappiness=$swappiness
+
+}
+
+if [ -e "/dev/block/zram0" ] && [ "$ZRAM" = "1" ]; then
+ZRAMD="zram"
+DYNAMIC_ZRAM
+elif [ -e "/dev/block/vnswap0" ] && [ "$ZRAM" = "1" ]; then
+ZRAMD="vnswap"
+DYNAMIC_ZRAM
+elif [ "$ZRAM" = "1" ]; then
+busybox echo "zRAM device unavailable"
+fi
+
+#################################################################################
+
+if [ "$LMK" = "1" ]; then
+
+RAM=$((`busybox awk '/MemTotal/{print $2}' /proc/meminfo`))
+sval1=$(($(busybox awk '/SwapFree/{print $2}' /proc/meminfo) ))
+FREEMEM=$((`busybox awk '/MemFree/{print $2}' /proc/meminfo` + $sval1 ))
+
+for mem in ${!FREEMEM[@]}
+do
+setmem=$(( $setmem+${FREEMEM[$mem]} ))
+done
+setmem=$(($setmem/${#FREEMEM[@]}))
+ADDMEM=$((setmem * $THRESHOLD2 / 10))
+
+VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))
+VAL2=$(( ( ( $RAM* 3 / 1000 ) + ( $ADDMEM / 7 ) ) / 4 ))
+VAL3=$(( ( ( $RAM* 6 / 1000 ) + ( $ADDMEM / 5 ) ) / 4 ))
+VAL4=$(( ( ( $RAM* 10 / 1000 ) + ( $ADDMEM / 4 ) ) / 4 ))
+VAL5=$(( ( ( $RAM* 13 / 1000 ) + ( $ADDMEM / 3 ) ) / 4 ))
+VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
+
+LMK=/sys/module/lowmemorykiller/parameters/minfree
+
+busybox echo "Enabling Dynamic LMK..."
+busybox echo "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6" > $LMK
+
+LMK=$(busybox cat "/sys/module/lowmemorykiller/parameters/minfree")
+
+if [ ! "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
+busybox echo "Failed setting LMK parameters."
+fi
+
+fi

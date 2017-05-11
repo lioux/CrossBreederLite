@@ -1,0 +1,36 @@
+#!/system/bin/sh
+
+export PATH=/system/etc/CrossBreeder:/system/bin:/system/xbin:/sbin:/vendor/bin:/system/sbin
+
+alias [='busybox ['
+alias [[='busybox [['
+
+TCP="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/TCP)"
+
+set +e
+
+if [ "$TCP" = "1" ]; then
+
+busybox echo 524288 > /proc/sys/net/core/rmem_default
+busybox echo 3145728 > /proc/sys/net/core/rmem_max
+busybox echo 524288 > /proc/sys/net/core/wmem_default
+busybox echo 3145728 > /proc/sys/net/core/wmem_max
+busybox echo 1024 > /proc/sys/net/core/somaxconn
+busybox echo 3000 > /proc/sys/net/core/netdev_max_backlog
+busybox echo "262144 524288 3145728" > /proc/sys/net/ipv4/tcp_rmem
+busybox echo "262144 524288 3145728" > /proc/sys/net/ipv4/tcp_wmem
+
+busybox sysctl -w net.ipv4.tcp_tw_recycle=1
+busybox sysctl -w net.ipv4.tcp_tw_reuse=1
+busybox sysctl -w net.ipv4.tcp_fin_timeout=600
+busybox sysctl -w net.ipv4.tcp_keepalive_intvl=60
+busybox sysctl -w net.ipv4.tcp_keepalive_probes=5
+busybox sysctl -w net.ipv4.tcp_keepalive_time=300
+busybox sysctl -w net.ipv4.tcp_moderate_rcvbuf=1
+busybox sysctl -w net.ipv4.tcp_low_latency=0
+busybox sysctl -w net.ipv4.tcp_slow_start_after_idle=0
+busybox sysctl -w net.ipv4.tcp_timestamps=1
+busybox sysctl -w net.ipv4.tcp_window_scaling=1
+busybox sysctl -w net.ipv4.tcp_sack=1
+
+fi
