@@ -31,21 +31,6 @@ if [ -c /dev/erandom ]; then
   busybox chmod 666 /dev/frandom
   busybox chmod 666 /dev/erandom
   RANDOMDEVICE=frandom
-elif [ -f /system/lib/modules/frandom.ko ]; then
-  busybox insmod /system/lib/modules/frandom.ko 2>/dev/null
-  if [ ! -c /dev/erandom ]; then
-    sleep 2
-  fi
-elif [ -f /system/modules/frandom.ko ]; then
-  busybox insmod /system/modules/frandom.ko 2>/dev/null
-  if [ ! -c /dev/erandom ]; then
-    sleep 2
-  fi
-elif [ -f /system/etc/CrossBreeder/frandom.ko ]; then
-  busybox insmod /system/etc/CrossBreeder/frandom.ko 2>/dev/null
-  if [ ! -c /dev/erandom ]; then
-    sleep 2
-  fi
 fi
 
 URANDOMDEVICE="/dev/urandom"

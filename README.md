@@ -28,6 +28,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+1.2 Stable - Removed frandom.ko CB_Check_Net_DNS
+
 1.2 Pre-Stable - Fixed Magisk app unzip error, Reset TCP buffer size, Add x86 installer, Now support x86 devices
 
 1.2 Test 13 - Add Advanced Kernel Tweak, TCP Optimize, Removed link busybox to /system/etc/CrossBreeder, Merged VMHEAP to VMBOOST, Updated all binary files.
@@ -37,9 +39,5 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 1.0 Stable - Add Zygote Tweaks, Enable Doze, Merged DynZram/LMK to DynRAM, Removed dnsproxy2 and rinted [Not Working], Simplify zzCHECK_NET_DNS
 
 0.9 Beta - Fixed frandom tweak not working bug, Add customize switcher
-
-0.8 Beta - Fixed Safetynet Miss Match Bug ?
-
-0.7 Beta - Updated dnsmasq_dhcp and dnsproxy2
 
 ----------------------------------------------------------Removed-------------------------------------------------------------

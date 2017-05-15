@@ -163,7 +163,6 @@ ui_print "- Preparing for X86 Install"
 
 rm -rf $MODPATH/system/bin
 rm -af $MODPATH/system/xbin/haveged
-rm -af $MODPATH/system/etc/CrossBreeder/frandom.ko
 rm -af $MODPATH/system/etc/CrossBreeder/CB_Check_Net_DNS
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunHaveged
 rm -af $MODPATH/system/etc/CrossBreeder/zzCHECK_NET_DNS
@@ -427,14 +426,6 @@ fi
 
 ui_print "- Setting permissions"
 set_permissions
-
-if [ -f $MODPATH/system/lib/modules/frandom.ko ]; then
-  set_perm  $MODPATH/system/lib/modules/frandom.ko       0       0       0644
-elif [ -f $MODPATH/system/modules/frandom.ko ]; then
-  set_perm  $MODPATH/system/modules/frandom.ko       0       0       0644
-elif [ -f $MODPATH/system/etc/CrossBreeder/frandom.ko ]; then
-  set_perm  $MODPATH/system/etc/CrossBreeder/frandom.ko       0       0       0644
-fi
 
 #####################################################
 
