@@ -10,7 +10,7 @@ SQLite Optimize on boot [Default: Every 4 boots]
 
 Dynamic Zram/LMK tweak, will auto calibration the Zram/LMK [Default: 60 sec]
 
-DynBS, dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device [For over 4 core device]
+Dynamic power savings - A tool that allows you to save more than 30% battery charge your Android-device [For over 4 core device]
 
 Fixed "only position independent executables (PIE) are supported" problem on Android 5.0+ device
 
