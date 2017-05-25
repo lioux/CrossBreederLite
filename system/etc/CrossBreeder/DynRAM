@@ -42,7 +42,6 @@ mem=$(($mem/${#MEMSTATS[@]}))
 ADDMEM=$((($MEMSTATS) * $THRESHOLD1 / 10))
 ZRAM=$((($ZRAM1+$ADDMEM)*26/100 * 1024))
 
-busybox echo "Enabling Dynamic zRAM..."
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
@@ -67,16 +66,35 @@ done
 swappiness=$(( ($ZRAM / 1024 / 1024) * 100 / ($RAM / 1024) + 50 ))
 busybox sysctl -w vm.swappiness=$swappiness
 
+export TZ=GMT; date >> /data/cb_CHECK_PROCS.log
+echo "Swappiness = $swappiness" >> /data/cb_CHECK_PROCS.log
+echo "Z-RAM Disksize = $(( $ZRAM / $ZRAMN )) KB">> /data/cb_CHECK_PROCS.log
 }
 
 if [ -e "/dev/block/zram0" ] && [ "$ZRAM" = "1" ]; then
+
 ZRAMD="zram"
+echo  >> /data/cb_CHECK_PROCS.log
 DYNAMIC_ZRAM
+
 elif [ -e "/dev/block/vnswap0" ] && [ "$ZRAM" = "1" ]; then
+
 ZRAMD="vnswap"
+echo  >> /data/cb_CHECK_PROCS.log
 DYNAMIC_ZRAM
+
 elif [ "$ZRAM" = "1" ]; then
-busybox echo "zRAM device unavailable"
+
+echo  >> /data/cb_CHECK_PROCS.log
+export TZ=GMT; date >> /data/cb_CHECK_PROCS.log >> /data/cb_CHECK_PROCS.log
+busybox echo "Z-RAM device unavailable" >> /data/cb_CHECK_PROCS.log
+
+else
+
+echo  >> /data/cb_CHECK_PROCS.log
+export TZ=GMT; date >> /data/cb_CHECK_PROCS.log >> /data/cb_CHECK_PROCS.log
+busybox echo "Dynamic Z-RAM disabled" >> /data/cb_CHECK_PROCS.log
+
 fi
 
 #################################################################################
@@ -103,13 +121,22 @@ VAL6=$(( ( ( $RAM* 18 / 1000 ) + ( $ADDMEM / 2 ) ) / 4 ))
 
 LMK=/sys/module/lowmemorykiller/parameters/minfree
 
-busybox echo "Enabling Dynamic LMK..."
 busybox echo "$VAL1,$VAL2,$VAL3,$VAL4,$VAL5,$VAL6" > $LMK
 
 LMK=$(busybox cat "/sys/module/lowmemorykiller/parameters/minfree")
 
 if [ ! "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
-busybox echo "Failed setting LMK parameters."
+busybox echo "Failed setting LMK parameters." >> /data/cb_CHECK_PROCS.log
+else
+busybox echo "Foreground Applications = $(($VAL1 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+busybox echo "Visible Applications = $(($VAL2 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+busybox echo "Secondary Server = $(($VAL3 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+busybox echo "Hidden Applications = $(($VAL4 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+busybox echo "Content Providers = $(($VAL5 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+busybox echo "Empty Applications = $(($VAL6 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
+echo  >> /data/cb_CHECK_PROCS.log
 fi
-
+else
+busybox echo "Dynamic LMK disabled" >> /data/cb_CHECK_PROCS.log
+echo  >> /data/cb_CHECK_PROCS.log
 fi

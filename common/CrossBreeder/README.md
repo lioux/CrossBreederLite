@@ -37,26 +37,34 @@ TIME=$((($HR * 3600)+($MIN * 60)+$SEC))
 
 List:
 
-0 --> No Server
+> 0 - No Server
 
-1 --> Google Public DNS [Default]
+> 1 - Google Public DNS [Default]
 
-2 --> OPEN DNS
+> 2 - OPEN DNS
 
-3 --> DNS.WATCH
+> 3 - DNS.WATCH
 
-4 --> Norton Connect Safe
+> 4 - Norton Connect Safe
 
-5 --> Level 3
+> 5 - Level 3
 
-6 --> Comodo Secure DNS
+> 6 - Comodo Secure DNS
 
- 7 --> DNS Advantage
+> 7 - DNS Advantage
 
-8 --> Safe DNS
+> 8 - Safe DNS
 
-9 --> OPEN NIC
+> 9 - OPEN NIC
 
-6.ADVCT ---> Advanced CPU Tweak [Default: Disable]
+6.ADVCT ---> Advanced CPU Tweak
 
-7.DONTTOUCHME ---> Don't touch this file
+7.Voltage --> Config the voltage you want to reduce.
+
+Reference value:
+
+Safe --> 50 [Default] , Recommand --> 75 , Danger --> 100
+
+In order to avoid the voltage too low[system will crash], the value must =<100
+
+8.BFS --> Brain Fuck Scheduler, an alternative to the Completely Fair Scheduler

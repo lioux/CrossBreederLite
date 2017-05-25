@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 ENABLE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
-BOOTCOUNT="$(busybox cat /data/CrossBreeder/SQLITE/DONTTOUCHME)"
+BOOTCOUNT="$(busybox cat /data/CrossBreeder/SQLITE/BOOTCOUNT)"
 COUNT="$(busybox cat /data/CrossBreeder/SQLITE/COUNT)"
 
 if [ "$ENABLE" = "1" ]; then
@@ -10,26 +10,28 @@ flag=false
 
 if [ "$BOOTCOUNT" -lt "$COUNT" ]
 then
-echo "$(( $BOOTCOUNT + 1 ))" > /data/CrossBreeder/SQLITE/DONTTOUCHME
+echo "$(( $BOOTCOUNT + 1 ))" > /data/CrossBreeder/SQLITE/BOOTCOUNT
 elif [ "$BOOTCOUNT" -ge "$COUNT" ]
 then
-echo "0" > /data/CrossBreeder/SQLITE/DONTTOUCHME
+echo "0" > /data/CrossBreeder/SQLITE/BOOTCOUNT
 flag=true
 fi
 
+echo "The system has booted for $BOOTCOUNT times since the last optimization." >> /data/SQLite.log
+
 if [ "$flag" == "false" ]
 then
-echo "The system does not need to optimize databases."
+echo "The system does not need to optimize databases." >> /data/SQLite.log
 exit 0
 elif [ "$flag" == "true" ]
 then
-echo "The system will optimize databases."
+echo "The system will optimize databases." >> /data/SQLite.log
 
 dbcount=0
 for db in $(busybox find /data -name *.db)
 do
 dbcount=$((dbcount+1))
-echo ">Optimizing database $dbcount..."
+echo ">Optimizing database $dbcount..." >> /data/SQLite.log
 sqlite3 $db 'VACUUM'
 sqlite3 $db 'REINDEX'
 done

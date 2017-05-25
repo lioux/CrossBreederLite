@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-export PATH=/system/etc/CrossBreeder:/system/bin:/system/xbin:/sbin:/vendor/bin:/system/sbin
+export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin:
 
 alias [='busybox ['
 alias [[='busybox [['
@@ -10,25 +10,39 @@ DNSMASQ="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNSMASQ)"
 SERVER="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/SERVER)"
 
 if [ "$SERVER" = "0" ]; then
-DNSSERVER=""
+DNS1=""
+DNS2=""
 elif [ "$SERVER" = "1" ]; then
-DNSSERVER=" --server=8.8.8.8 --server=8.8.4.4"
+DNS1="8.8.8.8"
+DNS2="8.8.4.4"
 elif [ "$SERVER" = "2" ]; then
-DNSSERVER=" --server=208.67.222.222 --server=208.67.220.220"
+DNS1="208.67.222.222"
+DNS2="208.67.220.220"
 elif [ "$SERVER" = "3" ]; then
-DNSSERVER=" --server=84.200.69.80 --server=84.200.70.40"
+DNS1="84.200.69.80"
+DNS2="84.200.70.40"
 elif [ "$SERVER" = "4" ]; then
-DNSSERVER=" --server=199.85.126.10 --server=199.85.127.10"
+DNS1="199.85.126.10"
+DNS2="199.85.127.10"
 elif [ "$SERVER" = "5" ]; then
-DNSSERVER=" --server=209.244.0.3 --server=209.244.0.4"
+DNS1="209.244.0.3"
+DNS2="209.244.0.4"
 elif [ "$SERVER" = "6" ]; then
-DNSSERVER=" --server=8.26.56.26 --server=8.20.247.20"
+DNS1="8.26.56.26"
+DNS2="8.20.247.20"
 elif [ "$SERVER" = "7" ]; then
-DNSSERVER=" --server=156.154.70.1 --server=156.154.71.1"
+DNS1="156.154.70.1"
+DNS2="156.154.71.1"
 elif [ "$SERVER" = "8" ]; then
-DNSSERVER=" --server=195.46.39.39 --server=195.46.39.40"
+DNS1="195.46.39.39"
+DNS2="159.46.39.40"
 elif [ "$SERVER" = "9" ]; then
-DNSSERVER=" --server=46.151.208.154 --server=128.199.248.105"
+DNS1="46.151.208.154"
+DNS2="128.199.248.105"
+fi
+
+if [ ! "$SERVER" = "0" ]; then
+DNSSERVER=" --server=$DNS1 --server=$DNS2"
 fi
 
 set +e
@@ -41,7 +55,7 @@ busybox echo "8192 436600 873200" > /proc/sys/net/ipv4/tcp_wmem
 busybox echo "32768 436600 873200" > /proc/sys/net/ipv4/tcp_rmem
 busybox echo "786432 1048576 1572864" > /proc/sys/net/ipv4/tcp_mem
 busybox echo 3000 > /proc/sys/net/core/netdev_max_backlog
-busybox echo 1024 > /proc/sys/net/core/somaxconn
+busybox echo 2000 > /proc/sys/net/core/somaxconn
 busybox echo 4000 > /proc/sys/net/core/tcp_max_syn_backlog
 
 busybox sysctl -w net.ipv4.tcp_tw_recycle=1
@@ -56,19 +70,24 @@ busybox sysctl -w net.ipv4.tcp_slow_start_after_idle=0
 busybox sysctl -w net.ipv4.tcp_timestamps=1
 busybox sysctl -w net.ipv4.tcp_window_scaling=1
 busybox sysctl -w net.ipv4.tcp_sack=1
-busybox sysctl -w net.ipv4.tcp_congestion_control=hybla
 
 fi
 
 if [ "$DNSMASQ" = "1" ]; then
 
+if [ ! "$SERVER" = "0" ]; then
+setprop net.dns1 $DNS1
+setprop net.dns2 $DNS2
+setprop net.rmnet0.dns1 $DNS1
+setprop net.rmnet0.dns2 $DNS2
+fi
+
 busybox kill -9 $(busybox pgrep -f dnsmasq) 
 
-echo "Dnsmasq_dhcp not support X86, try dnsmasq" 2>/dev/null
+echo "Dnsmasq_dhcp not support X86, try dnsmasq" >> /data/DNSMasq.log
 
-ANDROID_DNS_MODE= dnsmasq --no-daemon --all-servers --server=/bit/178.63.16.21,/bit/95.211.195.245,/bit/178.32.31.41 --no-poll --user=root --pid-file=/dev/dnsmasq.pid --listen-address=127.0.0.1 --bind-interfaces --cache-size=0 --no-negcache --no-hosts$DNSSERVER 2>/dev/null &
+( dnsmasq --no-daemon --all-servers --server=/bit/178.63.16.21,/bit/95.211.195.245,/bit/178.32.31.41 --no-poll --user=root --pid-file=/data/dnsmasq.pid --listen-address=127.0.0.1 --bind-interfaces --cache-size=0 --no-negcache --no-hosts$DNSSERVER )&
 pid=$!
-wait $pid
 busybox renice +20 $pid 2>/dev/null
 
 fi

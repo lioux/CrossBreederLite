@@ -1,0 +1,366 @@
+#!/system/bin/sh
+
+LOW_VOLTAGE() {
+
+CPUFQ01=$((`busybox awk '{print $1}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ02=$((`busybox awk '{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ03=$((`busybox awk '{print $3}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ04=$((`busybox awk '{print $4}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ05=$((`busybox awk '{print $5}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ06=$((`busybox awk '{print $6}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ07=$((`busybox awk '{print $7}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ08=$((`busybox awk '{print $8}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ09=$((`busybox awk '{print $9}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ10=$((`busybox awk '{print $10}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ11=$((`busybox awk '{print $11}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ12=$((`busybox awk '{print $12}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ13=$((`busybox awk '{print $13}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ14=$((`busybox awk '{print $14}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ15=$((`busybox awk '{print $15}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ16=$((`busybox awk '{print $16}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ17=$((`busybox awk '{print $17}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ18=$((`busybox awk '{print $18}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ19=$((`busybox awk '{print $19}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ20=$((`busybox awk '{print $20}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ21=$((`busybox awk '{print $21}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ22=$((`busybox awk '{print $22}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ23=$((`busybox awk '{print $23}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ24=$((`busybox awk '{print $24}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ25=$((`busybox awk '{print $25}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ26=$((`busybox awk '{print $26}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ27=$((`busybox awk '{print $27}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ28=$((`busybox awk '{print $28}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ29=$((`busybox awk '{print $29}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUFQ30=$((`busybox awk '{print $30}' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies`))
+
+CPUF01=$(( $CPUFQ01 / 1000 ))
+
+CPUF02=$(( $CPUFQ02 / 1000 ))
+
+CPUF03=$(( $CPUFQ03 / 1000 ))
+
+CPUF04=$(( $CPUFQ04 / 1000 ))
+
+CPUF05=$(( $CPUFQ05 / 1000 ))
+
+CPUF06=$(( $CPUFQ06 / 1000 ))
+
+CPUF07=$(( $CPUFQ07 / 1000 ))
+
+CPUF08=$(( $CPUFQ08 / 1000 ))
+
+CPUF09=$(( $CPUFQ09 / 1000 ))
+
+CPUF10=$(( $CPUFQ10 / 1000 ))
+
+CPUF11=$(( $CPUFQ11 / 1000 ))
+
+CPUF12=$(( $CPUFQ12 / 1000 ))
+
+CPUF13=$(( $CPUFQ13 / 1000 ))
+
+CPUF14=$(( $CPUFQ14 / 1000 ))
+
+CPUF15=$(( $CPUFQ15 / 1000 ))
+
+CPUF16=$(( $CPUFQ16 / 1000 ))
+
+CPUF17=$(( $CPUFQ17 / 1000 ))
+
+CPUF18=$(( $CPUFQ18 / 1000 ))
+
+CPUF19=$(( $CPUFQ19 / 1000 ))
+
+CPUF20=$(( $CPUFQ20 / 1000 ))
+
+CPUF21=$(( $CPUFQ21 / 1000 ))
+
+CPUF22=$(( $CPUFQ22 / 1000 ))
+
+CPUF23=$(( $CPUFQ23 / 1000 ))
+
+CPUF24=$(( $CPUFQ24 / 1000 ))
+
+CPUF25=$(( $CPUFQ25 / 1000 ))
+
+CPUF26=$(( $CPUFQ26 / 1000 ))
+
+CPUF27=$(( $CPUFQ27 / 1000 ))
+
+CPUF28=$(( $CPUFQ28 / 1000 ))
+
+CPUF29=$(( $CPUFQ29 / 1000 ))
+
+CPUF30=$(( $CPUFQ30 / 1000 ))
+
+if [ ! "$CPUFQ01" = "0" ]; then
+CPUV01=$((`busybox awk /$CPUF01/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ02" = "0" ]; then
+CPUV02=$((`busybox awk /$CPUF02/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ03" = "0" ]; then
+CPUV03=$((`busybox awk /$CPUF03/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ04" = "0" ]; then
+CPUV04=$((`busybox awk /$CPUF04/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ05" = "0" ]; then
+CPUV05=$((`busybox awk /$CPUF05/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ06" = "0" ]; then
+CPUV06=$((`busybox awk /$CPUF06/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ07" = "0" ]; then
+CPUV07=$((`busybox awk /$CPUF07/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ08" = "0" ]; then
+CPUV08=$((`busybox awk /$CPUF08/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ09" = "0" ]; then
+CPUV09=$((`busybox awk /$CPUF09/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ10" = "0" ]; then
+CPUV10=$((`busybox awk /$CPUF10/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ11" = "0" ]; then
+CPUV11=$((`busybox awk /$CPUF11/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ12" = "0" ]; then
+CPUV12=$((`busybox awk /$CPUF12/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ13" = "0" ]; then
+CPUV13=$((`busybox awk /$CPUF13/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ14" = "0" ]; then
+CPUV14=$((`busybox awk /$CPUF14/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ15" = "0" ]; then
+CPUV15=$((`busybox awk /$CPUF15/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ16" = "0" ]; then
+CPUV16=$((`busybox awk /$CPUF16/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ17" = "0" ]; then
+CPUV17=$((`busybox awk /$CPUF17/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ18" = "0" ]; then
+CPUV18=$((`busybox awk /$CPUF18/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ19" = "0" ]; then
+CPUV19=$((`busybox awk /$CPUF19/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ20" = "0" ]; then
+CPUV20=$((`busybox awk /$CPUF20/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ21" = "0" ]; then
+CPUV21=$((`busybox awk /$CPUF21/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ22" = "0" ]; then
+CPUV22=$((`busybox awk /$CPUF22/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ23" = "0" ]; then
+CPUV23=$((`busybox awk /$CPUF23/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ24" = "0" ]; then
+CPUV24=$((`busybox awk /$CPUF24/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ25" = "0" ]; then
+CPUV25=$((`busybox awk /$CPUF25/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ26" = "0" ]; then
+CPUV26=$((`busybox awk /$CPUF26/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ27" = "0" ]; then
+CPUV27=$((`busybox awk /$CPUF27/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ28" = "0" ]; then
+CPUV28=$((`busybox awk /$CPUF28/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ29" = "0" ]; then
+CPUV29=$((`busybox awk /$CPUF29/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+if [ ! "$CPUFQ30" = "0" ]; then
+CPUV30=$((`busybox awk /$CPUF30/'{print $2}' /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table`))
+fi
+
+VAL01=" $(( $CPUV01 - $V ))"
+VAL02=" $(( $CPUV02 - $V ))"
+VAL03=" $(( $CPUV03 - $V ))"
+VAL04=" $(( $CPUV04 - $V ))"
+VAL05=" $(( $CPUV05 - $V ))"
+VAL06=" $(( $CPUV06 - $V ))"
+VAL07=" $(( $CPUV07 - $V ))"
+VAL08=" $(( $CPUV08 - $V ))"
+VAL09=" $(( $CPUV09 - $V ))"
+VAL10=" $(( $CPUV10 - $V ))"
+VAL11=" $(( $CPUV11 - $V ))"
+VAL12=" $(( $CPUV12 - $V ))"
+VAL13=" $(( $CPUV13 - $V ))"
+VAL14=" $(( $CPUV14 - $V ))"
+VAL15=" $(( $CPUV15 - $V ))"
+VAL16=" $(( $CPUV16 - $V ))"
+VAL17=" $(( $CPUV17 - $V ))"
+VAL18=" $(( $CPUV18 - $V ))"
+VAL19=" $(( $CPUV19 - $V ))"
+VAL20=" $(( $CPUV20 - $V ))"
+VAL21=" $(( $CPUV21 - $V ))"
+VAL22=" $(( $CPUV22 - $V ))"
+VAL23=" $(( $CPUV23 - $V ))"
+VAL24=" $(( $CPUV24 - $V ))"
+VAL25=" $(( $CPUV25 - $V ))"
+VAL26=" $(( $CPUV26 - $V ))"
+VAL27=" $(( $CPUV27 - $V ))"
+VAL28=" $(( $CPUV28 - $V ))"
+VAL29=" $(( $CPUV29 - $V ))"
+VAL30=" $(( $CPUV30 - $V ))"
+
+if [ "$CPUFQ01" = "0" ]; then
+VAL01=""
+fi
+if [ "$CPUFQ02" = "0" ]; then
+VAL02=""
+fi
+if [ "$CPUFQ03" = "0" ]; then
+VAL03=""
+fi
+if [ "$CPUFQ04" = "0" ]; then
+VAL04=""
+fi
+if [ "$CPUFQ05" = "0" ]; then
+VAL05=""
+fi
+if [ "$CPUFQ06" = "0" ]; then
+VAL06=""
+fi
+if [ "$CPUFQ07" = "0" ]; then
+VAL07=""
+fi
+if [ "$CPUFQ08" = "0" ]; then
+VAL08=""
+fi
+if [ "$CPUFQ09" = "0" ]; then
+VAL09=""
+fi
+if [ "$CPUFQ10" = "0" ]; then
+VAL10=""
+fi
+if [ "$CPUFQ11" = "0" ]; then
+VAL11=""
+fi
+if [ "$CPUFQ12" = "0" ]; then
+VAL12=""
+fi
+if [ "$CPUFQ13" = "0" ]; then
+VAL13=""
+fi
+if [ "$CPUFQ14" = "0" ]; then
+VAL1=""
+fi
+if [ "$CPUFQ15" = "0" ]; then
+VAL15=""
+fi
+if [ "$CPUFQ16" = "0" ]; then
+VAL16=""
+fi
+if [ "$CPUFQ17" = "0" ]; then
+VAL17=""
+fi
+if [ "$CPUFQ18" = "0" ]; then
+VAL18=""
+fi
+if [ "$CPUFQ19" = "0" ]; then
+VAL19=""
+fi
+if [ "$CPUFQ20" = "0" ]; then
+VAL20=""
+fi
+if [ "$CPUFQ21" = "0" ]; then
+VAL21=""
+fi
+if [ "$CPUFQ22" = "0" ]; then
+VAL22=""
+fi
+if [ "$CPUFQ23" = "0" ]; then
+VAL23=""
+fi
+if [ "$CPUFQ24" = "0" ]; then
+VAL24=""
+fi
+if [ "$CPUFQ25" = "0" ]; then
+VAL25=""
+fi
+if [ "$CPUFQ26" = "0" ]; then
+VAL26=""
+fi
+if [ "$CPUFQ27" = "0" ]; then
+VAL27=""
+fi
+if [ "$CPUFQ28" = "0" ]; then
+VAL28=""
+fi
+if [ "$CPUFQ29" = "0" ]; then
+VAL29=""
+fi
+if [ "$CPUFQ30" = "0" ]; then
+VAL30=""
+fi
+
+echo$VAL01$VAL02$VAL03$VAL04$VAL05$VAL06$VAL07$VAL08$VAL09$VAL10$VAL11$VAL12$VAL13$VAL14$VAL15$VAL16$VAL17$VAL18$VAL19$VAL20$VAL21$VAL22$VAL23$VAL24$VAL25$VAL26$VAL27$VAL28$VAL29$VAL30 > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
+
+touch /dev/CBL_LowVoltage.RUN
+echo "Low-Voltage is running..." >> /data/CBL_LowVoltage.log
+
+}
+
+VOLTAGE="$(busybox cat /data/CrossBreeder/VOLTAGE/ENABLE)"
+V="$(busybox cat /data/CrossBreeder/VOLTAGE/CONF)"
+
+if [ "$VOLTAGE" = "1" ]; then
+
+if [ ! -f /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table ]; then
+ echo "Kernel not support voltage control" >> /data/CBL_LowVoltage.log
+ exit 0
+fi
+if [ -f /dev/CBL_LowVotage.RUN ]; then
+ echo "Low-Voltage already running..." >> /data/CBL_LowVoltage.log
+ exit 0
+fi
+if [ "$V" -gt "100" ]; then
+ echo "Voltage will be too low if you use the value now." >> /data/CBL_LowVoltage.log
+ exit 0
+fi
+if [ -f /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table ] && [ ! -f /dev/CBL_LowVoltage.RUN ] && [ "$V" -le "100" ]; then
+ LOW_VOLTAGE
+fi
+
+fi

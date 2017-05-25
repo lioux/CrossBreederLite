@@ -1,0 +1,343 @@
+#!/system/bin/sh -x
+echo
+echo "Please find the debug output to report on forums in /data/cb_CHECK_PROCS.log"
+echo
+exec 1>/data/cb_CHECK_PROCS.log 2>&1
+echo
+echo "CrossBreeder Lite Version 1.3 Stable"
+echo
+export TZ=GMT; date;
+echo
+echo "Checking device info..."
+echo
+getprop | busybox egrep -i "build|product"
+echo
+busybox ps -o pid,ppid,user,etime,nice,vsz,rss,args | busybox egrep -i "USER|wake|sleep|zz|haveged|dnrd|thttp|busybox|dns|CB|kworker"
+echo
+
+XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
+HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
+UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
+ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
+KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
+IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
+VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
+BFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BFS)"
+ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
+TCP="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/TCP)"
+DNSMASQ="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNSMASQ)"
+SERVER="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/SERVER)"
+VOLTAGE="$(busybox cat /data/CrossBreeder/VOLTAGE/ENABLE)"
+SQLITE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
+FDE="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks/ENABLE)"
+EXT4="$(busybox cat /data/CrossBreeder/EXT4_LAGFIX/ENABLE)"
+
+if [ "$XRANDOM" = "1" ]; then
+echo
+echo "Random Tweak Status :"
+echo
+echo "Testing urandom with 10MB test..."
+busybox time busybox head -c 10m /dev/urandom > /dev/null
+echo "Testing urandom with 20MB test..."
+busybox time busybox head -c 20m /dev/urandom > /dev/null
+if [ -f /dev/frandom ];then
+echo
+echo "Testing frandom with 10MB test..."
+busybox time busybox head -c 10m /dev/frandom > /dev/null
+echo "Testing frandom with 20MB test..."
+busybox time busybox head -c 20m /dev/frandom > /dev/null
+else
+echo
+echo "frandom not support"
+fi
+echo
+busybox lsof | grep -i random
+echo
+else
+echo
+echo "Random tweak disabled"
+echo
+fi
+
+if [ "$HAVEGED" = "1" ] && [ "$XRANDOM" = "1" ]; then
+echo
+echo "Haveged Tweak Status :"
+echo
+for i in [1 2 3 4 5]; do cat /proc/sys/kernel/random/entropy_avail; sleep 1; done
+stat /proc/sys/kernel/random/read_wakeup_threshold 
+else
+echo
+echo "Haveged tweak disabled"
+echo
+fi
+
+if [ "$UIBOOST" = "1" ]; then
+
+UI1=$(getprop "persist.sys.scrollingcache")
+UI2=$(getprop "windowsmgr.max_events_per_sec")
+
+if [ "$UI1" = "3" ] && [ "$UI2" = "300" ]; then
+echo
+echo "UIBoost tweak is running..."
+echo
+else
+echo
+echo "UIBoost tweak error"
+echo
+fi
+
+else
+echo
+echo "UIBoost tweak disabled"
+echo
+fi
+
+if [ "$ZYGOTE" = "1" ]; then
+
+ZY1=$(getprop "ro.zygote.disable_gl_preload")
+ZY2=$(getprop "persist.zygote.preload_threads")
+
+if [ "$ZY1" = "false" ] && [ "$ZY2" = "3" ]; then
+echo
+echo "Zygote tweak is running..."
+echo
+else
+echo
+echo "Zygote tweak error"
+echo
+fi
+
+else
+echo
+echo "Zygote tweak disabled"
+echo
+fi
+
+if [ "$KSM" = "1" ]; then
+
+VM1=$(busybox cat /proc/sys/kernel/shmmax)
+VM2=$(busybox cat /proc/sys/kernel/msgmni)
+
+if [ "$VM1" = "268435456" ] && [ "$VM2" = "2000" ]; then
+echo
+echo "KSM tweak is running..."
+echo
+else
+echo
+echo "KSM tweak error"
+echo
+fi
+
+else
+echo
+echo "KSM tweak disabled"
+echo
+
+fi
+
+if [ "$IOBOOST" = "1" ]; then
+
+IO0=$(busybox cat /sys/block/mmcblk0/queue/scheduler)
+IO1=$(busybox cat /sys/block/mmcblk0/queue/nr_requests)
+IO2=$(busybox cat /sys/block/mmcblk0/queue/iostats)
+
+if [ "$IO1" = "1100" ] && [ "$IO2" = "0" ]; then
+echo
+echo "IOBoost tweak is running..."
+echo
+else
+echo
+echo "IOBoost tweak error"
+echo
+fi
+echo
+echo "I/O Scheduler : $IO0"
+echo
+else
+echo
+echo "IOBoost tweak disabled"
+echo
+fi
+
+if [ "$VMBOOST" = "1" ]; then
+
+VM1=$(busybox cat /proc/sys/vm/vfs_cache_pressure)
+VM2=$(busybox cat /proc/sys/vm/dirty_ratio)
+
+if [ "$VM1" = "1215752192" ] && [ "$VM2" = "99" ]; then
+echo
+echo "VMBoost tweak is running..."
+echo
+else
+echo
+echo "VMBoost tweak error"
+echo
+fi
+
+else
+echo
+echo "VMBoost tweak disabled"
+echo
+
+fi
+
+if [ "$BFS" = "1" ]; then
+
+if [ -e /proc/sys/kernel/rr_interval ]; then
+
+BFS1=$(busybox cat /proc/sys/kernel/rr_interval)
+BFS2=$(busybox cat /proc/sys/kernel/iso_cpu)
+
+if [ "$BFS1" = "6" ] && [ "$BFS2" = "75" ]; then
+echo
+echo "BFS tweak is running..."
+echo
+else
+echo
+echo "BFS tweak error"
+echo
+fi
+
+else
+echo
+echo "Your kernel not support BFS"
+echo
+fi
+
+else
+echo
+echo "BFS tweak disabled"
+echo
+
+fi
+
+if [ "$ADVCT" = "1" ]; then
+
+ACT=$(busybox cat /dev/cpuctl/fg_boost/cpu.shares)
+ACT2=$(busybox cat /dev/cpuctl/cpu.shares)
+
+if [ "$ACT" = "1152" ] && [ "$ACT2" = "1024" ]; then
+echo
+echo "Advanced CPU tweak is running..."
+echo
+else
+echo
+echo "Advanced CPU tweak error"
+echo
+fi
+
+else
+echo
+echo "Advanced CPU tweak disabled"
+echo
+fi
+
+if [ "$TCP" = "1" ]; then
+
+TCPMEM=$(busybox cat /proc/sys/net/core/wmem_max)
+TCPMEM2=$(busybox cat /proc/sys/net/core/somaxconn)
+
+if [ "$TCPMEM" = "873200" ] && [ "$TCPMEM2" = "2000" ]; then
+echo
+echo "TCP tweak is running..."
+echo
+else
+echo
+echo "TCP tweak error"
+echo
+fi
+
+else
+echo
+echo "TCP tweak disabled"
+echo
+fi
+
+
+if [ "$DNSMASQ" = "1" ]; then
+echo
+if [ "$SERVER" = "0" ]; then
+echo "DNS Server=No Server"
+elif [ "$SERVER" = "1" ]; then
+echo "DNS Server=Google Public DNS"
+elif [ "$SERVER" = "2" ]; then
+echo "DNS Server=OPEN DNS"
+elif [ "$SERVER" = "3" ]; then
+echo "DNS Server=DNS.WATCH"
+elif [ "$SERVER" = "4" ]; then
+echo "DNS Server=Norton Connect Safe"
+elif [ "$SERVER" = "5" ]; then
+echo "DNS Server=Level 3"
+elif [ "$SERVER" = "6" ]; then
+echo "DNS Server=Comodo Secure DNS"
+elif [ "$SERVER" = "7" ]; then
+echo "DNS Server=DNS Advantage"
+elif [ "$SERVER" = "8" ]; then
+echo "DNS Server=Safe DNS"
+elif [ "$SERVER" = "9" ]; then
+echo "DNS Server=OPEN NIC"
+fi
+echo
+echo
+busybox cat /data/DNSMasq.log
+rm -f /data/DNSMasq.log
+echo
+else
+echo
+echo "DNSMasq tweak disabled"
+echo
+fi
+
+if [ "$VOLTAGE" = "1" ]; then
+echo
+busybox cat /data/CBL_LowVoltage.log
+rm -f /data/CBL_LowVoltage.log
+echo
+else
+echo
+echo "Low-Voltage Tweak disabled"
+echo
+fi
+
+if [ "$EXT4" = "1" ]; then
+echo
+busybox cat /data/EXT4_LAGFIX.log
+rm -f /data/EXT4_LAGFIX.log
+echo
+else
+echo
+echo "EXT4 lag fix disabled"
+echo
+fi
+
+if [ "$SQLITE" = "1" ]; then
+echo
+busybox cat /data/SQLite.log
+rm -f /data/SQLite.log
+echo
+else
+echo
+echo "SQLite tweak disabled"
+echo
+fi
+
+if [ "$FDE" = "1" ]; then
+echo
+echo "FDE Governor Tweaks is running..."
+echo
+else
+echo
+echo "FDE Governor Tweaks disabled"
+echo
+fi
+
+echo
+echo "If DynBS is running, it will show at the log below."
+echo
+echo "Latest Kernel Message..."
+echo
+dmesg
+echo
+echo
+echo "Dynamic Z-RAM/LMK :"
+echo

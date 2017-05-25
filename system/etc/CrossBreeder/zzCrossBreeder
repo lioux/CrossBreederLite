@@ -5,82 +5,17 @@ export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/syste
 alias [='busybox ['
 alias [[='busybox [['
 
-XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
-HAVEGED="$(busybox cat /data/CrossBreeder/zzCrossBreeder/HAVEGED)"
 UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
 ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
-NODEBUG="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NODEBUG)"
+KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
 VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
+BFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BFS)"
 ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
 
 set +e
 
-touch /dev/CrossBreeder.RUN
-
-if [ "$XRANDOM" = "1" ]; then
-
-RANDOMDEVICE=urandom
-if [ -c /dev/erandom ]; then
-  if [ ! -f /dev/urandom.MOD ]; then
-    touch /dev/urandom.MOD
-    busybox mv /dev/urandom /dev/urandom.ORIG
-    busybox ln /dev/erandom /dev/urandom
-    sleep 2
-  fi
-  busybox chmod 666 /dev/frandom
-  busybox chmod 666 /dev/erandom
-  RANDOMDEVICE=frandom
-fi
-
-URANDOMDEVICE="/dev/urandom"
-if [ -c /dev/erandom ]; then
-  if [ ! -f /dev/urandom.MOD ]; then 
-    touch /dev/urandom.MOD
-    busybox mv /dev/urandom /dev/urandom.ORIG
-    busybox ln /dev/erandom /dev/urandom
-    sleep 2
-  fi
-  busybox chmod 666 /dev/frandom
-  busybox chmod 666 /dev/erandom
-  RANDOMDEVICE=frandom
-  if [ ! -c /dev/urandom.ORIG ]; then 
-    busybox mknod -m 666 /dev/urandom.ORIG c 1 9
-    sleep 2
-  fi
-  URANDOMDEVICE="/dev/urandom.ORIG"
-elif [ ! -c /dev/urandom ]; then
-  busybox mknod -m 666 /dev/urandom c 1 9
-  sleep 2
-fi
-
-if [ ! -f /dev/random.MOD ]; then  
-  touch /dev/random.MOD
-  busybox rm /dev/random
-  busybox ln /dev/$RANDOMDEVICE /dev/random
-  sleep 2
-fi
-
-for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done
-
-fi
-
-if [ "$HAVEGED" = "1" ] && [ "$XRANDOM" = "1" ]; then
-
-( busybox nice -n +20 CB_RunHaveged $URANDOMDEVICE 0 0<&- &>/dev/null 2>&1 ) &
-
-busybox sysctl -w kernel.random.read_wakeup_threshold=8;
-busybox sysctl -w kernel.random.write_wakeup_threshold=0;
-
-sys_pid=`busybox pgrep system_server 2>/dev/null`
-
-busybox renice -10 $sys_pid 2>/dev/null
-
-for i in $(busybox pgrep haveged 2>/dev/null); do 
-  busybox renice +20 $i 2>/dev/null
-done
-
-fi
+CB_RunHaveged
 
 if [ "$UIBOOST" = "1" ]; then
 
@@ -103,17 +38,11 @@ setprop persist.zygote.preload_threads 3
 
 fi
 
-if [ "$NODEBUG" = "1" ]; then
+if [ "$KSM" = "1" ]; then
 
-busybox mount -t debugfs -o rw none /sys/kernel/debug 2>/dev/null
-
-if [ -e /sys/kernel/debug/sched_features ]; then
-  busybox echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features 2>/dev/null
-  busybox echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
-  busybox echo  NO_NEW_FAIR_SLEEPERS > /sys/kernel/debug/sched_features 2>/dev/null
-fi
-
-busybox umount /sys/kernel/debug 2>/dev/null
+busybox sysctl -w kernel.sem="1000 1024000 200 4096"
+busybox sysctl -w kernel.shmmax=268435456
+busybox sysctl -w kernel.msgmni=2000
 
 fi
 
@@ -121,11 +50,14 @@ if [ "$IOBOOST" = "1" ]; then
 
 for S in /sys/block/*
 do
+	if [ -f /sys/block/mmcblk0/queue/scheduler ];then
+		busybox echo fiops > /sys/block/mmcblk0/queue/scheduler
+	fi
 	if [ -f $S/queue/rotational ];then
 		busybox echo 0 > $S/queue/rotational 2>/dev/null
 	fi
 	if [ -f $S/queue/nr_requests ];then
-		busybox echo 1024 > $S/queue/nr_requests 2>/dev/null
+		busybox echo 1100 > $S/queue/nr_requests 2>/dev/null
 	fi;
 	if [ -f $S/queue/iosched/back_seek_penalty ];then 
 		busybox echo 1 > $S/queue/iosched/back_seek_penalty 2>/dev/null
@@ -203,13 +135,11 @@ busybox sysctl -w vm.panic_on_oom=0
 busybox sysctl -w vm.overcommit_memory=1
 busybox sysctl -w vm.page-cluster=3
 busybox sysctl -w vm.laptop_mode=1
-busybox sysctl -w vm.vfs_cache_pressure=50
 busybox sysctl -w vm.min_free_order_shift=4
 busybox sysctl -w vm.page-cluster=1
 busybox sysctl -w vm.dirty_writeback_centisecs=1500
 busybox sysctl -w vm.dirty_expire_centisecs=1000
 busybox sysctl -w vm.dirty_ratio=99
-busybox sysctl -w vm.vfs_cache_pressure=100000000
 busybox sysctl -w vm.vfs_cache_pressure=1215752192
 busybox sysctl -w vm.min_free_kbytes=12288
 
@@ -240,6 +170,16 @@ VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
 setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
 setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
 setprop persist.sys.vm.heapsize "${VMHEAP}m"
+
+fi
+
+if [ "$BFS" = "1" ]; then
+
+if [ -e /proc/sys/kernel/rr_interval ];
+then
+	echo 6 > /proc/sys/kernel/rr_interval;
+	echo 75 > /proc/sys/kernel/iso_cpu;
+fi
 
 fi
 

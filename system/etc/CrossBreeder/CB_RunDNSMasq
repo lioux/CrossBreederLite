@@ -1,0 +1,17 @@
+#!/system/bin/sh
+
+set +e
+
+( busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp --no-daemon \-port=0"); busybox kill -9 $(busybox pgrep -f dnsmasq) ) &
+
+echo "Running dnsmasq_dhcp..." >> /data/DNSMasq.log
+
+( dnsmasq_dhcp --no-daemon --port=0 --dhcp-option=252 --no-ping --dhcp-authoritative $* )&
+pid=$!
+wait $pid
+
+echo "Run dnsmasq_dhcp failed, try dnsmasq..." >> /data/DNSMasq.log
+
+( dnsmasq --no-daemon $* )&
+pid=$!
+wait $pid

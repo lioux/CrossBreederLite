@@ -8,13 +8,18 @@ MODDIR=${0%/*}
 
 ENABLE="$(busybox cat /data/CrossBreeder/ENABLE)"
 
+rm -f /data/*.pid
+
 if [ "$ENABLE" = "1" ]; then
 
 /system/etc/CrossBreeder/zzCrossBreeder
 /system/etc/CrossBreeder/zzCHECK_NET_DNS
 /system/etc/CrossBreeder/FDE_Governor_Tweaks
+/system/etc/CrossBreeder/VOLTAGE
+/system/etc/CrossBreeder/EXT4_LAGFIX
 /system/etc/CrossBreeder/SQLITE
 /system/etc/CrossBreeder/DynBS
+/system/etc/CrossBreeder/CHECK_PROCS
 
 HR="$(busybox cat /data/CrossBreeder/DynRAM/TIME/HR)"
 MIN="$(busybox cat /data/CrossBreeder/DynRAM/TIME/MIN)"
@@ -29,4 +34,6 @@ sleep $TIME
 
 done) &
 
+else
+echo "CrossBreeder Lite Disabled" >> /data/cb_CHECK_PROCS.log
 fi
