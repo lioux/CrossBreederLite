@@ -59,7 +59,7 @@ List:
 
 6.ADVCT ---> Advanced CPU Tweak
 
-7.Voltage --> Config the voltage you want to reduce.
+7.VOLTAGE --> Config the voltage you want to reduce.
 
 Reference value:
 
@@ -67,4 +67,6 @@ Safe --> 50 [Default] , Recommand --> 75 , Danger --> 100
 
 In order to avoid the voltage too low[system will crash], the value must =<100
 
-8.BFS --> Brain Fuck Scheduler, an alternative to the Completely Fair Scheduler
+8.NKEC --> No Kernel Error Checking
+
+9.HSDPA --> HSDPA low throughput ( Boost net speed )

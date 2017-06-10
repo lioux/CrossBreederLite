@@ -2,6 +2,7 @@
 
 ENABLE="$(busybox cat /data/CrossBreeder/DynBS/ENABLE)"
 CORES=$(grep -c 'processor' /proc/cpuinfo);
+MIN=$(busybox cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq)
 CONF1="$(busybox cat /data/CrossBreeder/DynBS/CONF1)"
 CONF2="$(busybox cat /data/CrossBreeder/DynBS/CONF2)"
 CONF3="$(busybox cat /data/CrossBreeder/DynBS/CONF3)"
@@ -9,10 +10,10 @@ CONF4="$(busybox cat /data/CrossBreeder/DynBS/CONF4)"
 
 if [ "$ENABLE" = "1" ];then
 
-if [ "$CORES" -ge "4" ];then
+if [ "$CORES" -ge "2" ] && [ "$MIN" -ge "300" ];then
   ( dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4 )&
 fi
 
-setprop persist.sys.doze_powersave 1
+setprop persist.sys.doze_powersave true
 
 fi

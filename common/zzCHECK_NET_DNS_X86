@@ -6,13 +6,11 @@ alias [='busybox ['
 alias [[='busybox [['
 
 TCP="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/TCP)"
-DNSMASQ="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNSMASQ)"
+HSDPA="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/HSDPA)"
+DNS="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNS)"
 SERVER="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/SERVER)"
 
-if [ "$SERVER" = "0" ]; then
-DNS1=""
-DNS2=""
-elif [ "$SERVER" = "1" ]; then
+if [ "$SERVER" = "1" ]; then
 DNS1="8.8.8.8"
 DNS2="8.8.4.4"
 elif [ "$SERVER" = "2" ]; then
@@ -39,10 +37,6 @@ DNS2="159.46.39.40"
 elif [ "$SERVER" = "9" ]; then
 DNS1="46.151.208.154"
 DNS2="128.199.248.105"
-fi
-
-if [ ! "$SERVER" = "0" ]; then
-DNSSERVER=" --server=$DNS1 --server=$DNS2"
 fi
 
 set +e
@@ -73,20 +67,19 @@ busybox sysctl -w net.ipv4.tcp_sack=1
 
 fi
 
-if [ "$DNSMASQ" = "1" ]; then
-
-if [ ! "$SERVER" = "0" ]; then
-setprop net.dns1 $DNS1
-setprop net.dns2 $DNS2
-setprop net.rmnet0.dns1 $DNS1
-setprop net.rmnet0.dns2 $DNS2
+if [ "$HSDPA" = "1" ]; then
+  setprop ro.ril.disable.power.collapse 0
 fi
 
-busybox kill -9 $(busybox pgrep -f dnsmasq) 
+if [ "$DNS" = "1" ]; then
 
-echo "Dnsmasq_dhcp not support X86, try dnsmasq" >> /data/DNSMasq.log
+( busybox kill -9 $(busybox pgrep -f dnsmasq) )&
 
-( dnsmasq --no-daemon --all-servers --server=/bit/178.63.16.21,/bit/95.211.195.245,/bit/178.32.31.41 --no-poll --user=root --pid-file=/data/dnsmasq.pid --listen-address=127.0.0.1 --bind-interfaces --cache-size=0 --no-negcache --no-hosts$DNSSERVER )&
+exec 1>/data/DNSMasq.log 2>&1
+
+echo "Dnsmasq_dhcp not support X86, try dnsmasq"
+
+( dnsmasq --no-daemon --port=10054 --all-servers --server=/bit/178.63.16.21,/bit/95.211.195.245,/bit/178.32.31.41 --no-resolv --user=root --pid-file=/data/dnsmasq.pid --listen-address=127.0.0.3 --bind-interfaces --cache-size=0 --no-negcache --no-hosts --server=$DNS1 --server=$DNS2 )&
 pid=$!
 busybox renice +20 $pid 2>/dev/null
 

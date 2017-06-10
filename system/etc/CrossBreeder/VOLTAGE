@@ -338,10 +338,17 @@ fi
 echo$VAL01$VAL02$VAL03$VAL04$VAL05$VAL06$VAL07$VAL08$VAL09$VAL10$VAL11$VAL12$VAL13$VAL14$VAL15$VAL16$VAL17$VAL18$VAL19$VAL20$VAL21$VAL22$VAL23$VAL24$VAL25$VAL26$VAL27$VAL28$VAL29$VAL30 > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
 
 touch /dev/CBL_LowVoltage.RUN
-echo "Low-Voltage is running..." >> /data/CBL_LowVoltage.log
+
+VOLTAGENOW="$(busybox cat /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table)"
+
+echo "" >> /data/CBL_LowVoltage.log
+echo "After turning..." >> /data/CBL_LowVoltage.log
+echo "" >> /data/CBL_LowVoltage.log
+echo "$VOLTAGENOW" >> /data/CBL_LowVoltage.log
 
 }
 
+VOLTAGENOW="$(busybox cat /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table)"
 VOLTAGE="$(busybox cat /data/CrossBreeder/VOLTAGE/ENABLE)"
 V="$(busybox cat /data/CrossBreeder/VOLTAGE/CONF)"
 
@@ -360,6 +367,11 @@ if [ "$V" -gt "100" ]; then
  exit 0
 fi
 if [ -f /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table ] && [ ! -f /dev/CBL_LowVoltage.RUN ] && [ "$V" -le "100" ]; then
+ echo "Low-Voltage is running..." >> /data/CBL_LowVoltage.log
+ echo "" >> /data/CBL_LowVoltage.log
+ echo "Before turning..." >> /data/CBL_LowVoltage.log
+ echo "" >> /data/CBL_LowVoltage.log
+ echo "$VOLTAGENOW" >> /data/CBL_LowVoltage.log
  LOW_VOLTAGE
 fi
 

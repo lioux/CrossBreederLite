@@ -152,18 +152,24 @@ Install_for_X86() {
 ui_print "- Preparing for X86 Install"
 
 rm -rf $MODPATH/system/bin
+rm -rf $MODPATH/system/etc/CrossBreeder/dnrd_root
 rm -af $MODPATH/system/xbin/haveged
 rm -af $MODPATH/system/etc/CrossBreeder/CHECK_PROCS
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunHaveged
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunDNSMasq
+rm -af $MODPATH/system/etc/CrossBreeder/dnrd.udp.10053
 rm -af $MODPATH/system/etc/CrossBreeder/zzCHECK_NET_DNS
 rm -af $MODPATH/system/etc/CrossBreeder/zzCrossBreeder
+rm -af $MODPATH/system/etc/CrossBreeder/punchmod
+rm -rf $MODPATH/system/etc/CrossBreeder/dnrd_root
+rm -rf $MODPATH/system/lib
 rm -af $MODPATH/system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
 rm -af $MODPATH/system/etc/CrossBreeder/IRQ_FLUSH_FREQUENCY_MINUTES
 cp -af $INSTALLER/common/zzCHECK_NET_DNS_X86 $MODPATH/system/etc/CrossBreeder/zzCHECK_NET_DNS
 cp -af $INSTALLER/common/zzCrossBreeder_X86 $MODPATH/system/etc/CrossBreeder/zzCrossBreeder
 cp -af $INSTALLER/common/CHECK_PROCS_X86 $MODPATH/system/etc/CrossBreeder/CHECK_PROCS
 rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/HAVEGED
+rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/PUNCHMOD
 
 }
 
@@ -374,6 +380,21 @@ fi
 
 if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]; then
  cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
+fi
+
+if [ -f /system/bin/tune2fs ]; then
+ if [ ! -d $MODPATH/system/bin ]; then
+  mkdir -p $MODPATH/system/bin
+ fi
+ cp -af $INSTALLER/common/tune2fs $MODPATH/system/bin/tune2fs
+fi
+
+if [ -f /system/xbin/tune2fs ]; then
+ cp -af $INSTALLER/common/tune2fs $MODPATH/system/xbin/tune2fs
+fi
+
+if [ ! -f $MODPATH/system/bin/tune2fs ] && [ ! -f $MODPATH/system/xbin/tune2fs ]; then
+ cp -af $INSTALLER/common/tune2fs $MODPATH/system/etc/CrossBreeder/tune2fs
 fi
 
 rm -rf /data/CrossBreeder

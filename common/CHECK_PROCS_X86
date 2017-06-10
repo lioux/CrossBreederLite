@@ -5,7 +5,7 @@ echo "Please find the debug output to report on forums in /data/cb_CHECK_PROCS.l
 echo
 exec 1>/data/cb_CHECK_PROCS.log 2>&1
 echo
-echo "CrossBreeder Lite Version 1.3 Stable"
+echo "CrossBreeder Lite Version 1.4 Pre-Stable"
 echo
 export TZ=GMT; date;
 echo
@@ -24,15 +24,17 @@ ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
 KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
 VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
-BFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BFS)"
+NKEC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NKEC)"
 ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
 TCP="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/TCP)"
-DNSMASQ="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNSMASQ)"
+HSDPA="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/HSDPA)"
+DNS="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/DNS)"
 SERVER="$(busybox cat /data/CrossBreeder/zzCHECK_NET_DNS/SERVER)"
 VOLTAGE="$(busybox cat /data/CrossBreeder/VOLTAGE/ENABLE)"
 SQLITE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
 FDE="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks/ENABLE)"
 EXT4="$(busybox cat /data/CrossBreeder/EXT4_LAGFIX/ENABLE)"
+TUNE2FS="$(busybox cat /data/CrossBreeder/EXT4_LAGFIX/TUNE2FS)"
 
 if [ "$XRANDOM" = "1" ]; then
 echo
@@ -192,44 +194,34 @@ echo
 
 fi
 
-if [ "$BFS" = "1" ]; then
+if [ "$NKEC" = "1" ]; then
 
-if [ -e /proc/sys/kernel/rr_interval ]; then
+NK1=$(getprop "ro.kernel.android.checkjni")
+NK2=$(getprop "ro.kernel.checkjni")
 
-BFS1=$(busybox cat /proc/sys/kernel/rr_interval)
-BFS2=$(busybox cat /proc/sys/kernel/iso_cpu)
-
-if [ "$BFS1" = "6" ] && [ "$BFS2" = "75" ]; then
+if [ "$NK1" = "0" ] && [ "$NK2" = "0" ]; then
 echo
-echo "BFS tweak is running..."
+echo "No Kernel Error Checking tweak is running..."
 echo
 else
 echo
-echo "BFS tweak error"
+echo "No Kernel Error Checking tweak error"
 echo
 fi
 
 else
 echo
-echo "Your kernel not support BFS"
-echo
-fi
-
-else
-echo
-echo "BFS tweak disabled"
+echo "No Kernel Error Checking tweak disabled"
 echo
 
 fi
-
-
 
 if [ "$ADVCT" = "1" ]; then
 
 ACT=$(busybox cat /dev/cpuctl/fg_boost/cpu.shares)
-ACT2=$(busybox cat /dev/cpuctl/cpu.shares)
+ACT2=$(busybox cat /dev/cpuctl/user/cpu.shares)
 
-if [ "$ACT" = "1152" ] && [ "$ACT2" = "1024" ]; then
+if [ "$ACT" = "1536" ] && [ "$ACT2" = "1152" ]; then
 echo
 echo "Advanced CPU tweak is running..."
 echo
@@ -266,12 +258,29 @@ echo "TCP tweak disabled"
 echo
 fi
 
+if [ "$HSDPA" = "1" ]; then
 
-if [ "$DNSMASQ" = "1" ]; then
+HSD=$(getprop "ro.ril.disable.power.collapse")
+
+if [ "$HSD" = "0" ]; then
 echo
-if [ "$SERVER" = "0" ]; then
-echo "DNS Server=No Server"
-elif [ "$SERVER" = "1" ]; then
+echo "HSDPA tweak is running..."
+echo
+else
+echo
+echo "HSDPA tweak error"
+echo
+fi
+
+else
+echo
+echo "HSDPA tweak disabled"
+echo
+fi
+
+if [ "$DNS" = "1" ]; then
+echo
+if [ "$SERVER" = "1" ]; then
 echo "DNS Server=Google Public DNS"
 elif [ "$SERVER" = "2" ]; then
 echo "DNS Server=OPEN DNS"
@@ -312,14 +321,14 @@ echo "Low-Voltage Tweak disabled"
 echo
 fi
 
-if [ "$EXT4" = "1" ]; then
+if [ "$FDE" = "1" ]; then
 echo
-busybox cat /data/EXT4_LAGFIX.log
-rm -f /data/EXT4_LAGFIX.log
+busybox cat /data/FDE_GT.log
+rm -f /data/FDE_GT.log
 echo
 else
 echo
-echo "EXT4 lag fix disabled"
+echo "FDE Governor Tweaks disabled"
 echo
 fi
 
@@ -334,13 +343,25 @@ echo "SQLite tweak disabled"
 echo
 fi
 
-if [ "$FDE" = "1" ]; then
+if [ "$EXT4" = "1" ]; then
 echo
-echo "FDE Governor Tweaks is running..."
+busybox cat /data/EXT4_LAGFIX.log
+rm -f /data/EXT4_LAGFIX.log
 echo
 else
 echo
-echo "FDE Governor Tweaks disabled"
+echo "EXT4 lag fix disabled"
+echo
+fi
+
+if [ "$TUNE2FS" = "1" ]; then
+echo
+busybox cat /data/TUNE2FS.log
+rm -f /data/TUNE2FS.log
+echo
+else
+echo
+echo "Tune2FS disabled"
 echo
 fi
 

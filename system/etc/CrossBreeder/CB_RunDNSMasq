@@ -2,16 +2,18 @@
 
 set +e
 
-( busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp --no-daemon \-port=0"); busybox kill -9 $(busybox pgrep -f dnsmasq) ) &
+( busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp --no-daemon \-port=10053"); busybox kill -9 $(busybox pgrep -f dnsmasq) ) &
 
-echo "Running dnsmasq_dhcp..." >> /data/DNSMasq.log
+exec 1>/data/DNSMasq.log 2>&1
 
-( dnsmasq_dhcp --no-daemon --port=0 --dhcp-option=252 --no-ping --dhcp-authoritative $* )&
+echo "Running dnsmasq_dhcp..."
+
+( dnsmasq_dhcp --no-daemon --port=10053 --dhcp-option=252 --no-ping --dhcp-authoritative $* )&
 pid=$!
 wait $pid
 
-echo "Run dnsmasq_dhcp failed, try dnsmasq..." >> /data/DNSMasq.log
+echo "Run dnsmasq_dhcp failed, try dnsmasq..."
 
-( dnsmasq --no-daemon $* )&
+( dnsmasq --no-daemon --port=10053 $* )&
 pid=$!
 wait $pid

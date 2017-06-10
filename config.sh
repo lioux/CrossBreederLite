@@ -86,7 +86,7 @@ set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
   set_perm_recursive  $MODPATH/system  0  0  0755  0755
-
+  set_perm_recursive  $MODPATH/system/lib/modules  0  0  0755  0644
   # Only some special files require specific permissions
   # The default permissions should be good enough for most cases
 

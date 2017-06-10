@@ -10,7 +10,7 @@ ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
 KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
 VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
-BFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BFS)"
+NKEC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NKEC)"
 ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
 
 set +e
@@ -43,6 +43,9 @@ if [ "$KSM" = "1" ]; then
 busybox sysctl -w kernel.sem="1000 1024000 200 4096"
 busybox sysctl -w kernel.shmmax=268435456
 busybox sysctl -w kernel.msgmni=2000
+busybox sysctl -w kernel.panic_on_oops=0
+busybox sysctl -w kernel.panic_on_warn=0
+busybox sysctl -w kernel.panic=0
 
 fi
 
@@ -131,6 +134,7 @@ if [ "$VMBOOST" = "1" ]; then
 busybox sysctl -w vm.max_map_count=65530
 busybox sysctl -w vm.drop_caches=3
 busybox sysctl -w vm.oom_kill_allocating_task=0
+busybox sysctl -w vm.oom_dump_tasks=0
 busybox sysctl -w vm.panic_on_oom=0
 busybox sysctl -w vm.overcommit_memory=1
 busybox sysctl -w vm.page-cluster=3
@@ -140,6 +144,7 @@ busybox sysctl -w vm.page-cluster=1
 busybox sysctl -w vm.dirty_writeback_centisecs=1500
 busybox sysctl -w vm.dirty_expire_centisecs=1000
 busybox sysctl -w vm.dirty_ratio=99
+busybox sysctl -w vm.dirty_background_ratio=1
 busybox sysctl -w vm.vfs_cache_pressure=1215752192
 busybox sysctl -w vm.min_free_kbytes=12288
 
@@ -170,16 +175,14 @@ VMHEAP="$(( $HEAPMAXSIZE / ( 1000/$THRESHOLD ) ))"
 setprop dalvik.vm.heapsize "${HEAPMAXSIZE}m"
 setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
 setprop persist.sys.vm.heapsize "${VMHEAP}m"
+setprop persist.sys.purgeable_assets 1
 
 fi
 
-if [ "$BFS" = "1" ]; then
+if [ "$NKEC" = "1" ]; then
 
-if [ -e /proc/sys/kernel/rr_interval ];
-then
-	echo 6 > /proc/sys/kernel/rr_interval;
-	echo 75 > /proc/sys/kernel/iso_cpu;
-fi
+setprop ro.kernel.android.checkjni 0
+setprop ro.kernel.checkjni 0
 
 fi
 
@@ -300,7 +303,7 @@ for i in `ls /proc/$pid/task 2>/dev/null`; do
   busybox echo $i >> /dev/cpuctl/fg_boost/tasks 2>/dev/null
 done
 
-busybox echo 1152 > /dev/cpuctl/fg_boost/cpu.shares 2>/dev/null
+busybox echo 1536 > /dev/cpuctl/fg_boost/cpu.shares 2>/dev/null
 busybox echo 1024 > /dev/cpuctl/cpu.shares 2>/dev/null
 busybox echo 1152 > /dev/cpuctl/user/cpu.shares 2>/dev/null
 
