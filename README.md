@@ -32,6 +32,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+1.5 Patch 2 - Now include busybox
+
 1.5 Patch 1 - Updated to v4 template
 
 1.5 Fixed - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash

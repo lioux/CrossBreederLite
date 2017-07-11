@@ -222,18 +222,23 @@ mv $INSTALLER/system $MODPATH/system
 
 if [ "$ABILONG" = "arm64-v8a" ]; then
  SQLITE=arm64-v8a;
+ BB=busybox_arm64;
  Install_for_ARM
 elif [ "$ABILONG" = "armeabi-v7a" ]; then
  SQLITE=armeabi-v7a;
+ BB=busybox_arm;
  Install_for_ARM
 elif [ "$ABILONG" = "armeabi" ]; then
  SQLITE=armeabi;
+ BB=busybox_arm;
  Install_for_ARM
 elif [ "$ABILONG" = "x86_64" ]; then
  SQLITE=x86_64;
+ BB=busybox_x86_64;
  Install_for_X86
 elif [ "$ABILONG" = "x86" ]; then
  SQLITE=x86;
+ BB=busybox_x86;
  Install_for_X86
 else
  exit 0
@@ -255,6 +260,10 @@ fi
 if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]; then
  cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
 fi
+
+ui_print "- Busybox can be $SQLITE"
+
+cp -af $INSTALLER/common/$BB $MODPATH/system/bin/busybox
 
 rm -rf /data/CrossBreeder
 cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
