@@ -74,12 +74,6 @@ for i in $(busybox pgrep haveged 2>/dev/null); do
   busybox renice +20 $i 2>/dev/null
 done
 
-for pid in $(busybox ps -T -o pid,args 2>/dev/null | busybox grep -i 'haveged' 2>/dev/null | busybox awk '{ print $1 }' 2>/dev/null); do
-  busybox renice +1 $pid 2>/dev/null
-  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
-  busybox chrt -o -p 15 $pid 2>/dev/null
-done
-
 touch /dev/CB_RunHaveged.RUN
 
 fi

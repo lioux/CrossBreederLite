@@ -110,6 +110,11 @@ do
 setmem=$(( $setmem+${FREEMEM[$mem]} ))
 done
 setmem=$(($setmem/${#FREEMEM[@]}))
+
+if [ "RAM" -lt "1024" ]; then
+THRESHOLD2=5
+fi
+
 ADDMEM=$((setmem * $THRESHOLD2 / 10))
 
 VAL1=$(( ( ( $RAM* 1 / 1000 ) + ( $ADDMEM / 12 ) ) / 4 ))

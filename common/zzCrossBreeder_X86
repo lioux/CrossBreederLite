@@ -94,10 +94,7 @@ fi
 
 if [ "$ZYGOTE" = "1" ]; then
 
-setprop ro.zygote.preload.enable 1
-setprop ro.zygote.disable_gl_preload false
-setprop persist.preload.common 1
-setprop persist.zygote.preload_threads 3
+setprop ro.wmt.blcr.enable 0
 
 fi
 

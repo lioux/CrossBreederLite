@@ -70,3 +70,5 @@ In order to avoid the voltage too low[system will crash], the value must =<100
 8.NKEC --> No Kernel Error Checking
 
 9.HSDPA --> HSDPA low throughput ( Boost net speed )
+
+10. ZYGOTE --> Disable zygote process ( Danger )

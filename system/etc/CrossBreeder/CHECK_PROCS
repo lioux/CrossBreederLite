@@ -4,7 +4,7 @@ echo "Please find the debug output to report on forums in /data/cb_CHECK_PROCS.l
 echo
 exec 1>/data/cb_CHECK_PROCS.log 2>&1
 echo
-echo "CrossBreeder Lite Version 1.4 Stable"
+echo "CrossBreeder Lite Version 1.5 Patch 1"
 echo
 export TZ=GMT; date;
 echo
@@ -32,7 +32,6 @@ VOLTAGE="$(busybox cat /data/CrossBreeder/VOLTAGE/ENABLE)"
 SQLITE="$(busybox cat /data/CrossBreeder/SQLITE/ENABLE)"
 FDE="$(busybox cat /data/CrossBreeder/FDE_Governor_Tweaks/ENABLE)"
 EXT4="$(busybox cat /data/CrossBreeder/EXT4_LAGFIX/ENABLE)"
-TUNE2FS="$(busybox cat /data/CrossBreeder/EXT4_LAGFIX/TUNE2FS)"
 
 if [ "$XRANDOM" = "1" ]; then
 echo
@@ -96,10 +95,9 @@ fi
 
 if [ "$ZYGOTE" = "1" ]; then
 
-ZY1=$(getprop "ro.zygote.disable_gl_preload")
-ZY2=$(getprop "persist.zygote.preload_threads")
+ZY1=$(getprop "ro.wmt.blcr.enable")
 
-if [ "$ZY1" = "false" ] && [ "$ZY2" = "3" ]; then
+if [ "$ZY1" = "0" ]; then
 echo
 echo "Zygote tweak is running..."
 echo
@@ -346,24 +344,6 @@ echo "EXT4 lag fix disabled"
 echo
 fi
 
-if [ "$TUNE2FS" = "1" ]; then
-echo
-busybox cat /data/TUNE2FS.log
-rm -f /data/TUNE2FS.log
-echo
-else
-echo
-echo "Tune2FS disabled"
-echo
-fi
-
-echo
-echo "If DynBS is running, it will show at the log below."
-echo
-echo "Latest Kernel Message..."
-echo
-dmesg
-echo
 echo
 echo "Dynamic Z-RAM/LMK :"
 echo
