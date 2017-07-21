@@ -50,6 +50,100 @@ require_new_magisk() {
 
 ###################################################
 
+Install_to_system() {
+
+if [ ! -f /data/SYSINSTALL.CBL ]; then
+  ui_print"! Warning : Magisk is not installed"
+  ui_print"- If you want to install this module to system, please flash this installer again."
+  touch /data/SYSINSTALL.CBL
+  exit 0
+fi
+
+rm -rf $TMPDIR 2>/dev/null
+mkdir -p $INSTALLER
+unzip -o "$ZIP" config.sh -d $INSTALLER 2>/dev/null
+
+[ ! -f $INSTALLER/config.sh ] && abort "! Unable to extract zip file!"
+
+. $INSTALLER/config.sh
+
+MODPATH=$MOUNTPATH/$MODID
+
+# Print mod name
+print_modname
+
+# Please leave this message in your flashable zip for credits :)
+ui_print "******************************"
+ui_print "Powered by Magisk (@topjohnwu)"
+ui_print "******************************"
+
+ui_print "- Mounting /system, /vendor, /data, /cache"
+mount -o ro /system 2>/dev/null
+mount -o ro /vendor 2>/dev/null
+mount /data 2>/dev/null
+mount /cache 2>/dev/null
+
+ui_print "- Extracting module files"
+unzip -o "$ZIP" -d $INSTALLER 2>/dev/null
+request_size_check $INSTALLER
+
+# Detect version and architecture
+api_level_arch_detect
+
+if [ -f /data/SYSINSTALL.CBL ]; then
+  # Copy files
+  ui_print "- Preparing for system Install"
+  ui_print "- Copying files"
+  mv $INSTALLER/system /system
+  if [ "$ABILONG" = "arm64-v8a" ]; then
+    SQLITE=arm64-v8a;
+    SYS_Install_for_ARM
+  elif [ "$ABILONG" = "armeabi-v7a" ]; then
+    SQLITE=armeabi-v7a;
+    SYS_Install_for_ARM
+  elif [ "$ABILONG" = "armeabi" ]; then
+    SQLITE=armeabi;
+    SYS_Install_for_ARM
+  elif [ "$ABILONG" = "x86_64" ]; then
+    SQLITE=x86_64;
+    SYS_Install_for_X86
+  elif [ "$ABILONG" = "x86" ]; then
+    SQLITE=x86;
+    SYS_Install_for_X86
+  else
+    abort "! ARCH can't be found"
+  fi
+  ui_print "- SQLITE3 can be $SQLITE"
+  if [ -f /system/bin/sqlite3 ]; then
+    cp -af $INSTALLER/common/$SQLITE /system/bin/sqlite3
+    set_perm  /system/bin/sqlite3       0       0       0755
+  fi
+  if [ -f /system/xbin/sqlite3 ]; then
+   cp -af $INSTALLER/common/$SQLITE /system/xbin/sqlite3
+  set_perm  /system/xbin/sqlite3       0       0       0755 
+  fi
+  if [ ! -f /system/bin/sqlite3 ] && [ ! -f /system/xbin/sqlite3 ]; then
+   cp -af $INSTALLER/common/$SQLITE /system/xbin/sqlite3
+   set_perm  /system/xbin/sqlite3       0       0       0755
+  fi
+  rm -rf /data/CrossBreeder
+  cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
+  cp -af $INSTALLER/common/sys_service.sh /system/etc/init.d/00CrossBreeder
+  set_perm_recursive  /system/etc/CrossBreeder  0  0  0755  0755
+  set_perm_recursive  /system/usr/idc  0  0  0755  0755
+  set_perm_recursive  /system/etc/init.d  0  0  0755  0755
+  set_perm  /system/bin/busybox       0       0       0755
+  set_perm  /system/xbin/dynbsd       0       0       0755
+  rm -af /data/SYSINSTALL.CBL
+  umount /system 2>/dev/null
+  umount /vendor 2>/dev/null
+  umount /data 2>/dev/null
+  umount /cache 2>/dev/null
+  ui_print "- Done"
+  exit 0
+fi
+}
+
 Install_for_ARM() {
 
 ui_print "- Preparing for ARM Install"
@@ -86,7 +180,6 @@ Install_for_X86() {
 ui_print "- Preparing for X86 Install"
 
 rm -rf $MODPATH/system/bin
-rm -rf $MODPATH/system/etc/CrossBreeder/dnrd_root
 rm -af $MODPATH/system/xbin/haveged
 rm -af $MODPATH/system/etc/CrossBreeder/CHECK_PROCS
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunHaveged
@@ -95,6 +188,7 @@ rm -af $MODPATH/system/etc/CrossBreeder/dnrd.udp.10053
 rm -af $MODPATH/system/etc/CrossBreeder/zzCHECK_NET_DNS
 rm -af $MODPATH/system/etc/CrossBreeder/zzCrossBreeder
 rm -af $MODPATH/system/etc/CrossBreeder/punchmod
+mv -af $MODPATH/system/etc/CrossBreeder/dnrd_root/master $MODPATH/system/etc/hosts
 rm -rf $MODPATH/system/etc/CrossBreeder/dnrd_root
 rm -rf $MODPATH/system/lib
 rm -af $MODPATH/system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
@@ -107,13 +201,75 @@ rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/PUNCHMOD
 
 }
 
+SYS_Install_for_ARM() {
+
+ui_print "- Preparing for ARM Install"
+
+my_md5="48d569faa12728ba9464e397b692bc12" 
+his_md5=`md5sum /system/bin/dnsmasq 2>/dev/null | awk '{ print $1 }' 2>/dev/null`
+
+if [ "$his_md5" = "$my_md5" ]; then
+  busybox cp -af $INSTALLER/common/dnsmasq.CBBAK /system/bin/dnsmasq
+fi
+
+if [ ! -f /system/bin/dnsmasq ]; then
+  if [ ! "`busybox dd if=/system/bin/dnsmasq skip=1 bs=1 count=3`" = "ELF" ]; then
+    cp -af $INSTALLER/common/dnsmasq.CBBAK /system/bin/dnsmasq
+  fi
+fi
+
+RNGD=/system/bin/rngd
+XRNGD=/system/xbin/rngd
+QRNGD=/system/bin/qrngd
+XQRNGD=/system/xbin/qrngd
+for SEED in $RNGD $XRNGD $QRNGD $XQRNGD; do
+  if [ -f $SEED ]; then
+    rm -af $SEED
+  fi
+done
+
+rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/ENTROPY
+
+set_perm  /system/bin/dnsmasq_dhcp       0       0       0755
+set_perm  /system/xbin/haveged       0       0       0755
+set_perm  /system/lib/modules/frandom.ko       0       0       0644
+
+}
+
+SYS_Install_for_X86() {
+
+ui_print "- Preparing for X86 Install"
+
+rm -af /system/bin/dnsmasq_dhcp
+rm -af /system/xbin/haveged
+rm -af /system/etc/CrossBreeder/CHECK_PROCS
+rm -af /system/etc/CrossBreeder/CB_RunHaveged
+rm -af /system/etc/CrossBreeder/CB_RunDNSMasq
+rm -af /system/etc/CrossBreeder/dnrd.udp.10053
+rm -af /system/etc/CrossBreeder/zzCHECK_NET_DNS
+rm -af /system/etc/CrossBreeder/zzCrossBreeder
+rm -af /system/etc/CrossBreeder/punchmod
+mv -af /system/etc/CrossBreeder/dnrd_root/master /system/etc/hosts
+rm -rf /system/etc/CrossBreeder/dnrd_root
+rm -af /system/lib/modules/transom.ko
+rm -af /system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
+rm -af /system/etc/CrossBreeder/IRQ_FLUSH_FREQUENCY_MINUTES
+cp -af $INSTALLER/common/zzCHECK_NET_DNS_X86 /system/etc/CrossBreeder/zzCHECK_NET_DNS
+cp -af $INSTALLER/common/zzCrossBreeder_X86 /system/etc/CrossBreeder/zzCrossBreeder
+cp -af $INSTALLER/common/CHECK_PROCS_X86 /system/etc/CrossBreeder/CHECK_PROCS
+rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/HAVEGED
+rm -af $INSTALLER/common/CrossBreeder/zzCrossBreeder/PUNCHMOD
+
+}
+
+
 ###################################################
 
 # Mount /data to access MAGISKBIN
 mount /data 2>/dev/null
 
 # MAGISKBIN must exist, binaries and utility functions are placed there
-[ -d $MAGISKBIN -a -f $MAGISKBIN/magisk -a -f $MAGISKBIN/util_functions.sh ] || require_new_magisk
+[ -d $MAGISKBIN -a -f $MAGISKBIN/magisk -a -f $MAGISKBIN/util_functions.sh ] || Install_to_system
 
 # Load utility fuctions
 . $MAGISKBIN/util_functions.sh
@@ -165,6 +321,9 @@ api_level_arch_detect
 ui_print "- Extracting module files"
 unzip -o "$ZIP" -d $INSTALLER 2>/dev/null
 request_size_check $INSTALLER
+
+
+###################################################
 
 # We're going to use magisk binary now, require some recovery fixes
 $BOOTMODE || recovery_actions
@@ -222,26 +381,21 @@ mv $INSTALLER/system $MODPATH/system
 
 if [ "$ABILONG" = "arm64-v8a" ]; then
  SQLITE=arm64-v8a;
- BB=busybox_arm64;
  Install_for_ARM
 elif [ "$ABILONG" = "armeabi-v7a" ]; then
  SQLITE=armeabi-v7a;
- BB=busybox_arm;
  Install_for_ARM
 elif [ "$ABILONG" = "armeabi" ]; then
  SQLITE=armeabi;
- BB=busybox_arm;
  Install_for_ARM
 elif [ "$ABILONG" = "x86_64" ]; then
  SQLITE=x86_64;
- BB=busybox_x86_64;
  Install_for_X86
 elif [ "$ABILONG" = "x86" ]; then
  SQLITE=x86;
- BB=busybox_x86;
  Install_for_X86
 else
- exit 0
+ abort "! ARCH can't be found"
 fi
 
 ui_print "- SQLITE3 can be $SQLITE"
@@ -261,10 +415,7 @@ if [ ! -f $MODPATH/system/bin/sqlite3 ] && [ ! -f $MODPATH/system/xbin/sqlite3 ]
  cp -af $INSTALLER/common/$SQLITE $MODPATH/system/xbin/sqlite3
 fi
 
-ui_print "- Busybox can be $SQLITE"
-
-cp -af $INSTALLER/common/$BB $MODPATH/system/bin/busybox
-
+rm -af /data/SYSINSTALL.CBL
 rm -rf /data/CrossBreeder
 cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
 

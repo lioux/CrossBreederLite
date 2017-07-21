@@ -32,11 +32,11 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
-1.5 Patch 2 - Now include busybox
+1.6 Patch 1 - Now include system-install process
 
-1.5 Patch 1 - Updated to v4 template
+1.6 Stable - Module Rebuilt
 
-1.5 Fixed - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash
+1.5 Stable/Patch1/Patch2 - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash, Updated to v4 template, Include busybox
 
 1.4 Preview 2/Stable - Frandom.ko/Punchmod, DNRD return, Optimize DNSMasq, Removed BFS Tweak, Add HSDPA Tweak, No Kernel Error Checking Tweak, Tune2FS tweak, Touchscreen Celebration.
 

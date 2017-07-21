@@ -341,10 +341,10 @@ touch /dev/CBL_LowVoltage.RUN
 
 VOLTAGENOW="$(busybox cat /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table)"
 
-echo "" >> /data/CBL_LowVoltage.log
-echo "After turning..." >> /data/CBL_LowVoltage.log
-echo "" >> /data/CBL_LowVoltage.log
-echo "$VOLTAGENOW" >> /data/CBL_LowVoltage.log
+echo "" >> /data/cb_CHECK_PROCS.log
+echo "After turning..." >> /data/cb_CHECK_PROCS.log
+echo "" >> /data/cb_CHECK_PROCS.log
+echo "$VOLTAGENOW" >> /data/cb_CHECK_PROCS.log
 
 }
 
@@ -355,23 +355,24 @@ V="$(busybox cat /data/CrossBreeder/VOLTAGE/CONF)"
 if [ "$VOLTAGE" = "1" ]; then
 
 if [ ! -f /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table ]; then
- echo "Kernel not support voltage control" >> /data/CBL_LowVoltage.log
+ echo "Kernel not support voltage control" >> /data/cb_CHECK_PROCS.log
  exit 0
 fi
 if [ -f /dev/CBL_LowVotage.RUN ]; then
- echo "Low-Voltage already running..." >> /data/CBL_LowVoltage.log
+ echo "Low-Voltage already running..." >> /data/cb_CHECK_PROCS.log
  exit 0
 fi
 if [ "$V" -gt "100" ]; then
- echo "Voltage will be too low if you use the value now." >> /data/CBL_LowVoltage.log
+ echo "Voltage will be too low if you use the value now." >> /data/cb_CHECK_PROCS.log
  exit 0
 fi
 if [ -f /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table ] && [ ! -f /dev/CBL_LowVoltage.RUN ] && [ "$V" -le "100" ]; then
- echo "Low-Voltage is running..." >> /data/CBL_LowVoltage.log
- echo "" >> /data/CBL_LowVoltage.log
- echo "Before turning..." >> /data/CBL_LowVoltage.log
- echo "" >> /data/CBL_LowVoltage.log
- echo "$VOLTAGENOW" >> /data/CBL_LowVoltage.log
+ echo "Running Low-Voltage.." >> /data/cb_CHECK_PROCS.log
+ echo "" >> /data/cb_CHECK_PROCS.log
+ echo "Before turning..." >> /data/cb_CHECK_PROCS.log
+ echo "" >> /data/cb_CHECK_PROCS.log
+ echo "$VOLTAGENOW" >> /data/cb_CHECK_PROCS.log
+ sleep 1
  LOW_VOLTAGE
 fi
 

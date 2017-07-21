@@ -63,12 +63,6 @@ List:
 
 Reference value:
 
-Safe --> 50 [Default] , Recommand --> 75 , Danger --> 100
+Safe --> 25 [Default] , Recommend --> 50~75 , Danger --> 100
 
 In order to avoid the voltage too low[system will crash], the value must =<100
-
-8.NKEC --> No Kernel Error Checking
-
-9.HSDPA --> HSDPA low throughput ( Boost net speed )
-
-10. ZYGOTE --> Disable zygote process ( Danger )

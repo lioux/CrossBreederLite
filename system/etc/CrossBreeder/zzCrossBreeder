@@ -5,20 +5,23 @@ export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/syste
 alias [='busybox ['
 alias [[='busybox [['
 
-UIBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UIBOOST)"
-ZYGOTE="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ZYGOTE)"
+UI="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UI)"
+FSYNC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/FSYNC)"
 KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
-IOBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/IOBOOST)"
-VMBOOST="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VMBOOST)"
-NKEC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/NKEC)"
+VM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VM)"
+EXT4="$(busybox cat /data/CrossBreeder/zzCrossBreeder/EXT4)"
 ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
+SQL="$(busybox cat /data/CrossBreeder/zzCrossBreeder/SQLITE)"
+BOOTCOUNT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT)"
+COUNT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/COUNT)"
 
 set +e
 
 CB_RunHaveged
 
-if [ "$UIBOOST" = "1" ]; then
+if [ "$UI" = "1" ]; then
 
+busybox echo "Boosting System UI.." >> /data/cb_CHECK_PROCS.log
 setprop persist.sys.scrollingcache 3
 setprop windowsmgr.max_events_per_sec 300
 setprop ro.max.fling_velocity 12000
@@ -29,122 +32,123 @@ setprop touch.pressure.scale 2
 
 fi
 
-if [ "$ZYGOTE" = "1" ]; then
+if [ "$FSYNC" = "1" ]; then
 
-setprop ro.wmt.blcr.enable 0
+if [ -e /sys/devices/virtual/misc/fsynccontrol/fsync_enabled ]; then
+ busybox echo "Fsync control detected. Tuning.." >> /data/cb_CHECK_PROCS.log
+ busybox echo "0" > /sys/devices/virtual/misc/fsynccontrol/fsync_enabled;
+fi;
+if [ -e /sys/class/misc/fsynccontrol/fsync_enabled ]; then
+ busybox echo "Fsync control detected. Tuning.." >> /data/cb_CHECK_PROCS.log
+ busybox echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled;
+fi;
+if [ -e /sys/module/sync/parameters/fsync ]; then
+ busybox echo "Fsync module -OFF" >> /data/cb_CHECK_PROCS.log
+ busybox echo "0" > /sys/module/sync/parameters/fsync >> /data/cb_CHECK_PROCS.log
+
+fi;
+if [ -e /sys/module/sync/parameters/fsync_enabled ]; then
+ busybox echo "Fsync module -OFF" >> /data/cb_CHECK_PROCS.log
+ busybox echo "0" > /sys/module/sync/parameters/fsync_enabled;
+ busybox echo "N" > /sys/module/sync/parameters/fsync_enabled;
+fi;
+if [ -e /sys/kernel/dyn_fsync/Dyn_fsync_active ]; then
+ busybox echo "Dynamic fsync detected. Activating.." >> /data/cb_CHECK_PROCS.log
+ busybox echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active;
+fi;
 
 fi
 
 if [ "$KSM" = "1" ]; then
 
-busybox sysctl -w kernel.sem="1000 1024000 200 4096"
-busybox sysctl -w kernel.shmmax=268435456
-busybox sysctl -w kernel.msgmni=2000
-busybox sysctl -w kernel.panic_on_oops=0
-busybox sysctl -w kernel.panic_on_warn=0
-busybox sysctl -w kernel.panic=0
-
+if [ -e /sys/kernel/mm/uksm/run ]; then
+  busybox echo "uKSM detected" >> /data/cb_CHECK_PROCS.log
+  busybox echo "Disabling KSM.." >> /data/cb_CHECK_PROCS.log
+  busybox echo "0" > /sys/kernel/mm/uksm/run;
+  setprop ro.config.ksm.support false;
+elif [ -e /sys/kernel/mm/ksm/run ]; then
+  busybox echo "KSM detected" >> /data/cb_CHECK_PROCS.log
+  busybox echo "Disabling KSM.." >> /data/cb_CHECK_PROCS.log
+  busybox echo "0" > /sys/kernel/mm/ksm/run;
+  setprop ro.config.ksm.support false;
+else
+  busybox echo "No KSM was detected" >> /data/cb_CHECK_PROCS.log
+fi;
+busybox echo "Disabling kernel panic.." >> /data/cb_CHECK_PROCS.log
+if [ -e /proc/sys/kernel/panic_on_oops ]; then
+ busybox echo "0" > /proc/sys/kernel/panic_on_oops;
+fi;
+if [ -e /proc/sys/kernel/panic_on_warn ]; then
+ busybox echo "0" > /proc/sys/kernel/panic_on_warn;
+fi;
+if [ -e /proc/sys/kernel/panic ]; then
+ busybox echo "0" > /proc/sys/kernel/panic;
+fi;
+if [ -e /sys/kernel/debug/sched_features ]; then
+ busybox echo "Tuning kernel sleepers.." >> /data/cb_CHECK_PROCS.log
+ busybox echo "NO_GENTLE_FAIR_SLEEPERS" > /sys/kernel/debug/sched_features;
+ busybox echo "NO_AFFINE_WAKEUPS" > /sys/kernel/debug/sched_features;
+ busybox echo "NO_WAKEUP_OVERLAP" > /sys/kernel/debug/sched_features;
+ busybox echo "NO_WAKEUP_PREEMPT" > /sys/kernel/debug/sched_features;
+ busybox echo "NO_DOUBLE_TICK" > /sys/kernel/debug/sched_features;
+fi;
+if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+ busybox echo "Disabling watchdog.." >> /data/cb_CHECK_PROCS.log
+ busybox echo "0" > /proc/sys/kernel/nmi_watchdog;
+fi;
 fi
 
-if [ "$IOBOOST" = "1" ]; then
+if [ "$VM" = "1" ]; then
 
-for S in /sys/block/*
-do
-	if [ -f /sys/block/mmcblk0/queue/scheduler ];then
-		busybox echo fiops > /sys/block/mmcblk0/queue/scheduler
-	fi
-	if [ -f $S/queue/rotational ];then
-		busybox echo 0 > $S/queue/rotational 2>/dev/null
-	fi
-	if [ -f $S/queue/nr_requests ];then
-		busybox echo 1100 > $S/queue/nr_requests 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/back_seek_penalty ];then 
-		busybox echo 1 > $S/queue/iosched/back_seek_penalty 2>/dev/null
-	fi;
-   if [ -f $S/queue/iosched/low_latency ];then
-		busybox echo 1 > $S/queue/iosched/low_latency 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/slice_idle ];then 
-		busybox echo 1 > $S/queue/iosched/slice_idle 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/fifo_batch ];then
-		busybox echo 4 > $S/queue/iosched/fifo_batch 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/writes_starved ];then
-		busybox echo 4 > $S/queue/iosched/writes_starved 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/quantum ];then
-		busybox echo 8 > $S/queue/iosched/quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/rev_penalty ];then
-		busybox echo 1 > $S/queue/iosched/rev_penalty 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/hp_read_quantum ];then
-	   busybox echo 20 > $S/queue/iosched/hp_read_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/rp_read_quantum ];then
-	   busybox echo 20 > $S/queue/iosched/rp_read_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/hp_swrite_quantum ];then
-	   busybox echo 5 > $S/queue/iosched/hp_swrite_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/rp_write_quantum ];then
-	   busybox echo 4 > $S/queue/iosched/rp_write_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/rp_swrite_quantum ];then
-	   busybox echo 4 > $S/queue/iosched/rp_swrite_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/lp_read_quantum ];then
-	   busybox echo 2 > $S/queue/iosched/lp_read_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/lp_swrite_quantum ];then
-	   busybox echo 2 > $S/queue/iosched/lp_swrite_quantum 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/read_idle ];then
-	   busybox echo 5 > $S/queue/iosched/read_idle 2>/dev/null
-	fi;
-	if [ -f $S/queue/iosched/read_idle_freq ];then
-      busybox echo 15 > $S/queue/iosched/read_idle_freq 2>/dev/null
-	fi;
-	if [ -f $S/queue/iostats ];then
-		busybox echo 0 > $S/queue/iostats 2>/dev/null
-	fi;
-	if [ -f $S/queue/rq_affinity ];then
-	   busybox echo 1 > $S/queue/rq_affinity 2>/dev/null
-	fi;
-	if [ -f $S/queue/read_ahead_kb ];then
-		busybox echo 4096 > $S/queue/read_ahead_kb 2>/dev/null
-	fi
-	if [ -f $S/bdi/read_ahead_kb ];then
-      busybox echo 4096 > $S/bdi/read_ahead_kb 2>/dev/null
-   fi
-	if [ -f $S/queue/nomerges ];then
-      busybox echo 1 > $S/queue/nomerges 2>/dev/null 
-   fi
-done
+busybox echo "Turning VM size.." >> /data/cb_CHECK_PROCS.log
+if [ -e /proc/sys/vm/min_free_kbytes ]; then
+ busybox echo "12288" > /proc/sys/vm/min_free_kbytes;
+fi;
+if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
+ busybox echo "1215752192" > /proc/sys/vm/vfs_cache_pressure;
+fi;
+if [ -e /proc/sys/vm/dirty_ratio ]; then
+ busybox echo "99" > /proc/sys/vm/dirty_ratio;
+fi;
+if [ -e /proc/sys/vm/dirty_background_ratio ]; then
+ busybox echo "1" > /proc/sys/vm/dirty_background_ratio;
+fi;
+if [ -e /proc/sys/vm/dirty_writeback_centisecs ]; then
+ busybox echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
+fi;
+if [ -e /proc/sys/vm/dirty_expire_centisecs ]; then
+ busybox echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
+fi;
+if [ -e /proc/sys/vm/oom_dump_tasks ]; then
+ busybox echo "0" > /proc/sys/vm/oom_dump_tasks;
+fi;
+if [ -e /proc/sys/vm/oom_kill_allocating_task ]; then
+ busybox echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+fi;
+if [ -e /proc/sys/vm/laptop_mode ]; then
+ busybox echo "1" > /proc/sys/vm/laptop_mode;
+fi;
+if [ -e /proc/sys/vm/overcommit_memory ]; then
+ busybox echo "1" > /proc/sys/vm/overcommit_memory;
+ busybox echo "100" > /proc/sys/vm/overcommit_ratio;
+fi;
+if [ -e /proc/sys/vm/min_free_order_shift ]; then
+ busybox echo "4" > /proc/sys/vm/min_free_order_shift;
+fi;
+if [ -e /proc/sys/vm/page-cluster ]; then
+ busybox echo "1" > /proc/sys/vm/page-cluster;
+fi;
+if [ -e /proc/sys/vm/panic_on_oom ]; then
+ busybox echo "0" > /proc/sys/vm/panic_on_oom;
+fi;
+if [ -e /proc/sys/vm/max_map_count ]; then
+ busybox echo "65530" > /proc/sys/vm/max_map_count;
+fi;
+if [ -e /proc/sys/vm/drop_caches ]; then
+ busybox echo "3" > /proc/sys/vm/drop_caches;
+fi;
 
-fi
-
-if [ "$VMBOOST" = "1" ]; then
-
-busybox sysctl -w vm.max_map_count=65530
-busybox sysctl -w vm.drop_caches=3
-busybox sysctl -w vm.oom_kill_allocating_task=0
-busybox sysctl -w vm.oom_dump_tasks=0
-busybox sysctl -w vm.panic_on_oom=0
-busybox sysctl -w vm.overcommit_memory=1
-busybox sysctl -w vm.page-cluster=3
-busybox sysctl -w vm.laptop_mode=1
-busybox sysctl -w vm.min_free_order_shift=4
-busybox sysctl -w vm.page-cluster=1
-busybox sysctl -w vm.dirty_writeback_centisecs=1500
-busybox sysctl -w vm.dirty_expire_centisecs=1000
-busybox sysctl -w vm.dirty_ratio=99
-busybox sysctl -w vm.dirty_background_ratio=1
-busybox sysctl -w vm.vfs_cache_pressure=1215752192
-busybox sysctl -w vm.min_free_kbytes=12288
-
+busybox echo "Tuning system resposiveness.." >> /data/cb_CHECK_PROCS.log
 setprop ro.FOREGROUND_APP_ADJ 0
 setprop ro.VISIBLE_APP_ADJ 2 
 setprop ro.PERCEPTIBLE_APP_ADJ 3
@@ -155,6 +159,7 @@ setprop ro.HOME_APP_ADJ 1
 setprop ro.HIDDEN_APP_MIN_ADJ 10
 setprop ro.EMPTY_APP_ADJ 15
 
+busybox echo "Turning VM Heap size.." >> /data/cb_CHECK_PROCS.log
 RAM=$((` busybox awk '/MemTotal/{print $2}' /proc/meminfo` / 1024 ))
 
 if [ "$RAM" -lt "2048" ]
@@ -174,16 +179,60 @@ setprop dalvik.vm.heapgrowthlimit "${VMHEAP}m"
 setprop persist.sys.vm.heapsize "${VMHEAP}m"
 setprop persist.sys.purgeable_assets 1
 
+busybox echo "VM Heap size can be ${HEAPMAXSIZE}m" >> /data/cb_CHECK_PROCS.log
 fi
 
-if [ "$NKEC" = "1" ]; then
+if [ "$EXT4" = "1" ]; then
 
-setprop ro.kernel.android.checkjni 0
-setprop ro.kernel.checkjni 0
+if ( mount | grep -w ext4 ) then
+	echo "EXT4 Partition Found!" >> /data/cb_CHECK_PROCS.log
+	echo "Remounting..." >> /data/cb_CHECK_PROCS.log
+	mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc
+	mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc
+else
+	echo "EXT4 Partition Not Found!" >> /data/cb_CHECK_PROCS.log
+fi;
+
+fi
+
+if [ "$SQL" = "1" ]; then
+
+flag=false
+
+if [ "$BOOTCOUNT" -lt "$COUNT" ]
+then
+echo "$(( $BOOTCOUNT + 1 ))" > /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT
+elif [ "$BOOTCOUNT" -ge "$COUNT" ]
+then
+echo "0" > /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT
+flag=true
+fi
+
+echo "The system has booted for $BOOTCOUNT times since the last optimization." >> /data/cb_CHECK_PROCS.log
+
+if [ "$flag" == "false" ]
+then
+echo "The system does not need to optimize databases." >> /data/cb_CHECK_PROCS.log
+exit 0
+elif [ "$flag" == "true" ]
+then
+echo "The system will optimize databases." >> /data/cb_CHECK_PROCS.log
+
+dbcount=0
+for db in $(busybox find /data -name *.db)
+do
+dbcount=$((dbcount+1))
+echo ">Optimizing database $dbcount..." >> /data/cb_CHECK_PROCS.log
+sqlite3 $db 'VACUUM'
+sqlite3 $db 'REINDEX'
+done
+fi
 
 fi
 
 if [ "$ADVCT" = "1" ]; then
+
+busybox echo "Tweaking CPU by modify /dev/cpuctl.." >> /data/cb_CHECK_PROCS.log
 
 for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null

@@ -67,8 +67,17 @@ swappiness=$(( ($ZRAM / 1024 / 1024) * 100 / ($RAM / 1024) + 50 ))
 busybox sysctl -w vm.swappiness=$swappiness
 
 export TZ=GMT; date >> /data/cb_CHECK_PROCS.log
-echo "Swappiness = $swappiness" >> /data/cb_CHECK_PROCS.log
-echo "Z-RAM Disksize = $(( $ZRAM / $ZRAMN )) KB">> /data/cb_CHECK_PROCS.log
+RAMfree=$(busybox free -m | busybox awk '{ print $4 }' | busybox sed -n 2p);
+RAMcached=$(busybox free -m | busybox awk '{ print $7 }' | busybox sed -n 2p);
+RAMreported=$((RAMfree + RAMcached));
+SWAP=$(busybox free -m | busybox awk '{ print $2 }' | busybox sed -n 4p);
+SWAPused=$(busybox free -m | busybox awk '{ print $3 }' | busybox sed -n 4p);
+$B echo "  Total:              $RAM MB" >> /data/cb_CHECK_PROCS.log
+$B echo "  Free:               $RAMreported MB" >> /data/cb_CHECK_PROCS.log
+$B echo "  Real free:          $RAMfree MB" >> /data/cb_CHECK_PROCS.log
+$B echo "  Cached:             $RAMcached MB" >> /data/cb_CHECK_PROCS.log
+$B echo "  SWAP/ZRAM total:    $SWAP MB" >> /data/cb_CHECK_PROCS.log
+$B echo "  SWAP/ZRAM used:     $SWAPused MB" >> /data/cb_CHECK_PROCS.log
 }
 
 if [ -e "/dev/block/zram0" ] && [ "$ZRAM" = "1" ]; then
@@ -133,15 +142,15 @@ LMK=$(busybox cat "/sys/module/lowmemorykiller/parameters/minfree")
 if [ ! "${LMK}" == "${VAL1},${VAL2},${VAL3},${VAL4},${VAL5},${VAL6}" ]; then
 busybox echo "Failed setting LMK parameters." >> /data/cb_CHECK_PROCS.log
 else
-busybox echo "Foreground Applications = $(($VAL1 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-busybox echo "Visible Applications = $(($VAL2 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-busybox echo "Secondary Server = $(($VAL3 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-busybox echo "Hidden Applications = $(($VAL4 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-busybox echo "Content Providers = $(($VAL5 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-busybox echo "Empty Applications = $(($VAL6 * 4 / 1024 )) MB" >> /data/cb_CHECK_PROCS.log
-echo  >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL1 * 4 / 1024 )) MB for Foreground Applications" >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL2 * 4 / 1024 )) MB for Visible Applications" >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL3 * 4 / 1024 )) MB for Secondary Server" >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL4 * 4 / 1024 )) MB for Hidden Applications" >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL5 * 4 / 1024 )) MB for Content Providers" >> /data/cb_CHECK_PROCS.log
+busybox echo "  $(($VAL6 * 4 / 1024 )) MB for Empty Applications" >> /data/cb_CHECK_PROCS.log
+echo "" >> /data/cb_CHECK_PROCS.log
 fi
 else
 busybox echo "Dynamic LMK disabled" >> /data/cb_CHECK_PROCS.log
-echo  >> /data/cb_CHECK_PROCS.log
+echo "" >> /data/cb_CHECK_PROCS.log
 fi

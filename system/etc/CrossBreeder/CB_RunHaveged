@@ -55,6 +55,8 @@ if [ ! -f /dev/random.MOD ]; then
   sleep 2
 fi
 
+setprop ro.wmt.blcr.enable 0
+
 for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox echo 0 > $i; done
 
 fi
