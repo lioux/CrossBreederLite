@@ -1,3 +1,8 @@
+## YOU NEED TO INSTALL THE BUSYBOX BEFORE INSTALL THIS MODULE
+
+DOWNLOAD
+https://forum.xda-developers.com/attachment.php?attachmentid=4219410&d=1500680372
+
 ## Mod info
 
 This is the liter, newer version of CrossBreeder 
