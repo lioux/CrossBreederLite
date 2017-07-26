@@ -497,5 +497,9 @@ if [ -e /dev/cpuctl/bg_non_interactive/cpu.shares ]; then
  $B echo "192" > /dev/cpuctl/bg_non_interactive/cpu.shares
  $B echo "CPU background tune-up.." >> /data/cb_CHECK_PROCS.log
 fi;
+if [ -e /system/bin/mpdecision ]; then
+ $B echo "Start mpdecision for now.." >> /data/cb_CHECK_PROCS.log
+ start mpdecision;
+fi;
 sync;
 $B sleep 1;
