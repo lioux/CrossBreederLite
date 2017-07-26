@@ -37,6 +37,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+1.6 Patch 2 - Fixed Hot-plug problem, Removed Ext4 Lag Fix tweak
+
 1.6 Patch 1 - Now include system-install process
 
 1.6 Stable - Module Rebuilt
