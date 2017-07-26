@@ -128,7 +128,7 @@ if [ -f /data/SYSINSTALL.CBL ]; then
   fi
   rm -rf /data/CrossBreeder
   cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
-  cp -af $INSTALLER/common/sys_service.sh /system/etc/init.d/00CrossBreeder
+  cp -af $INSTALLER/common/service.sh /system/etc/init.d/00CrossBreeder
   set_perm_recursive  /system/etc/CrossBreeder  0  0  0755  0755
   set_perm_recursive  /system/usr/idc  0  0  0755  0755
   set_perm_recursive  /system/etc/init.d  0  0  0755  0755
