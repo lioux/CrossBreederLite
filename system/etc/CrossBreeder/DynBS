@@ -11,13 +11,13 @@ API=$(getprop ro.build.version.sdk);
 
 if [ "$ENABLE" = "1" ];then
 
-if [ "$CORES" -ge "2" ] && [ "$MIN" -ge "200" ];then
-  ( dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4 >> /data/cb_CHECK_PROCS.log )&
-fi
-
 for i in $(busybox ls /sys/class/scsi_disk/); do
  busybox echo "Better DeepSleep." >> /data/cb_CHECK_PROCS.log
  busybox echo "temporary none" > /sys/class/scsi_disk/"$i"/cache_type;
 done;
+
+if [ "$CORES" -ge "2" ] && [ "$MIN" -ge "200" ];then
+  ( dynbsd start -h $CONF1 -ns $CONF2 -d $CONF3 -lt $CONF4 >> /data/cb_CHECK_PROCS.log )&
+fi
 
 fi

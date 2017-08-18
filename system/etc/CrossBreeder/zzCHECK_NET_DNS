@@ -86,6 +86,6 @@ settings put global tether_dun_required 0;
 
 exec 1>/data/DNRD.log 2>&1
 
-( dnrd.udp.10053 -u 0 -r 0 -M 65535 -d 1 -m master -s 127.0.0.3 -R /system/etc/CrossBreeder/dnrd_root )&
+( dnrd.10053 -u 0 -r 0 -M 65535 -d 1 -m off -s 127.0.0.3 -R /system/etc/CrossBreeder/dnrd_root )&
 
 fi

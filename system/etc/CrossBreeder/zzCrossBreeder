@@ -218,7 +218,7 @@ fi
 
 if [ "$ADVCT" = "1" ]; then
 
-busybox echo "Tweaking CPU by modify /dev/cpuctl.." >> /data/cb_CHECK_PROCS.log
+busybox echo "Tweaking CPU by modify Cpuctl Pseudo Device ..." >> /data/cb_CHECK_PROCS.log
 
 for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null

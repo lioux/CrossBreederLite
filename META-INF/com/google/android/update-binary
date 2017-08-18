@@ -128,11 +128,11 @@ if [ -f /data/SYSINSTALL.CBL ]; then
   fi
   rm -rf /data/CrossBreeder
   cp -rf $INSTALLER/common/CrossBreeder /data/CrossBreeder
-  cp -af $INSTALLER/common/service.sh /system/etc/init.d/00CrossBreeder
+  cp -af $INSTALLER/common/post-fs-data.sh /system/etc/init.d/CBL0_initd
+  cp -af $INSTALLER/common/service.sh /system/etc/init.d/CBL1_initd
   set_perm_recursive  /system/etc/CrossBreeder  0  0  0755  0755
   set_perm_recursive  /system/usr/idc  0  0  0755  0755
   set_perm_recursive  /system/etc/init.d  0  0  0755  0755
-  set_perm  /system/bin/busybox       0       0       0755
   set_perm  /system/xbin/dynbsd       0       0       0755
   rm -af /data/SYSINSTALL.CBL
   umount /system 2>/dev/null
@@ -148,17 +148,8 @@ Install_for_ARM() {
 
 ui_print "- Preparing for ARM Install"
 
-my_md5="48d569faa12728ba9464e397b692bc12" 
-his_md5=`md5sum /system/bin/dnsmasq 2>/dev/null | awk '{ print $1 }' 2>/dev/null`
-
-if [ "$his_md5" = "$my_md5" ]; then
-  busybox cp -af $INSTALLER/common/dnsmasq.CBBAK $MODPATH/system/bin/dnsmasq
-fi
-
 if [ ! -f /system/bin/dnsmasq ]; then
-  if [ ! "`busybox dd if=/system/bin/dnsmasq skip=1 bs=1 count=3`" = "ELF" ]; then
-    cp -af $INSTALLER/common/dnsmasq.CBBAK $MODPATH/system/bin/dnsmasq
-  fi
+ cp -af $INSTALLER/common/dnsmasq.CBBAK $MODPATH/system/bin/dnsmasq
 fi
 
 RNGD=/system/bin/rngd
@@ -184,12 +175,11 @@ rm -af $MODPATH/system/xbin/haveged
 rm -af $MODPATH/system/etc/CrossBreeder/CHECK_PROCS
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunHaveged
 rm -af $MODPATH/system/etc/CrossBreeder/CB_RunDNSMasq
+rm -af $MODPATH/system/etc/CrossBreeder/dnrd.tcp.10053
 rm -af $MODPATH/system/etc/CrossBreeder/dnrd.udp.10053
 rm -af $MODPATH/system/etc/CrossBreeder/zzCHECK_NET_DNS
 rm -af $MODPATH/system/etc/CrossBreeder/zzCrossBreeder
 rm -af $MODPATH/system/etc/CrossBreeder/punchmod
-mv -af $MODPATH/system/etc/CrossBreeder/dnrd_root/master $MODPATH/system/etc/hosts
-rm -rf $MODPATH/system/etc/CrossBreeder/dnrd_root
 rm -rf $MODPATH/system/lib
 rm -af $MODPATH/system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
 rm -af $MODPATH/system/etc/CrossBreeder/IRQ_FLUSH_FREQUENCY_MINUTES
@@ -205,17 +195,8 @@ SYS_Install_for_ARM() {
 
 ui_print "- Preparing for ARM Install"
 
-my_md5="48d569faa12728ba9464e397b692bc12" 
-his_md5=`md5sum /system/bin/dnsmasq 2>/dev/null | awk '{ print $1 }' 2>/dev/null`
-
-if [ "$his_md5" = "$my_md5" ]; then
-  busybox cp -af $INSTALLER/common/dnsmasq.CBBAK /system/bin/dnsmasq
-fi
-
 if [ ! -f /system/bin/dnsmasq ]; then
-  if [ ! "`busybox dd if=/system/bin/dnsmasq skip=1 bs=1 count=3`" = "ELF" ]; then
-    cp -af $INSTALLER/common/dnsmasq.CBBAK /system/bin/dnsmasq
-  fi
+  cp -af $INSTALLER/common/dnsmasq.CBBAK /system/bin/dnsmasq
 fi
 
 RNGD=/system/bin/rngd
@@ -245,13 +226,12 @@ rm -af /system/xbin/haveged
 rm -af /system/etc/CrossBreeder/CHECK_PROCS
 rm -af /system/etc/CrossBreeder/CB_RunHaveged
 rm -af /system/etc/CrossBreeder/CB_RunDNSMasq
+rm -af /system/etc/CrossBreeder/dnrd.tcp.10053
 rm -af /system/etc/CrossBreeder/dnrd.udp.10053
 rm -af /system/etc/CrossBreeder/zzCHECK_NET_DNS
 rm -af /system/etc/CrossBreeder/zzCrossBreeder
 rm -af /system/etc/CrossBreeder/punchmod
-mv -af /system/etc/CrossBreeder/dnrd_root/master /system/etc/hosts
-rm -rf /system/etc/CrossBreeder/dnrd_root
-rm -af /system/lib/modules/transom.ko
+rm -af /system/lib/modules/fransom.ko
 rm -af /system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
 rm -af /system/etc/CrossBreeder/IRQ_FLUSH_FREQUENCY_MINUTES
 cp -af $INSTALLER/common/zzCHECK_NET_DNS_X86 /system/etc/CrossBreeder/zzCHECK_NET_DNS
@@ -353,6 +333,7 @@ if [ -d $MODPATH ]; then
   ui_print "- Removing files"
   rm -rf $MODPATH
   rm -rf /data/CrossBreeder
+  rm -f $MOUNTPATH/.core/post-fs-data.d/CBL_initd.sh
   $MAGISKBIN/magisk --umountimg $MOUNTPATH $MAGISKLOOP
   rmdir $MOUNTPATH
   # Shrink the image if possible
@@ -371,6 +352,8 @@ fi
 
 # Create mod paths
 rm -rf $MODPATH 2>/dev/null
+rm -rf $MOUNTPATH/CBUL 2>/dev/null
+rm -rf $MOUNTPATH/CrossBreederLite 2>/dev/null
 mkdir -p $MODPATH
 
 # Copy files
@@ -441,7 +424,9 @@ if $BOOTMODE; then
 fi
 
 # post-fs-data mode scripts
-$POSTFSDATA && cp -af $INSTALLER/common/post-fs-data.sh $MODPATH/post-fs-data.sh
+$POSTFSDATA && cp -af $INSTALLER/common/post-fs-data.sh $MOUNTPATH/.core/post-fs-data.d/CBL_initd.sh
+
+set_perm_recursive  $MOUNTPATH/.core/post-fs-data.d/CBL_initd.sh  0  0  0755  0755
 
 # service mode scripts
 $LATESTARTSERVICE && cp -af $INSTALLER/common/service.sh $MODPATH/service.sh

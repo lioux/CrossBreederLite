@@ -9,7 +9,7 @@ This is the liter, newer version of CrossBreeder
 
 ## Features
 
-Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq, DNRD [ARM], Rrandom, Frandom.ko [Optional]
+Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq, Domain Name Relay Daemon [ARM], Rrandom, Frandom.ko [Optional]
 
 Low-Voltage, Reduction voltage to improve battery life. [Your kernel must support cpu voltage control]
 
@@ -37,6 +37,8 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 ## Changelog
 
+1.6 Patch 3 - Updated DNRD tweak, Installer bug fixed
+
 1.6 Patch 2 - Fixed Hot-plug problem, Removed Ext4 Lag Fix tweak
 
 1.6 Patch 1 - Now include system-install process
@@ -46,7 +48,5 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 1.5 Stable/Patch1/Patch2 - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash, Updated to v4 template, Include busybox
 
 1.4 Preview 2/Stable - Frandom.ko/Punchmod, DNRD return, Optimize DNSMasq, Removed BFS Tweak, Add HSDPA Tweak, No Kernel Error Checking Tweak, Tune2FS tweak, Touchscreen Celebration.
-
-1.3 Preview/Test 31/Stable - Add logger, EXT4 lag fix tweak, Removed No-Debug tweak, Add BFS tweak, KSM tweak, voltage reduce tweak, Changed popen_noshell files to shell-script, Changed the pid file output position, Bug fix.
 
 ---------------------------------------------------Removed---------------------------------------------------

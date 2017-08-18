@@ -1,6 +1,6 @@
 #!/system/bin/sh 
 echo "" >> /data/cb_CHECK_PROCS.log
-echo "CrossBreeder Lite Version 1.6 Patch 1" >> /data/cb_CHECK_PROCS.log
+echo "CrossBreeder Lite Version 1.6 Patch 3" >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
 echo $(export TZ=GMT; date) >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
@@ -99,8 +99,10 @@ elif [ "$SERVER" = "9" ]; then
 echo "DNS Server=OPEN NIC" >> /data/cb_CHECK_PROCS.log
 fi
 echo "" >> /data/cb_CHECK_PROCS.log
+echo "Dnsmasq_dhcp not support X86, try dnsmasq" >> /data/cb_CHECK_PROCS.log
+echo "" >> /data/cb_CHECK_PROCS.log
 echo $(busybox cat /data/DNSMasq.log) >> /data/cb_CHECK_PROCS.log
 rm -f /data/DNSMasq.log
-echo "" >> /data/cb_CHECK_PROCS.log
+
 fi
 
