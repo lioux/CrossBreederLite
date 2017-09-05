@@ -1,7 +1,7 @@
 ## YOU NEED TO INSTALL THE BUSYBOX BEFORE INSTALL THIS MODULE
 
 Download:
-https://forum.xda-developers.com/attachment.php?attachmentid=4220272&d=1500749126
+https://forum.xda-developers.com/attachment.php?attachmentid=4259285&d=1504265305
 
 ## Mod info
 
