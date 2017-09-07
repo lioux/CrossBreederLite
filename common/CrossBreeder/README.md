@@ -38,31 +38,16 @@ TIME=$((($HR * 3600)+($MIN * 60)+$SEC))
 List:
 
 > 0 - No Server
-
 > 1 - Google Public DNS [Default]
-
 > 2 - OPEN DNS
-
 > 3 - DNS.WATCH
-
 > 4 - Norton Connect Safe
-
 > 5 - Level 3
-
 > 6 - Comodo Secure DNS
-
 > 7 - DNS Advantage
-
 > 8 - Safe DNS
-
 > 9 - OPEN NIC
 
-6.ADVCT ---> Advanced CPU Tweak
+6.CPD ---> This tweak will modify Cpuctl Pseudo Device 
 
-7.VOLTAGE --> Config the voltage you want to reduce.
-
-Reference value:
-
-Safe --> 25 [Default] , Recommend --> 50~75 , Danger --> 100
-
-In order to avoid the voltage too low[system will crash], the value must =<100
+7.LS ---> LoopySmoothness Tweak

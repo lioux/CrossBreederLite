@@ -2,19 +2,13 @@
 
 export PATH=/system/etc/CrossBreeder:$PATH:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin:
 
-alias [='busybox ['
-alias [[='busybox [['
-
 XRANDOM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/RANDOM)"
 ENTROPY="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ENTROPY)"
 UI="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UI)"
 FSYNC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/FSYNC)"
 KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 VM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VM)"
-ADVCT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/ADVCT)"
-SQL="$(busybox cat /data/CrossBreeder/zzCrossBreeder/SQLITE)"
-BOOTCOUNT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT)"
-COUNT="$(busybox cat /data/CrossBreeder/zzCrossBreeder/COUNT)"
+CPD="$(busybox cat /data/CrossBreeder/zzCrossBreeder/CPD)"
 
 set +e
 
@@ -246,56 +240,12 @@ setprop persist.sys.purgeable_assets 1
 busybox echo "VM Heap size can be ${HEAPMAXSIZE}m" >> /data/cb_CHECK_PROCS.log
 fi
 
-if [ "$SQL" = "1" ]; then
+if [ "$CPD" = "1" ]; then
 
-flag=false
+busybox echo "Modifying Cpuctl Pseudo Device ..." >> /data/cb_CHECK_PROCS.log
 
-if [ "$BOOTCOUNT" -lt "$COUNT" ]
-then
-echo "$(( $BOOTCOUNT + 1 ))" > /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT
-elif [ "$BOOTCOUNT" -ge "$COUNT" ]
-then
-echo "0" > /data/CrossBreeder/zzCrossBreeder/BOOTCOUNT
-flag=true
-fi
-
-echo "The system has booted for $BOOTCOUNT times since the last optimization." >> /data/cb_CHECK_PROCS.log
-
-if [ "$flag" == "false" ]
-then
-echo "The system does not need to optimize databases." >> /data/cb_CHECK_PROCS.log
-exit 0
-elif [ "$flag" == "true" ]
-then
-echo "The system will optimize databases." >> /data/cb_CHECK_PROCS.log
-
-dbcount=0
-for db in $(busybox find /data -name *.db)
-do
-dbcount=$((dbcount+1))
-echo ">Optimizing database $dbcount..." >> /data/cb_CHECK_PROCS.log
-sqlite3 $db 'VACUUM'
-sqlite3 $db 'REINDEX'
-done
-fi
-
-fi
-
-if [ "$ADVCT" = "1" ]; then
-
-busybox echo "Tweaking CPU by modify /dev/cpuctl.." >> /data/cb_CHECK_PROCS.log
-
-for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^media$/) print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null
-done
-
-for pid in `busybox ps -o pid,user,nice,args | busybox awk '{ if ( $2 ~ /^root$/ && $3 == "0" && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
-  busybox renice 3 $pid 2>/dev/null
-  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
-done
-
-for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^root$/ && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
-  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
 done
 
 for pid in $(busybox pgrep pdflush 2>/dev/null); do
@@ -306,11 +256,6 @@ done
 for pid in $(busybox pgrep flush- 2>/dev/null); do
   busybox renice 7 $pid 2>/dev/null
   busybox ionice -c 3 -n 7 -p $pid 2>/dev/null
-done
-
-for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_/) print $1 }'`; do
-  busybox renice -1 $pid 2>/dev/null
-  busybox ionice -c 1 -n 0 -p $pid 2>/dev/null
 done
 
 if [ ! -d /dev/cpuctl ]; then
@@ -347,7 +292,7 @@ busybox cp /dev/null /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
 busybox cp /dev/null /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
 
 
-for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_|^system$|^media$/) print $1 }'`; do
   busybox echo $pid >> /dev/cpuctl/user/cgroup.procs 2>/dev/null
   for i in `ls /proc/$pid/task 2>/dev/null`; do
     busybox echo $pid >> /dev/cpuctl/user/tasks 2>/dev/null

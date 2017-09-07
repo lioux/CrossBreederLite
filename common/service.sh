@@ -11,13 +11,15 @@ ENABLE="$(busybox cat /data/CrossBreeder/ENABLE)"
 rm -f /data/*.pid
 
 if [ "$ENABLE" = "1" ]; then
+
 rm -f /data/cb_CHECK_PROCS.log
 touch /data/cb_CHECK_PROCS.log
 ( /system/etc/CrossBreeder/CHECK_PROCS )&
 /system/etc/CrossBreeder/zzCrossBreeder
 /system/etc/CrossBreeder/zzCHECK_NET_DNS
 /system/etc/CrossBreeder/FDE_Governor_Tweaks
-/system/etc/CrossBreeder/VOLTAGE
+( /system/etc/CrossBreeder/LoopySmoothness )&
+/system/etc/CrossBreeder/SQLITE
 /system/etc/CrossBreeder/DynBS
 
 HR="$(busybox cat /data/CrossBreeder/DynRAM/TIME/HR)"
