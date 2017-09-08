@@ -35,7 +35,7 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 ## Support
 
-https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
+[XDA Forum](https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401)
 
 ## Changelog
 
