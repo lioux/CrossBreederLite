@@ -1,5 +1,5 @@
 ### Want the Magisk build-in busybox can be used externally at Magisk V14.0?
-### Download the module at [here](https://forum.xda-developers.com/attachment.php?attachmentid=4265509&d=1504788441)
+### Download the module at [here](https://forum.xda-developers.com/attachment.php?attachmentid=4266417&stc=1&d=1504863870)
 
 ## Mod info
 
