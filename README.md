@@ -25,13 +25,13 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 ## Credits
 
-Crossbreeder ( https://forum.xda-developers.com/showthread.php?t=2113150 ) - For most of files
+[Crossbreeder](https://forum.xda-developers.com/showthread.php?t=2113150) - For most of files
 
-FeraDroid Engine ( https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421 ) - For the Governor Tweak
+[FeraDroid Engine](https://forum.xda-developers.com/android/software-hacking/beta-feradroid-engine-v0-19-ultimate-t3284421) - For the Governor Tweak
 
-Dynamic Power Saving ( http://4pda.ru/forum/index.php?showtopic=620736&st=1120 )
+[Dynamic Power Saving](http://4pda.ru/forum/index.php?showtopic=620736&st=1120)
 
-LoopySmoothness Tweak ( https://forum.xda-developers.com/showthread.php?t=1205744 )
+LoopySmoothness Tweak(https://forum.xda-developers.com/showthread.php?t=1205744)
 
 ## Support
 
@@ -45,4 +45,4 @@ https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401
 
 1.5 Stable/Patch1/Patch2 - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash, Updated to v4 template, Include busybox
 
----------------------------------------------------Removed---------------------------------------------------
+-----------------------------------------Removed-----------------------------------------
