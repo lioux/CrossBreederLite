@@ -45,4 +45,4 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 1.5 Stable/Patch1/Patch2 - Updated haveged tweak, Updated zygote tweak, Removed tune2fs, Bug fixed, Add some measures to avoid app/system crash, Updated to v4 template, Include busybox
 
------------------------------------------Removed-----------------------------------------
+-------------------------------------Removed-------------------------------------
