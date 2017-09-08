@@ -31,7 +31,7 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 [Dynamic Power Saving](http://4pda.ru/forum/index.php?showtopic=620736&st=1120)
 
-LoopySmoothness Tweak(https://forum.xda-developers.com/showthread.php?t=1205744)
+[LoopySmoothness Tweak](https://forum.xda-developers.com/showthread.php?t=1205744)
 
 ## Support
 
