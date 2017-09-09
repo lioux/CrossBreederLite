@@ -9,7 +9,7 @@ This is the liter, newer version of CrossBreeder
 
 Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq, Domain Name Relay Daemon [ARM], Random, Frandom.ko [Optional]
 
-LoopySmoothness - An experiment tweak
+LoopySmoothness [Optional] - An experiment tweak
 
 SQLite Optimize on boot [Default: Every 4 boots]
 
