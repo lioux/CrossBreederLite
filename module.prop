@@ -1,7 +1,7 @@
 id=CBL
 name=CrossBreeder Lite Edition
-version=v1.7 pre-release
-versionCode=170
+version=v1.7.1 pre-release
+versionCode=171
 author=Rorsch_X1
 description=Lag-/Entropy+/DNS+/ADS-/Battery+/Tether+/.bit support
 template=1400
