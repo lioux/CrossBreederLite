@@ -39,6 +39,8 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 ## Changelog
 
+1.7.1 - Fixed internal storage issus?
+
 1.7 - Add LoopySmoothness Tweak, WiFi problem fixed?, Removed Low-Voltage tweak, Support Magisk v14, Bug fixed.
 
 1.6 Patch0/1/2/3 - Module Rebuilt/Include system-install process/Fixed Hot-plug problem, Removed Ext4 Lag Fix tweak/Updated DNRD tweak, Installer bug fixed
