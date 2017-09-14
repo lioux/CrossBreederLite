@@ -179,7 +179,7 @@ if [ "$CPD" = "1" ]; then
 
 busybox echo "Modifying Cpuctl Pseudo Device ..." >> /data/cb_CHECK_PROCS.log
 
-for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root/) print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null
 done
 
@@ -227,7 +227,7 @@ busybox cp /dev/null /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
 busybox cp /dev/null /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
 
 
-for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_|^system$/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_/) print $1 }'`; do
   busybox echo $pid >> /dev/cpuctl/user/cgroup.procs 2>/dev/null
   for i in `ls /proc/$pid/task 2>/dev/null`; do
     busybox echo $pid >> /dev/cpuctl/user/tasks 2>/dev/null
@@ -245,12 +245,12 @@ done
 
 busybox echo 1 > /dev/cpuctl/user/cgroup.clone_children 2>/dev/null
 
-for pid in `dumpsys activity services | busybox grep -i app=ProcessRecord | busybox awk '{ print $2 }' | busybox grep -v '/100[0-9]}' | busybox cut -d: -f1`; do
+for pid in `dumpsys activity services | busybox awk '{ print $2 }' | busybox grep -v '/100[0-9]}' | busybox cut -d: -f1`; do
   busybox renice 7 $pid 2>/dev/null
   busybox ionice -c 2 -n 7 -p $pid 2>/dev/null
 done
 
-for pid in `dumpsys activity services | busybox grep -i app=ProcessRecord | busybox awk '{ print $2 }' | busybox cut -d: -f1`; do
+for pid in `dumpsys activity services | busybox awk '{ print $2 }' | busybox cut -d: -f1`; do
   busybox echo $pid >> /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
   for i in `ls /proc/$pid/task 2>/dev/null`; do
     busybox echo $i >> /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
