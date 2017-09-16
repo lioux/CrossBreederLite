@@ -54,6 +54,8 @@ busybox echo 4000 > /proc/sys/net/core/tcp_max_syn_backlog
 busybox echo "Optimizing network parameters..." >> /data/cb_CHECK_PROCS.log
 sleep 1
 
+busybox sysctl -w net.ipv4.tcp_congestion_control=reno
+busybox sysctl -w net.ipv4.tcp_congestion_control=westwood
 busybox sysctl -w net.ipv4.tcp_tw_recycle=1
 busybox sysctl -w net.ipv4.tcp_tw_reuse=1
 busybox sysctl -w net.ipv4.tcp_fin_timeout=600

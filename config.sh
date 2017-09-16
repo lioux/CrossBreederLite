@@ -41,9 +41,9 @@ LATESTARTSERVICE=true
 # Set what you want to show when installing your mod
 
 print_modname() {
-  ui_print "*******************************"
-  ui_print "  CrossBreeder Lite Edition "
-  ui_print "*******************************"
+  ui_print "*************************"
+  ui_print "CrossBreeder Lite Edition v1.7"
+  ui_print "*************************"
 }
 
 ##########################################################################################

@@ -3,9 +3,9 @@
 # Wolfscript
 #
 
-LS="$(busybox cat /data/CrossBreeder/LS/ENABLE)"
+LST="$(busybox cat /data/CrossBreeder/LST/ENABLE)"
 
-if [ "$LS" = "1" ]; then
+if [ "$LST" = "1" ]; then
 
 for n in 1 2
 do
@@ -27,24 +27,24 @@ do
   if [ $n -eq "1" ]; then
     if [ $DEBUG_ECHO -eq "1" ]; then
       echo "" >> /data/cb_CHECK_PROCS.log
-      echo "LS Debug: $(date)" >> /data/cb_CHECK_PROCS.log
-      echo "LS Debug: Initiate" >> /data/cb_CHECK_PROCS.log
+      echo "LST Debug: $(date)" >> /data/cb_CHECK_PROCS.log
+      echo "LST Debug: Initiate" >> /data/cb_CHECK_PROCS.log
     fi;
 
     # Pause and then loop until kswapd0 is found, which should be instant anyway
     sleep 1
-    SWAP_SLEEP_TIME=3; SWAP_NUMBER_OF_CHECKS=30; SWAP_CHECK_COUNT=0; SWAP_CHECK_COUNT_OK=0; while [ $SWAP_CHECK_COUNT -lt $SWAP_NUMBER_OF_CHECKS ]; do if [ `pidof kswapd0` ]; then renice 19 `pidof kswapd0`; SWAP_CHECK_COUNT=$SWAP_NUMBER_OF_CHECKS; SWAP_CHECK_COUNT_OK=1; else sleep $SWAP_SLEEP_TIME; fi; SWAP_CHECK_COUNT=`expr $SWAP_CHECK_COUNT + 1`; done; if [ $SWAP_CHECK_COUNT_OK -lt 1 ]; then echo "LS Debug: 'kswapd0' expired after `expr $SWAP_CHECK_COUNT \* $SWAP_SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    SWAP_SLEEP_TIME=3; SWAP_NUMBER_OF_CHECKS=30; SWAP_CHECK_COUNT=0; SWAP_CHECK_COUNT_OK=0; while [ $SWAP_CHECK_COUNT -lt $SWAP_NUMBER_OF_CHECKS ]; do if [ `pidof kswapd0` ]; then renice 19 `pidof kswapd0`; SWAP_CHECK_COUNT=$SWAP_NUMBER_OF_CHECKS; SWAP_CHECK_COUNT_OK=1; else sleep $SWAP_SLEEP_TIME; fi; SWAP_CHECK_COUNT=`expr $SWAP_CHECK_COUNT + 1`; done; if [ $SWAP_CHECK_COUNT_OK -lt 1 ]; then echo "LST Debug: 'kswapd0' expired after `expr $SWAP_CHECK_COUNT \* $SWAP_SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
 
     if [ $DEBUG_ECHO -eq "1" ]; then
-      echo "LS Debug: $(date)" >> /data/cb_CHECK_PROCS.log
-      echo "LS Debug: kswapd0 found" >> /data/cb_CHECK_PROCS.log
+      echo "LST Debug: $(date)" >> /data/cb_CHECK_PROCS.log
+      echo "LST Debug: kswapd0 found" >> /data/cb_CHECK_PROCS.log
     fi;
   fi;
 
   # Check briefly one more time
   if [ $n -eq "2" ]; then
     if [ $DEBUG_ECHO -eq "1" ]; then
-      echo "LS Debug: 2nd loop" >> /data/cb_CHECK_PROCS.log
+      echo "LST Debug: 2nd loop" >> /data/cb_CHECK_PROCS.log
     fi;
     NUMBER_OF_CHECKS=6					# Editing not recommended
     SLEEP_TIME=5					# Editing not recommended
@@ -85,32 +85,32 @@ do
   done
 
   if [ $DEBUG_ECHO -eq "1" ]; then
-    echo "LS Debug: $(date)" >> /data/cb_CHECK_PROCS.log
-    if [ $PROCESS_1 -eq "0" ]; then echo "LS Debug: PROCESS_1 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_2 -eq "0" ]; then echo "LS Debug: PROCESS_2 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_3 -eq "0" ]; then echo "LS Debug: PROCESS_3 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_4 -eq "0" ]; then echo "LS Debug: PROCESS_4 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_6 -eq "0" ]; then echo "LS Debug: PROCESS_6 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_7 -eq "0" ]; then echo "LS Debug: PROCESS_7 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_8 -eq "0" ]; then echo "LS Debug: PROCESS_8 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_9 -eq "0" ]; then echo "LS Debug: PROCESS_9 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_10 -eq "0" ]; then echo "LS Debug: PROCESS_10 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_11 -eq "0" ]; then echo "LS Debug: PROCESS_11 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_12 -eq "0" ]; then echo "LS Debug: PROCESS_12 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_13 -eq "0" ]; then echo "LS Debug: PROCESS_13 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-    if [ $PROCESS_14 -eq "0" ]; then echo "LS Debug: PROCESS_14 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-#    if [ $PROCESS_15 -eq "0" ]; then echo "LS Debug: PROCESS_15 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    echo "LST Debug: $(date)" >> /data/cb_CHECK_PROCS.log
+    if [ $PROCESS_1 -eq "0" ]; then echo "LST Debug: PROCESS_1 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_2 -eq "0" ]; then echo "LST Debug: PROCESS_2 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_3 -eq "0" ]; then echo "LST Debug: PROCESS_3 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_4 -eq "0" ]; then echo "LST Debug: PROCESS_4 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_6 -eq "0" ]; then echo "LST Debug: PROCESS_6 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_7 -eq "0" ]; then echo "LST Debug: PROCESS_7 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_8 -eq "0" ]; then echo "LST Debug: PROCESS_8 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_9 -eq "0" ]; then echo "LST Debug: PROCESS_9 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_10 -eq "0" ]; then echo "LST Debug: PROCESS_10 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_11 -eq "0" ]; then echo "LST Debug: PROCESS_11 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_12 -eq "0" ]; then echo "LST Debug: PROCESS_12 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_13 -eq "0" ]; then echo "LST Debug: PROCESS_13 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+    if [ $PROCESS_14 -eq "0" ]; then echo "LST Debug: PROCESS_14 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+#    if [ $PROCESS_15 -eq "0" ]; then echo "LST Debug: PROCESS_15 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
 #    if [ $PROCESS_16 -eq "0" ]; then echo "LS Debug: PROCESS_16 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-#    if [ $PROCESS_17 -eq "0" ]; then echo "LS Debug: PROCESS_17 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
-#    if [ $PROCESS_18 -eq "0" ]; then echo "LS Debug: PROCESS_18 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+#    if [ $PROCESS_17 -eq "0" ]; then echo "LST Debug: PROCESS_17 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
+#    if [ $PROCESS_18 -eq "0" ]; then echo "LST Debug: PROCESS_18 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds" >> /data/cb_CHECK_PROCS.log; fi;
 
-    echo "LS Debug: Checking complete" >> /data/cb_CHECK_PROCS.log
+    echo "LST Debug: Checking complete" >> /data/cb_CHECK_PROCS.log
   fi;
 
 done
 
 if [ $DEBUG_ECHO -eq "0" ]; then
-  echo "LS Debug: Done" >> /data/cb_CHECK_PROCS.log
+  echo "LST Debug: Done" >> /data/cb_CHECK_PROCS.log
   echo "" >> /data/cb_CHECK_PROCS.log
 fi;
 

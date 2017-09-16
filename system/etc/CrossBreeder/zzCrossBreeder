@@ -14,7 +14,7 @@ CB_RunHaveged
 
 if [ "$UI" = "1" ]; then
 
-busybox echo "Boosting System UI.." >> /data/cb_CHECK_PROCS.log
+busybox echo " Let user interface smoothness.." >> /data/cb_CHECK_PROCS.log
 setprop persist.sys.scrollingcache 3
 setprop windowsmgr.max_events_per_sec 300
 setprop ro.max.fling_velocity 12000
@@ -92,6 +92,17 @@ fi;
 fi
 
 if [ "$VM" = "1" ]; then
+
+busybox echo "Turning I/O schedule.." >> /data/cb_CHECK_PROCS.log
+if [ -e /sys/block/mmcblk0/queue/scheduler ]; then
+ busybox echo noop > /sys/block/mmcblk0/queue/scheduler
+ busybox echo sio > /sys/block/mmcblk0/queue/scheduler
+ busybox echo zen > /sys/block/mmcblk0/queue/scheduler
+ busybox echo fiops > /sys/block/mmcblk0/queue/scheduler
+fi;
+if [ -e /sys/block/mmcblk0/queue/read_ahead_kb ]; then
+ busybox echo 4096 > /sys/block/mmcblk0/queue/read_ahead_kb
+fi;
 
 busybox echo "Turning VM size.." >> /data/cb_CHECK_PROCS.log
 if [ -e /proc/sys/vm/min_free_kbytes ]; then
@@ -179,7 +190,7 @@ if [ "$CPD" = "1" ]; then
 
 busybox echo "Modifying Cpuctl Pseudo Device ..." >> /data/cb_CHECK_PROCS.log
 
-for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null
 done
 
@@ -227,7 +238,7 @@ busybox cp /dev/null /dev/cpuctl/bg_non_interactive/tasks 2>/dev/null
 busybox cp /dev/null /dev/cpuctl/bg_non_interactive/cgroup.procs 2>/dev/null
 
 
-for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_/) print $1 }'`; do
+for pid in `busybox ps | busybox awk '{ print $1 }'`; do
   busybox echo $pid >> /dev/cpuctl/user/cgroup.procs 2>/dev/null
   for i in `ls /proc/$pid/task 2>/dev/null`; do
     busybox echo $pid >> /dev/cpuctl/user/tasks 2>/dev/null

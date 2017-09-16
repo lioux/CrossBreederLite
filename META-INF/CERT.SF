@@ -1,0 +1,211 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+SHA1-Digest-Manifest: KAAkxrePoFh1tnOdx/UvUHlm4oQ=
+
+Name: META-INF/com/google/android/update-binary
+SHA1-Digest-Manifest: j7OgzSAkNrgYMgjLpdX/OLoTg5Y=
+
+Name: common/CrossBreeder/DynBS/CONF4
+SHA1-Digest-Manifest: VFnzBK0G1rztUhJSuvTuBTB847A=
+
+Name: system/etc/CrossBreeder/dnrd_root/master
+SHA1-Digest-Manifest: JRxiZR7qgE7PVQ1h1rllJCks56A=
+
+Name: common/CrossBreeder/SQLITE/ENABLE
+SHA1-Digest-Manifest: JrldKWa1dgjpiVCsAg+6jOJZHas=
+
+Name: module.prop
+SHA1-Digest-Manifest: a4ffIKBGhvqT8nJGDWOSPhbd4Mo=
+
+Name: common/CrossBreeder/DynRAM/ZRAM
+SHA1-Digest-Manifest: YT/zA8aMZub7GH6PciH1h7KxaoA=
+
+Name: common/CrossBreeder/DynBS/CONF3
+SHA1-Digest-Manifest: UccGvmBovUNN72KERGm6X0sDRdI=
+
+Name: common/x86_64
+SHA1-Digest-Manifest: Fnu4JKRsJ2LyfkLJvX14lAidmZY=
+
+Name: common/arm64-v8a
+SHA1-Digest-Manifest: 699mVNrEunp/ON9pBh27T/ROxy0=
+
+Name: system/etc/CrossBreeder/FDE_Governor_Tweaks
+SHA1-Digest-Manifest: UJe1YNNazTri0mciQdqEXnMsQbc=
+
+Name: common/armeabi
+SHA1-Digest-Manifest: Rh1J3t1U648W35JWXYvXJ1DkKr4=
+
+Name: common/CrossBreeder/zzCrossBreeder/PUNCHMOD
+SHA1-Digest-Manifest: 303gVgRdT+SGRmgeuHrhfvSZtOU=
+
+Name: README.md
+SHA1-Digest-Manifest: wDUhxOMQ5nb4ZF29PaFZRTYKIzY=
+
+Name: common/CrossBreeder/DynRAM/CONF2
+SHA1-Digest-Manifest: WePcrKVVx7aqaTa1WICiExbJOvA=
+
+Name: common/CrossBreeder/DynRAM/TIME/SEC
+SHA1-Digest-Manifest: 7TgUV6MK6O/TgpsS7PJYR6fUW3c=
+
+Name: system/etc/CrossBreeder/CHECK_PROCS
+SHA1-Digest-Manifest: cMX5bLlyybpDitjhImZDIbXUxOo=
+
+Name: common/CrossBreeder/zzCrossBreeder/HAVEGED
+SHA1-Digest-Manifest: iEQzqWMAJZVk8eqlTAGNJn9of8A=
+
+Name: common/CrossBreeder/zzCrossBreeder/RANDOM
+SHA1-Digest-Manifest: geUz0fVB6px8r+fwlzTom1LYgn4=
+
+Name: common/CrossBreeder/ENABLE
+SHA1-Digest-Manifest: 9xb+81Mh+0L+kBY+hR8EKgBpVTc=
+
+Name: common/CrossBreeder/SQLITE/COUNT
+SHA1-Digest-Manifest: l3o6JgdSPgcqPSGCsmRU6UI7558=
+
+Name: common/armeabi-v7a
+SHA1-Digest-Manifest: 4btEiR0NUQCLOtnqoClZ7yxiW64=
+
+Name: common/CrossBreeder/DynBS/CONF1
+SHA1-Digest-Manifest: IKrFxgt/z0dc48OB/yDvxeuB6LA=
+
+Name: system/etc/CrossBreeder/zzCHECK_NET_DNS
+SHA1-Digest-Manifest: dyu/yZpqJkXZLzKUJ2CkbHP5r3E=
+
+Name: common/CrossBreeder/zzCrossBreeder/CPD
+SHA1-Digest-Manifest: VPKak5Iuv7CD0bL65mPsA8mAK6Y=
+
+Name: system/etc/CrossBreeder/CB_RunHaveged
+SHA1-Digest-Manifest: TVQ/3x+sG4RRQvUGFIxwrbi7/O8=
+
+Name: system/etc/CrossBreeder/ENTROPY_FEED_FREQUENCY_SECS
+SHA1-Digest-Manifest: N4jY4ex5gcHri+xBrkJP8Ly4f+w=
+
+Name: common/dnsmasq.CBBAK
+SHA1-Digest-Manifest: fQ/KoCTDW/Zuzgs5KA/34yHQg60=
+
+Name: common/CrossBreeder/zzCHECK_NET_DNS/DNSMASQ
+SHA1-Digest-Manifest: RH/LmD3mVEy8ePh+lwxyT5uglFQ=
+
+Name: system/usr/idc/mxt224_ts_input.idc
+SHA1-Digest-Manifest: EwF76Mm0XEi0HRgCkGtTPdpTpsU=
+
+Name: common/CrossBreeder/zzCrossBreeder/VM
+SHA1-Digest-Manifest: jL+vaqTTF2Tmy80AkYhRq6WLBL8=
+
+Name: common/CrossBreeder/DynRAM/LMK
+SHA1-Digest-Manifest: tNgnBpEuIA6MGocfOyJwpV7D7n8=
+
+Name: system/bin/dnsmasq_dhcp
+SHA1-Digest-Manifest: qz5BQi7DegH1fN/We/SAen757I0=
+
+Name: system/etc/CrossBreeder/zzCrossBreeder
+SHA1-Digest-Manifest: lpyPu5DKOC7VvedFvz5eWW4ipgs=
+
+Name: system/xbin/haveged
+SHA1-Digest-Manifest: tVN/My4bqR8uQJBF+KFmS6MvyCc=
+
+Name: common/CrossBreeder/DynRAM/CONF1
+SHA1-Digest-Manifest: k/Qfdfp1vMjeSXDxFbMpBUOTCJs=
+
+Name: common/CrossBreeder/README.md
+SHA1-Digest-Manifest: onaF3CZ2eaRyuHo4Pb+jtW5MDtc=
+
+Name: common/file_contexts_image
+SHA1-Digest-Manifest: d0Z/GcKeayRQbW+lqq5Fe4Ncjps=
+
+Name: system/etc/CrossBreeder/CB_RunDNSMasq
+SHA1-Digest-Manifest: s6cPumKaWibt+yRhSP80u48awO8=
+
+Name: common/CrossBreeder/zzCrossBreeder/FSYNC
+SHA1-Digest-Manifest: M3ojrzjOuFVIl2ic6mLb7TJ0D+U=
+
+Name: common/zzCrossBreeder_X86
+SHA1-Digest-Manifest: Kge+j2C1lVtEGRZu11xB97MoPQk=
+
+Name: common/CrossBreeder/zzCrossBreeder/ENTROPY
+SHA1-Digest-Manifest: P2djmzpJr9v+DGNTq2ALTK8dwwU=
+
+Name: common/CrossBreeder/zzCrossBreeder/KSM
+SHA1-Digest-Manifest: VDpfkm8l17Fgj5pPmYwbsM41uwo=
+
+Name: system/etc/CrossBreeder/dnrd.10053
+SHA1-Digest-Manifest: ELZJAvZ36Js4LeiLVI4hoEx7b2c=
+
+Name: common/CrossBreeder/DynBS/CONF2
+SHA1-Digest-Manifest: Orr7oU5TcMIf/dZPqmxzNCanTMY=
+
+Name: common/CrossBreeder/zzCrossBreeder/UI
+SHA1-Digest-Manifest: m1CS+Ury1JcsWDqxEMpYAiorU5Y=
+
+Name: common/CrossBreeder/LS/ENABLE
+SHA1-Digest-Manifest: k4pqhPRaeG1JyV26OlqUjFGdGBQ=
+
+Name: common/post-fs-data.sh
+SHA1-Digest-Manifest: xPqZ6t1gsQahNGnu+3btPADRLxg=
+
+Name: system/xbin/dynbsd
+SHA1-Digest-Manifest: 5Z1izfk8wAmIaYChqkLfPXxenak=
+
+Name: system/etc/CrossBreeder/IRQ_FLUSH_FREQUENCY_MINUTES
+SHA1-Digest-Manifest: g1a+4U5Ww4IbN/VD3LbfvbnwVw4=
+
+Name: system/etc/CrossBreeder/SQLITE
+SHA1-Digest-Manifest: +/qJLFFoAq+YzcdKhDw37N7SYP0=
+
+Name: common/CrossBreeder/zzCHECK_NET_DNS/SERVER
+SHA1-Digest-Manifest: LTiK14sSAJyVYaaJp2n92XWiY/g=
+
+Name: system/etc/CrossBreeder/DynBS
+SHA1-Digest-Manifest: wBNHzru0Shq8rtqYaStrVuXOZv8=
+
+Name: META-INF/com/google/android/updater-script
+SHA1-Digest-Manifest: pVUJ9D5th6d2sD8aeNp5zhiBUcs=
+
+Name: system/etc/CrossBreeder/LoopySmoothness
+SHA1-Digest-Manifest: Rnb189FBaBQrzYtj6ZvfjI9Ei/8=
+
+Name: common/CrossBreeder/FDE_Governor_Tweaks/ENABLE
+SHA1-Digest-Manifest: 6nVXaRkJZkqRziB0CEBVuSBvDTQ=
+
+Name: system/etc/CrossBreeder/punchmod
+SHA1-Digest-Manifest: 8IZJcdiyJy28rdwDrkSEk8JbDSo=
+
+Name: common/CrossBreeder/DynBS/ENABLE
+SHA1-Digest-Manifest: H0gl9kuxy+bDgskEVVqApiQcRS0=
+
+Name: common/CHECK_PROCS_X86
+SHA1-Digest-Manifest: U2cuL8x0H1V9b6wPb65NHoOhYeI=
+
+Name: common/CrossBreeder/SQLITE/BOOTCOUNT
+SHA1-Digest-Manifest: D1TT0AT2tj2yHbnH4z7duleYgNU=
+
+Name: common/zzCHECK_NET_DNS_X86
+SHA1-Digest-Manifest: QeEK8XUuJGX8kf2jpZtNY3bfilg=
+
+Name: common/CrossBreeder/zzCHECK_NET_DNS/DNS
+SHA1-Digest-Manifest: 8wGnqtYH47PQfLGLYUSV6b5SIIA=
+
+Name: common/CrossBreeder/DynRAM/TIME/MIN
+SHA1-Digest-Manifest: LR2gBGZc0xXPhAvYdmooCYA4JzY=
+
+Name: system/etc/CrossBreeder/DynRAM
+SHA1-Digest-Manifest: rk3yrz5Ov1P2Jp3fW9SVdbzhZAs=
+
+Name: config.sh
+SHA1-Digest-Manifest: xj/e8QYSgoloBcOBMKtuinAFDNI=
+
+Name: common/service.sh
+SHA1-Digest-Manifest: vOVxLIzuTV+zP6U8OMkpl3Uxsuo=
+
+Name: common/x86
+SHA1-Digest-Manifest: 060IHxhw4YSaNDyjqQmn19UiZ6Y=
+
+Name: system/lib/modules/frandom.ko
+SHA1-Digest-Manifest: 5vC2r2fX/lVvLnvENpmLtF8CIWs=
+
+Name: common/CrossBreeder/zzCHECK_NET_DNS/TCP
+SHA1-Digest-Manifest: 2t/Zgm7JB0Ug1Nk3l2cEPuDRaLk=
+
+Name: common/CrossBreeder/DynRAM/TIME/HR
+SHA1-Digest-Manifest: oQvKHJiTm9YJ4OtS+53rIBe+OA4=
+

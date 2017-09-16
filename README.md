@@ -9,7 +9,7 @@ This is the liter, newer version of CrossBreeder
 
 Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq, Domain Name Relay Daemon [ARM], Random, Frandom.ko [Optional]
 
-LoopySmoothness [Optional] - An experiment tweak
+LoopySmoothness - An experiment tweak
 
 SQLite Optimize on boot [Default: Every 4 boots]
 
@@ -39,7 +39,9 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 ## Changelog
 
-1.7.1 - Fixed internal storage issus?
+1.7.2 - Add I/O schedule tweak, Cpuctl Pseudo Device tweak optimization
+
+1.7.1 - Fixed internal storage issus? --> No
 
 1.7 - Add LoopySmoothness Tweak, WiFi problem fixed?, Removed Low-Voltage tweak, Support Magisk v14, Bug fixed.
 

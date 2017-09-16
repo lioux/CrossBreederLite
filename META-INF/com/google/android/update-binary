@@ -420,9 +420,7 @@ if $BOOTMODE; then
 fi
 
 # post-fs-data mode scripts
-$POSTFSDATA && cp -af $INSTALLER/common/post-fs-data.sh $MOUNTPATH/.core/post-fs-data.d/CBL_initd.sh
-
-set_perm_recursive  $MOUNTPATH/.core/post-fs-data.d/CBL_initd.sh  0  0  0755  0755
+$POSTFSDATA && cp -af $INSTALLER/common/post-fs-data.sh $MODPATH/post-fs-data.sh
 
 # service mode scripts
 $LATESTARTSERVICE && cp -af $INSTALLER/common/service.sh $MODPATH/service.sh

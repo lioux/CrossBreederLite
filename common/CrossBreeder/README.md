@@ -50,4 +50,4 @@ List:
 
 6.CPD ---> This tweak will modify Cpuctl Pseudo Device 
 
-7.LS ---> LoopySmoothness Tweak
+7.LST ---> LoopySmoothness Tweak
