@@ -6,7 +6,7 @@ UI="$(busybox cat /data/CrossBreeder/zzCrossBreeder/UI)"
 FSYNC="$(busybox cat /data/CrossBreeder/zzCrossBreeder/FSYNC)"
 KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 VM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VM)"
-CPD="$(busybox cat /data/CrossBreeder/zzCrossBreeder/CPD)"
+CFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/CFS)"
 
 set +e
 
@@ -186,9 +186,9 @@ setprop persist.sys.purgeable_assets 1
 busybox echo "VM Heap size can be ${HEAPMAXSIZE}m" >> /data/cb_CHECK_PROCS.log
 fi
 
-if [ "$CPD" = "1" ]; then
+if [ "$CFS" = "1" ]; then
 
-busybox echo "Modifying Cpuctl Pseudo Device ..." >> /data/cb_CHECK_PROCS.log
+busybox echo "Modifying Cgroup File System ..." >> /data/cb_CHECK_PROCS.log
 
 for pid in `busybox ps | busybox awk '{ print $1 }'`; do
   busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null

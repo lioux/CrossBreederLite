@@ -39,6 +39,8 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 
 ## Changelog
 
+1.7.3 - Small bug fixed
+
 1.7.2 - Add I/O schedule tweak, Cpuctl Pseudo Device tweak optimization
 
 1.7.1 - Fixed internal storage issus? --> No

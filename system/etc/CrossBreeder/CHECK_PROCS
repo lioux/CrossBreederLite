@@ -1,6 +1,6 @@
 #!/system/bin/sh 
 echo "" >> /data/cb_CHECK_PROCS.log
-echo "CrossBreeder Lite Version 1.7.2" >> /data/cb_CHECK_PROCS.log
+echo "CrossBreeder Lite Version 1.7.3" >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
 echo $(export TZ=GMT; date) >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
