@@ -1,6 +1,6 @@
 #!/system/bin/sh 
 echo "" >> /data/cb_CHECK_PROCS.log
-echo "CrossBreeder Lite Version 1.7.3" >> /data/cb_CHECK_PROCS.log
+echo "CrossBreeder Lite Version 1.7.4" >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
 echo $(export TZ=GMT; date) >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
@@ -51,7 +51,7 @@ echo "" >> /data/cb_CHECK_PROCS.log
 
 fi
 
-if [ "$HAVEGED" = "1" ] && [ "$XRANDOM" = "1" ]; then
+if [ "$HAVEGED" = "1" ]|[ "$XRANDOM" = "1" ]; then
 
 while [ ! -f /dev/random.MOD ] || [ ! -f /dev/CB_RunHaveged.RUN ] || [ ! -f /data/haveged.pid ]; do
 sleep 1
@@ -79,7 +79,7 @@ if [ "$DNS" = "1" ]; then
 
 exec 1>/dev/null 2>&1
 
-while [ ! -f /data/dnrd.pid ] || [ ! -f /data/DNSMasq.log ] || [ ! -f /data/DNRD.log ]; do
+while [ ! -f /data/dnrd.pid ] || [ ! -f /data/dnsmasq.log ] || [ ! -f /data/dnrd.log ]; do
 sleep 1
 done
 
@@ -102,16 +102,19 @@ echo "DNS Server=Safe DNS" >> /data/cb_CHECK_PROCS.log
 elif [ "$SERVER" = "9" ]; then
 echo "DNS Server=OPEN NIC" >> /data/cb_CHECK_PROCS.log
 fi
+
+sleep 1
+
 echo "" >> /data/cb_CHECK_PROCS.log
 echo "Running dnsmasq_dhcp..." >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
-echo $(busybox cat /data/DNSMasq.log) >> /data/cb_CHECK_PROCS.log
-rm -f /data/DNSMasq.log
+echo $(busybox cat /data/dnsmasq.log) >> /data/cb_CHECK_PROCS.log
+rm -f /data/dnsmasq.log
 echo "" >> /data/cb_CHECK_PROCS.log
 echo "Running Domain Name Relay Daemon..." >> /data/cb_CHECK_PROCS.log
 echo "" >> /data/cb_CHECK_PROCS.log
-echo $(busybox cat /data/DNRD.log) >> /data/cb_CHECK_PROCS.log
-rm -f /data/DNRD.log
+echo $(busybox cat /data/dnrd.log) >> /data/cb_CHECK_PROCS.log
+rm -f /data/dnrd.log
 echo "" >> /data/cb_CHECK_PROCS.log
 fi
 

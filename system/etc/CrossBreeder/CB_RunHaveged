@@ -19,12 +19,8 @@ if [ -c /dev/erandom ]; then
   RANDOMDEVICE=frandom
 fi
 
-if [ "$PUNCHMOD" = "1" ]; then
-
-if [ ! -c /dev/erandom ]; then
+if [ "$PUNCHMOD" = "1" ]|[ ! -c /dev/erandom ] ; then
   punchmod /system/lib/modules/frandom.ko "" "" 2>/dev/null
-fi
-
 fi
 
 URANDOMDEVICE="/dev/urandom"
@@ -61,7 +57,7 @@ for i in `busybox find /sys -name add_random -print 2>/dev/null`; do busybox ech
 
 fi
 
-if [ "$HAVEGED" = "1" ] && [ "$XRANDOM" = "1" ]; then
+if [ "$HAVEGED" = "1" ]|[ "$XRANDOM" = "1" ]; then
 
 ( haveged --Foreground --sink=$URANDOMDEVICE --write=0 --pidfile=/data/haveged.pid )&
 

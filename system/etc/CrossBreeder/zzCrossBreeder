@@ -8,13 +8,15 @@ KSM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/KSM)"
 VM="$(busybox cat /data/CrossBreeder/zzCrossBreeder/VM)"
 CFS="$(busybox cat /data/CrossBreeder/zzCrossBreeder/CFS)"
 
+RAM=$(busybox free -m | busybox awk '{ print $2 }' | busybox sed -n 2p);
+
 set +e
 
 CB_RunHaveged
 
 if [ "$UI" = "1" ]; then
 
-busybox echo " Let user interface smoothness.." >> /data/cb_CHECK_PROCS.log
+busybox echo "Let user interface smoothness.." >> /data/cb_CHECK_PROCS.log
 setprop persist.sys.scrollingcache 3
 setprop windowsmgr.max_events_per_sec 300
 setprop ro.max.fling_velocity 12000
@@ -101,12 +103,15 @@ if [ -e /sys/block/mmcblk0/queue/scheduler ]; then
  busybox echo fiops > /sys/block/mmcblk0/queue/scheduler
 fi;
 if [ -e /sys/block/mmcblk0/queue/read_ahead_kb ]; then
- busybox echo 4096 > /sys/block/mmcblk0/queue/read_ahead_kb
+ busybox echo $((RAM*2)) > /sys/block/mmcblk0/queue/read_ahead_kb
 fi;
 
 busybox echo "Turning VM size.." >> /data/cb_CHECK_PROCS.log
 if [ -e /proc/sys/vm/min_free_kbytes ]; then
- busybox echo "12288" > /proc/sys/vm/min_free_kbytes;
+ busybox echo "15600" > /proc/sys/vm/min_free_kbytes;
+fi;
+if [ -e /proc/sys/vm/extra_free_kbytes ]; then
+ busybox echo "23400" > /proc/sys/vm/extra_free_kbytes;
 fi;
 if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
  busybox echo "1215752192" > /proc/sys/vm/vfs_cache_pressure;
@@ -190,8 +195,17 @@ if [ "$CFS" = "1" ]; then
 
 busybox echo "Modifying Cgroup File System ..." >> /data/cb_CHECK_PROCS.log
 
-for pid in `busybox ps | busybox awk '{ print $1 }'`; do
-  busybox echo -17 > /proc/$pid/oom_adj 2>/dev/null
+for pid in `busybox ps | busybox awk '{ if ($2 ~ /^root$|^system$|^radio$|^wifi$|^blueto|^media$/) print $1 }'`; do
+  echo -17 > /proc/$pid/oom_adj 2>/dev/null
+done
+
+for pid in `busybox ps -o pid,user,nice,args | busybox awk '{ if ( $2 ~ /^root$/ && $3 == "0" && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
+  busybox renice 3 $pid 2>/dev/null
+  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
+done
+
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^root$/ && $4 !~ /netd$|rild$|zygote$|kswapd|vold|loop/ ) print $1 }'`; do
+  busybox ionice -c 2 -n 3 -p $pid 2>/dev/null
 done
 
 for pid in $(busybox pgrep pdflush 2>/dev/null); do
@@ -202,6 +216,11 @@ done
 for pid in $(busybox pgrep flush- 2>/dev/null); do
   busybox renice 7 $pid 2>/dev/null
   busybox ionice -c 3 -n 7 -p $pid 2>/dev/null
+done
+
+for pid in `busybox ps | busybox awk '{ if ( $2 ~ /^app_|^u0_/) print $1 }'`; do
+  BUSYBOX renice -1 $pid 2>/dev/null
+  BUSYBOX ionice -c 1 -n 0 -p $pid 2>/dev/null
 done
 
 if [ ! -d /dev/cpuctl ]; then

@@ -14,6 +14,9 @@ if [ "$ENABLE" = "1" ]; then
 
 rm -f /data/cb_CHECK_PROCS.log
 touch /data/cb_CHECK_PROCS.log
+
+sleep 60
+
 ( /system/etc/CrossBreeder/CHECK_PROCS )&
 /system/etc/CrossBreeder/zzCrossBreeder
 /system/etc/CrossBreeder/zzCHECK_NET_DNS

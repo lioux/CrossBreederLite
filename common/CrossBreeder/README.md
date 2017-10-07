@@ -48,6 +48,6 @@ List:
 > 8 - Safe DNS
 > 9 - OPEN NIC
 
-6.CFS ---> This tweak will modify Cgroup File System 
+6.CFS ---> Cgroup File System 
 
-7.LST ---> LoopySmoothness Tweak
+7.LST ---> Loopy Smoothness Tweak

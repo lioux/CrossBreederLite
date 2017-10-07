@@ -59,7 +59,7 @@ done
 num=0
 for z in $(busybox find /dev/block -name $ZRAMD* | busybox sort )
 do
-busybox swapon $z -p 256
+busybox swapon -e 256 $z
 num=$(($num+1))
 done
 

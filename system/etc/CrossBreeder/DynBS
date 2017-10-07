@@ -1,13 +1,13 @@
 #!/system/bin/sh
 
-ENABLE="$(busybox cat /data/CrossBreeder/DynBS/ENABLE)"
+DBS="$(busybox cat /data/CrossBreeder/DynBS/ENABLE)"
 CONF1="$(busybox cat /data/CrossBreeder/DynBS/CONF1)"
 CONF2="$(busybox cat /data/CrossBreeder/DynBS/CONF2)"
 CONF3="$(busybox cat /data/CrossBreeder/DynBS/CONF3)"
 CONF4="$(busybox cat /data/CrossBreeder/DynBS/CONF4)"
 API=$(getprop ro.build.version.sdk);
 
-if [ "$ENABLE" = "1" ];then
+if [ "$DBS" = "1" ];then
 
 for i in $(busybox ls /sys/class/scsi_disk/); do
  busybox echo "Better DeepSleep." >> /data/cb_CHECK_PROCS.log

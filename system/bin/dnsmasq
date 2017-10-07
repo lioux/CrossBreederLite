@@ -1,0 +1,9 @@
+#!/system/bin/sh
+
+set +e
+
+( busybox kill -9 $(busybox pgrep -f "dnsmasq_dhcp --no-daemon \-port=53") >/dev/null 2>&1 )&
+
+( dnsmasq_dhcp --no-daemon --port=53 --dhcp-option=252,\"\\n\" --no-ping --dhcp-authoritative $* )&
+pid=$!
+wait $pid

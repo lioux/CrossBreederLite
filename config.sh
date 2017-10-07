@@ -29,7 +29,7 @@ AUTOMOUNT=true
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=true
+POSTFSDATA=false
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=true
@@ -41,9 +41,9 @@ LATESTARTSERVICE=true
 # Set what you want to show when installing your mod
 
 print_modname() {
-  ui_print "*************************"
+  ui_print "******************************"
   ui_print "CrossBreeder Lite Edition v1.7"
-  ui_print "*************************"
+  ui_print "******************************"
 }
 
 ##########################################################################################

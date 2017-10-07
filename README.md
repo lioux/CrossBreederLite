@@ -7,7 +7,7 @@ This is the liter, newer version of CrossBreeder
 
 ## Features
 
-Tweaks from CrossBreeder --> Haveged [ARM], DNSMasq, Domain Name Relay Daemon [ARM], Random, Frandom.ko [Optional]
+Tweaks from CrossBreeder --> Haveged, DNSMasq, Domain Name Relay Daemon, Random, Frandom.ko [Optional]
 
 LoopySmoothness - An experiment tweak
 
@@ -38,6 +38,8 @@ Logger, see log file in /data/cb_CHECK_PROCS.log
 [XDA Forum](https://forum.xda-developers.com/apps/magisk/tweak-crossbreeder-lite-t3594401)
 
 ## Changelog
+
+1.7.4 - Optimize network for Shadowsocks/ShadowsocksR, Removed X86 support, Delay 60sec to start this module to avoid some bug, Changed dnsmasq position, Fixed some script bug.
 
 1.7.3 - Small bug fixed
 

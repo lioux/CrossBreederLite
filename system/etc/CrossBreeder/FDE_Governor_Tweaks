@@ -7,6 +7,10 @@ CMAX=$($B cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq);
 CMIN=$($B cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq);
 CUR=$($B cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq);
 CORES=$($B grep -c 'processor' /proc/cpuinfo);
+FDE="$(busybox cat /data/CrossBreeder/FDE/ENABLE)"
+
+if [ "$FDE" = "1" ]; then
+
 if [ "$CORES" = "0" ]; then
  CORES=1;
 fi;
@@ -503,3 +507,5 @@ if [ -e /system/bin/mpdecision ]; then
 fi;
 sync;
 $B sleep 1;
+
+fi
